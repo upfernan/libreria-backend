@@ -1,5 +1,42 @@
 package com.libreria.negocio.assembler.dto.impl;
 
-public class TarifaMultaDTOAssembler {
+import com.libreria.dto.TarifaMultaDTO;
+import com.libreria.negocio.assembler.dto.DTOAssembler;
+import com.libreria.negocio.dominio.TarifaMultaDominio;
+import com.libreria.transversal.UtilObjeto;
 
+public final class TarifaMultaDTOAssembler implements DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> {
+
+    private static DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> INSTANCE;
+
+    private TarifaMultaDTOAssembler() {
+        super();
+    }
+
+    public synchronized static final DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> getInstance() {
+        if (UtilObjeto.esNulo(INSTANCE)) {
+            INSTANCE = new TarifaMultaDTOAssembler();
+        }
+        return INSTANCE;
+    }
+
+    @Override
+    public TarifaMultaDominio ensamblarDominio(final TarifaMultaDTO dto) {
+        var objeto = UtilObjeto.obtenerValorDefecto(dto, new TarifaMultaDTO.Builder().build());
+        return new TarifaMultaDominio.Builder()
+                .id(objeto.getId())
+                .valorDiario(objeto.getValorDiario())
+                .fechaVigencia(objeto.getFechaVigencia())
+                .build();
+    }
+
+    @Override
+    public TarifaMultaDTO ensamblarDTO(final TarifaMultaDominio dominio) {
+        var objeto = UtilObjeto.obtenerValorDefecto(dominio, new TarifaMultaDominio.Builder().build());
+        return new TarifaMultaDTO.Builder()
+                .id(objeto.getId())
+                .valorDiario(objeto.getValorDiario())
+                .fechaVigencia(objeto.getFechaVigencia())
+                .build();
+    }
 }

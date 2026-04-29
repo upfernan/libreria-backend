@@ -1,5 +1,42 @@
 package com.libreria.negocio.assembler.dto.impl;
 
-public class TipoLibroDTOAssembler {
+import com.libreria.dto.TipoLibroDTO;
+import com.libreria.negocio.assembler.dto.DTOAssembler;
+import com.libreria.negocio.dominio.TipoLibroDominio;
+import com.libreria.transversal.UtilObjeto;
 
+public final class TipoLibroDTOAssembler implements DTOAssembler<TipoLibroDominio, TipoLibroDTO> {
+
+    private static DTOAssembler<TipoLibroDominio, TipoLibroDTO> INSTANCE;
+
+    private TipoLibroDTOAssembler() {
+        super();
+    }
+
+    public synchronized static final DTOAssembler<TipoLibroDominio, TipoLibroDTO> getInstance() {
+        if (UtilObjeto.esNulo(INSTANCE)) {
+            INSTANCE = new TipoLibroDTOAssembler();
+        }
+        return INSTANCE;
+    }
+
+    @Override
+    public TipoLibroDominio ensamblarDominio(final TipoLibroDTO dto) {
+        var objeto = UtilObjeto.obtenerValorDefecto(dto, new TipoLibroDTO.Builder().build());
+        return new TipoLibroDominio.Builder()
+                .id(objeto.getId())
+                .nombre(objeto.getNombre())
+                .descripcion(objeto.getDescripcion())
+                .build();
+    }
+
+    @Override
+    public TipoLibroDTO ensamblarDTO(final TipoLibroDominio dominio) {
+        var objeto = UtilObjeto.obtenerValorDefecto(dominio, new TipoLibroDominio.Builder().build());
+        return new TipoLibroDTO.Builder()
+                .id(objeto.getId())
+                .nombre(objeto.getNombre())
+                .descripcion(objeto.getDescripcion())
+                .build();
+    }
 }

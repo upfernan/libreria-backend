@@ -1,5 +1,42 @@
 package com.libreria.negocio.assembler.dto.impl;
 
-public class PagoDTOAssembler {
+import com.libreria.dto.PagoDTO;
+import com.libreria.negocio.assembler.dto.DTOAssembler;
+import com.libreria.negocio.dominio.PagoDominio;
+import com.libreria.transversal.UtilObjeto;
 
+public final class PagoDTOAssembler implements DTOAssembler<PagoDominio, PagoDTO> {
+
+    private static DTOAssembler<PagoDominio, PagoDTO> INSTANCE;
+
+    private PagoDTOAssembler() {
+        super();
+    }
+
+    public synchronized static final DTOAssembler<PagoDominio, PagoDTO> getInstance() {
+        if (UtilObjeto.esNulo(INSTANCE)) {
+            INSTANCE = new PagoDTOAssembler();
+        }
+        return INSTANCE;
+    }
+
+    @Override
+    public PagoDominio ensamblarDominio(final PagoDTO dto) {
+        var objeto = UtilObjeto.obtenerValorDefecto(dto, new PagoDTO.Builder().build());
+        return new PagoDominio.Builder()
+                .id(objeto.getId())
+                .fechaPago(objeto.getFechaPago())
+                .multa(MultaDTOAssembler.getInstance().ensamblarDominio(objeto.getMulta()))
+                .build();
+    }
+
+    @Override
+    public PagoDTO ensamblarDTO(final PagoDominio dominio) {
+        var objeto = UtilObjeto.obtenerValorDefecto(dominio, new PagoDominio.Builder().build());
+        return new PagoDTO.Builder()
+                .id(objeto.getId())
+                .fechaPago(objeto.getFechaPago())
+                .multa(MultaDTOAssembler.getInstance().ensamblarDTO(objeto.getMulta()))
+                .build();
+    }
 }

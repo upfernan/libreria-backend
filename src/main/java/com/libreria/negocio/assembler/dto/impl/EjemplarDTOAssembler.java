@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class EjemplarDTOAssembler implements DTOAssembler<EjemplarDominio, EjemplarDTO> {
 
-    private static DTOAssembler<EjemplarDominio, EjemplarDTO> INSTANCE;
+    private static DTOAssembler<EjemplarDominio, EjemplarDTO> instancia;
 
     private EjemplarDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<EjemplarDominio, EjemplarDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new EjemplarDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new EjemplarDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

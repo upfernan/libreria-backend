@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class ReservaEntidadAssembler implements EntidadAssembler<ReservaDominio, ReservaEntidad> {
 
-    private static EntidadAssembler<ReservaDominio, ReservaEntidad> INSTANCE;
+    private static EntidadAssembler<ReservaDominio, ReservaEntidad> instancia;
 
     private ReservaEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<ReservaDominio, ReservaEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new ReservaEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new ReservaEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

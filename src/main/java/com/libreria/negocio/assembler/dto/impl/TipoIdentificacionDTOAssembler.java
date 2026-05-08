@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class TipoIdentificacionDTOAssembler implements DTOAssembler<TipoIdentificacionDominio, TipoIdentificacionDTO> {
 
-    private static DTOAssembler<TipoIdentificacionDominio, TipoIdentificacionDTO> INSTANCE;
+    private static DTOAssembler<TipoIdentificacionDominio, TipoIdentificacionDTO> instancia;
 
     private TipoIdentificacionDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<TipoIdentificacionDominio, TipoIdentificacionDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new TipoIdentificacionDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new TipoIdentificacionDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

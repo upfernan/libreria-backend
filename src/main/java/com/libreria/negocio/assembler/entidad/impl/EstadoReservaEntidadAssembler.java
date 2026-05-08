@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class EstadoReservaEntidadAssembler implements EntidadAssembler<EstadoReservaDominio, EstadoReservaEntidad> {
 
-    private static EntidadAssembler<EstadoReservaDominio, EstadoReservaEntidad> INSTANCE;
+    private static EntidadAssembler<EstadoReservaDominio, EstadoReservaEntidad> instancia;
 
     private EstadoReservaEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<EstadoReservaDominio, EstadoReservaEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new EstadoReservaEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new EstadoReservaEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

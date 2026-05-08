@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class TarifaMultaDTOAssembler implements DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> {
 
-    private static DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> INSTANCE;
+    private static DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> instancia;
 
     private TarifaMultaDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new TarifaMultaDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new TarifaMultaDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

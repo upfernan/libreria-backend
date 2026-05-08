@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class DevolucionEntidadAssembler implements EntidadAssembler<DevolucionDominio, DevolucionEntidad> {
 
-    private static EntidadAssembler<DevolucionDominio, DevolucionEntidad> INSTANCE;
+    private static EntidadAssembler<DevolucionDominio, DevolucionEntidad> instancia;
 
     private DevolucionEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<DevolucionDominio, DevolucionEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new DevolucionEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new DevolucionEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

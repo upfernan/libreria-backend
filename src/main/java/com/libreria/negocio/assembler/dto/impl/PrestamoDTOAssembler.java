@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class PrestamoDTOAssembler implements DTOAssembler<PrestamoDominio, PrestamoDTO> {
 
-    private static DTOAssembler<PrestamoDominio, PrestamoDTO> INSTANCE;
+    private static DTOAssembler<PrestamoDominio, PrestamoDTO> instancia;
 
     private PrestamoDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<PrestamoDominio, PrestamoDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new PrestamoDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new PrestamoDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

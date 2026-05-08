@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class TipoIdentificacionEntidadAssembler implements EntidadAssembler<TipoIdentificacionDominio, TipoIdentificacionEntidad> {
 
-    private static EntidadAssembler<TipoIdentificacionDominio, TipoIdentificacionEntidad> INSTANCE;
+    private static EntidadAssembler<TipoIdentificacionDominio, TipoIdentificacionEntidad> instancia;
 
     private TipoIdentificacionEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<TipoIdentificacionDominio, TipoIdentificacionEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new TipoIdentificacionEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new TipoIdentificacionEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

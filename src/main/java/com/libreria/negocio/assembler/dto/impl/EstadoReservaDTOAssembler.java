@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class EstadoReservaDTOAssembler implements DTOAssembler<EstadoReservaDominio, EstadoReservaDTO> {
 
-    private static DTOAssembler<EstadoReservaDominio, EstadoReservaDTO> INSTANCE;
+    private static DTOAssembler<EstadoReservaDominio, EstadoReservaDTO> instancia;
 
     private EstadoReservaDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<EstadoReservaDominio, EstadoReservaDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new EstadoReservaDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new EstadoReservaDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

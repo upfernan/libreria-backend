@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class EstadoPrestamoEntidadAssembler implements EntidadAssembler<EstadoPrestamoDominio, EstadoPrestamoEntidad> {
 
-    private static EntidadAssembler<EstadoPrestamoDominio, EstadoPrestamoEntidad> INSTANCE;
+    private static EntidadAssembler<EstadoPrestamoDominio, EstadoPrestamoEntidad> instancia;
 
     private EstadoPrestamoEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<EstadoPrestamoDominio, EstadoPrestamoEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new EstadoPrestamoEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new EstadoPrestamoEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

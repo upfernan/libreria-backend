@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class AutorLibroEntidadAssembler implements EntidadAssembler<AutorLibroDominio, AutorLibroEntidad> {
 
-    private static EntidadAssembler<AutorLibroDominio, AutorLibroEntidad> INSTANCE;
+    private static EntidadAssembler<AutorLibroDominio, AutorLibroEntidad> instancia;
 
     private AutorLibroEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<AutorLibroDominio, AutorLibroEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new AutorLibroEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new AutorLibroEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

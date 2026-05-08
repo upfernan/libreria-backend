@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class PrestamoEntidadAssembler implements EntidadAssembler<PrestamoDominio, PrestamoEntidad> {
 
-    private static EntidadAssembler<PrestamoDominio, PrestamoEntidad> INSTANCE;
+    private static EntidadAssembler<PrestamoDominio, PrestamoEntidad> instancia;
 
     private PrestamoEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<PrestamoDominio, PrestamoEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new PrestamoEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new PrestamoEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

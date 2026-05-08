@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class SignaturaEntidadAssembler implements EntidadAssembler<SignaturaDominio, SignaturaEntidad> {
 
-    private static EntidadAssembler<SignaturaDominio, SignaturaEntidad> INSTANCE;
+    private static EntidadAssembler<SignaturaDominio, SignaturaEntidad> instancia;
 
     private SignaturaEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<SignaturaDominio, SignaturaEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new SignaturaEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new SignaturaEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

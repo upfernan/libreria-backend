@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class SignaturaDTOAssembler implements DTOAssembler<SignaturaDominio, SignaturaDTO> {
 
-    private static DTOAssembler<SignaturaDominio, SignaturaDTO> INSTANCE;
+    private static DTOAssembler<SignaturaDominio, SignaturaDTO> instancia;
 
     private SignaturaDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<SignaturaDominio, SignaturaDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new SignaturaDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new SignaturaDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

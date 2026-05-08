@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class TarifaMultaEntidadAssembler implements EntidadAssembler<TarifaMultaDominio, TarifaMultaEntidad> {
 
-    private static EntidadAssembler<TarifaMultaDominio, TarifaMultaEntidad> INSTANCE;
+    private static EntidadAssembler<TarifaMultaDominio, TarifaMultaEntidad> instancia;
 
     private TarifaMultaEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<TarifaMultaDominio, TarifaMultaEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new TarifaMultaEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new TarifaMultaEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

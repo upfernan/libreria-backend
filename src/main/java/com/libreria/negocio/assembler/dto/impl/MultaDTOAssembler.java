@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class MultaDTOAssembler implements DTOAssembler<MultaDominio, MultaDTO> {
 
-    private static DTOAssembler<MultaDominio, MultaDTO> INSTANCE;
+    private static DTOAssembler<MultaDominio, MultaDTO> instancia;
 
     private MultaDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<MultaDominio, MultaDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new MultaDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new MultaDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

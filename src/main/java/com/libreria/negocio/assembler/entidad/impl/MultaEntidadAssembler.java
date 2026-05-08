@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class MultaEntidadAssembler implements EntidadAssembler<MultaDominio, MultaEntidad> {
 
-    private static EntidadAssembler<MultaDominio, MultaEntidad> INSTANCE;
+    private static EntidadAssembler<MultaDominio, MultaEntidad> instancia;
 
     private MultaEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<MultaDominio, MultaEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new MultaEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new MultaEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

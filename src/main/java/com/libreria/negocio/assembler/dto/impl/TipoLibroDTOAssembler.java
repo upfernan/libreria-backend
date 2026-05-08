@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class TipoLibroDTOAssembler implements DTOAssembler<TipoLibroDominio, TipoLibroDTO> {
 
-    private static DTOAssembler<TipoLibroDominio, TipoLibroDTO> INSTANCE;
+    private static DTOAssembler<TipoLibroDominio, TipoLibroDTO> instancia;
 
     private TipoLibroDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<TipoLibroDominio, TipoLibroDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new TipoLibroDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new TipoLibroDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

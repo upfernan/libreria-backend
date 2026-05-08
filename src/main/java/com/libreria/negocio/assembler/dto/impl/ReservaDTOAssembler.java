@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class ReservaDTOAssembler implements DTOAssembler<ReservaDominio, ReservaDTO> {
 
-    private static DTOAssembler<ReservaDominio, ReservaDTO> INSTANCE;
+    private static DTOAssembler<ReservaDominio, ReservaDTO> instancia;
 
     private ReservaDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<ReservaDominio, ReservaDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new ReservaDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new ReservaDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

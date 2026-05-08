@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class PagoEntidadAssembler implements EntidadAssembler<PagoDominio, PagoEntidad> {
 
-    private static EntidadAssembler<PagoDominio, PagoEntidad> INSTANCE;
+    private static EntidadAssembler<PagoDominio, PagoEntidad> instancia;
 
     private PagoEntidadAssembler() {
         super();
     }
 
     public synchronized static final EntidadAssembler<PagoDominio, PagoEntidad> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new PagoEntidadAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new PagoEntidadAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

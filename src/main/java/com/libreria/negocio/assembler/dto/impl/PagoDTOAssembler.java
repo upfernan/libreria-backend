@@ -7,17 +7,17 @@ import com.libreria.transversal.UtilObjeto;
 
 public final class PagoDTOAssembler implements DTOAssembler<PagoDominio, PagoDTO> {
 
-    private static DTOAssembler<PagoDominio, PagoDTO> INSTANCE;
+    private static DTOAssembler<PagoDominio, PagoDTO> instancia;
 
     private PagoDTOAssembler() {
         super();
     }
 
     public synchronized static final DTOAssembler<PagoDominio, PagoDTO> getInstance() {
-        if (UtilObjeto.esNulo(INSTANCE)) {
-            INSTANCE = new PagoDTOAssembler();
+        if (UtilObjeto.esNulo(instancia)) {
+            instancia = new PagoDTOAssembler();
         }
-        return INSTANCE;
+        return instancia;
     }
 
     @Override

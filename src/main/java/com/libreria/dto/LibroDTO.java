@@ -1,9 +1,9 @@
-package com.libreria.dto;
+﻿package com.libreria.dto;
 
 import java.util.UUID;
-import com.libreria.transversal.UtilNumero;
-import com.libreria.transversal.UtilObjeto;
-import com.libreria.transversal.UtilTexto;
+import com.libreria.transversal.utilitario.UtilNumero;
+import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilTexto;
 
 public class LibroDTO {
 

@@ -1,9 +1,9 @@
-package com.libreria.negocio.dominio;
+﻿package com.libreria.negocio.dominio;
 
 import java.time.LocalDate;
 import java.util.UUID;
-import com.libreria.transversal.UtilFecha;
-import com.libreria.transversal.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilFecha;
+import com.libreria.transversal.utilitario.UtilObjeto;
 
 public class DevolucionDominio {
 

@@ -1,9 +1,9 @@
-package com.libreria.negocio.assembler.entidad.impl;
+﻿package com.libreria.negocio.assembler.entidad.impl;
 
 import com.libreria.entidad.CategoriaEntidad;
 import com.libreria.negocio.dominio.CategoriaDominio;
 import com.libreria.negocio.assembler.entidad.EntidadAssembler;
-import com.libreria.transversal.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilObjeto;
 
 public final class CategoriaEntidadAssembler implements EntidadAssembler<CategoriaDominio, CategoriaEntidad> {
 

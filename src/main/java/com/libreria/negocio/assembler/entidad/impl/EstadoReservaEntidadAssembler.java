@@ -1,9 +1,9 @@
-package com.libreria.negocio.assembler.entidad.impl;
+﻿package com.libreria.negocio.assembler.entidad.impl;
 
 import com.libreria.entidad.EstadoReservaEntidad;
 import com.libreria.negocio.dominio.EstadoReservaDominio;
 import com.libreria.negocio.assembler.entidad.EntidadAssembler;
-import com.libreria.transversal.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilObjeto;
 
 public final class EstadoReservaEntidadAssembler implements EntidadAssembler<EstadoReservaDominio, EstadoReservaEntidad> {
 

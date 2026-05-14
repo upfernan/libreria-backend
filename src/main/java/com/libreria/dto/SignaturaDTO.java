@@ -1,8 +1,8 @@
-package com.libreria.dto;
+﻿package com.libreria.dto;
 
 import java.util.UUID;
-import com.libreria.transversal.UtilCaracter;
-import com.libreria.transversal.UtilNumero;
+import com.libreria.transversal.utilitario.UtilCaracter;
+import com.libreria.transversal.utilitario.UtilNumero;
 
 public class SignaturaDTO {
 

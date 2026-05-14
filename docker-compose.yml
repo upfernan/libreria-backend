@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  libreria-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: libreria-db
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "Libreria123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    volumes:
+      - libreria_data:/var/opt/mssql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Libreria123!", "-Q", "SELECT 1", "-No"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  libreria_data:

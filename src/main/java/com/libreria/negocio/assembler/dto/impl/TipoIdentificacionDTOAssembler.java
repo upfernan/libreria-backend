@@ -1,9 +1,9 @@
-package com.libreria.negocio.assembler.dto.impl;
+﻿package com.libreria.negocio.assembler.dto.impl;
 
 import com.libreria.dto.TipoIdentificacionDTO;
 import com.libreria.negocio.assembler.dto.DTOAssembler;
 import com.libreria.negocio.dominio.TipoIdentificacionDominio;
-import com.libreria.transversal.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilObjeto;
 
 public final class TipoIdentificacionDTOAssembler implements DTOAssembler<TipoIdentificacionDominio, TipoIdentificacionDTO> {
 

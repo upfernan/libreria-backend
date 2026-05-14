@@ -1,7 +1,7 @@
-package com.libreria.dto;
+﻿package com.libreria.dto;
 
 import java.util.UUID;
-import com.libreria.transversal.UtilTexto;
+import com.libreria.transversal.utilitario.UtilTexto;
 
 public class EstadoPrestamoDTO {
 

@@ -1,11 +1,11 @@
-package com.libreria.entidad;
+﻿package com.libreria.entidad;
 
 import java.time.LocalDate;
 import java.util.UUID;
-import com.libreria.transversal.UtilBooleano;
-import com.libreria.transversal.UtilFecha;
-import com.libreria.transversal.UtilNumero;
-import com.libreria.transversal.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilBooleano;
+import com.libreria.transversal.utilitario.UtilFecha;
+import com.libreria.transversal.utilitario.UtilNumero;
+import com.libreria.transversal.utilitario.UtilObjeto;
 
 public class MultaEntidad {
 

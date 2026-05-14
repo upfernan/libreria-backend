@@ -1,9 +1,9 @@
-package com.libreria.negocio.assembler.dto.impl;
+﻿package com.libreria.negocio.assembler.dto.impl;
 
 import com.libreria.dto.PrestamoDTO;
 import com.libreria.negocio.assembler.dto.DTOAssembler;
 import com.libreria.negocio.dominio.PrestamoDominio;
-import com.libreria.transversal.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilObjeto;
 
 public final class PrestamoDTOAssembler implements DTOAssembler<PrestamoDominio, PrestamoDTO> {
 

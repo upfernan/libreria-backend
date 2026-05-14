@@ -1,8 +1,8 @@
-package com.libreria.negocio.dominio;
+﻿package com.libreria.negocio.dominio;
 
 import java.util.UUID;
-import com.libreria.transversal.UtilCaracter;
-import com.libreria.transversal.UtilNumero;
+import com.libreria.transversal.utilitario.UtilCaracter;
+import com.libreria.transversal.utilitario.UtilNumero;
 
 public class SignaturaDominio {
 

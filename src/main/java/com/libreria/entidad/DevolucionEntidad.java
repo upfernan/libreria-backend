@@ -1,4 +1,4 @@
-﻿package com.libreria.entidad;
+package com.libreria.entidad;
 
 import java.time.LocalDate;
 import java.util.UUID;

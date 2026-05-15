@@ -1,4 +1,4 @@
-﻿package com.libreria.negocio.assembler.entidad.impl;
+package com.libreria.negocio.assembler.entidad.impl;
 
 import com.libreria.entidad.TarifaMultaEntidad;
 import com.libreria.negocio.dominio.TarifaMultaDominio;
@@ -26,7 +26,8 @@ public final class TarifaMultaEntidadAssembler implements EntidadAssembler<Tarif
         return new TarifaMultaDominio.Builder()
                 .id(objeto.getId())
                 .valorDiario(objeto.getValorDiario())
-                .fechaVigencia(objeto.getFechaVigencia())
+                .fechaInicioVigencia(objeto.getFechaInicioVigencia())
+                .fechaFinVigencia(objeto.getFechaFinVigencia())
                 .build();
     }
 
@@ -36,7 +37,8 @@ public final class TarifaMultaEntidadAssembler implements EntidadAssembler<Tarif
         return new TarifaMultaEntidad.Builder()
                 .id(objeto.getId())
                 .valorDiario(objeto.getValorDiario())
-                .fechaVigencia(objeto.getFechaVigencia())
+                .fechaInicioVigencia(objeto.getFechaInicioVigencia())
+                .fechaFinVigencia(objeto.getFechaFinVigencia())
                 .build();
     }
 }

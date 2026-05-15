@@ -1,4 +1,4 @@
-﻿package com.libreria.transversal.utilitario;
+package com.libreria.transversal.utilitario;
 
 public final class UtilBooleano {
 

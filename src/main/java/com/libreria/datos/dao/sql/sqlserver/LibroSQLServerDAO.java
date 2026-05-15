@@ -20,6 +20,16 @@ import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 
+	private static final String SELECT_BASE =
+			"SELECT l.id, l.titulo, l.disponibles,"
+			+ " l.tipoLibroId,  tl.nombre AS tipoLibroNombre,"
+			+ " l.categoriaId,   c.nombre  AS categoriaNombre,"
+			+ " l.editorialId,   e.nombre  AS editorialNombre"
+			+ " FROM libro l"
+			+ " LEFT JOIN tipolibro tl ON l.tipoLibroId = tl.id"
+			+ " LEFT JOIN categoria  c ON l.categoriaId  = c.id"
+			+ " LEFT JOIN editorial  e ON l.editorialId  = e.id";
+
 	public LibroSQLServerDAO(final Connection conexion) {
 		super(conexion);
 	}
@@ -69,9 +79,8 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 
 	@Override
 	public List<LibroEntidad> consultarTodos() {
-		final String sql = "SELECT id, titulo, tipoLibroId, categoriaId, editorialId, disponibles FROM libro";
 		final List<LibroEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(sql);
+		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
 				ResultSet rs = ps.executeQuery()) {
 			while (rs.next()) {
 				resultados.add(construirLibroEntidad(rs));
@@ -84,7 +93,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 
 	@Override
 	public LibroEntidad consultarPorId(final UUID id) {
-		final String sql = "SELECT id, titulo, tipoLibroId, categoriaId, editorialId, disponibles FROM libro WHERE id = ?";
+		final String sql = SELECT_BASE + " WHERE l.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
@@ -100,16 +109,16 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 
 	@Override
 	public List<LibroEntidad> consultarPorFiltro(final LibroEntidad filtro) {
-		final StringBuilder sql = new StringBuilder("SELECT id, titulo, tipoLibroId, categoriaId, editorialId, disponibles FROM libro WHERE 1=1");
+		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
 			if (!UtilObjeto.esNulo(filtro.getId())) {
-				sql.append(" AND id = ?");
+				sql.append(" AND l.id = ?");
 				parametros.add(filtro.getId().toString());
 			}
 			if (!UtilTexto.esNula(filtro.getTitulo())) {
-				sql.append(" AND titulo = ?");
+				sql.append(" AND l.titulo = ?");
 				parametros.add(filtro.getTitulo());
 			}
 		}
@@ -134,16 +143,19 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 		return new LibroEntidad.Builder()
 				.id(UUID.fromString(rs.getString("id")))
 				.titulo(rs.getString("titulo"))
+				.disponibles(rs.getInt("disponibles"))
 				.tipoLibro(new TipoLibroEntidad.Builder()
 						.id(UUID.fromString(rs.getString("tipoLibroId")))
+						.nombre(rs.getString("tipoLibroNombre"))
 						.build())
 				.categoria(new CategoriaEntidad.Builder()
 						.id(UUID.fromString(rs.getString("categoriaId")))
+						.nombre(rs.getString("categoriaNombre"))
 						.build())
 				.editorial(new EditorialEntidad.Builder()
 						.id(UUID.fromString(rs.getString("editorialId")))
+						.nombre(rs.getString("editorialNombre"))
 						.build())
-				.disponibles(rs.getInt("disponibles"))
 				.build();
 	}
 

@@ -1,4 +1,4 @@
-﻿package com.libreria.datos.dao.sql.sqlserver;
+package com.libreria.datos.dao.sql.sqlserver;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +19,13 @@ import com.libreria.transversal.utilitario.UtilTexto;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
+
+	private static final String SELECT_BASE =
+			"SELECT r.id, r.fechaReserva, r.fechaExpiracion,"
+			+ " r.estadoReservaId, er.nombre AS estadoReservaNombre,"
+			+ " r.usuarioId, r.libroId"
+			+ " FROM reserva r"
+			+ " LEFT JOIN estadoreserva er ON r.estadoReservaId = er.id";
 
 	public ReservaSQLServerDAO(final Connection conexion) {
 		super(conexion);
@@ -65,9 +72,8 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 
 	@Override
 	public List<ReservaEntidad> consultarTodos() {
-		final String sql = "SELECT id, fechaReserva, fechaExpiracion, estadoReservaId, usuarioId, libroId FROM reserva";
 		final List<ReservaEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(sql);
+		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
 				ResultSet rs = ps.executeQuery()) {
 			while (rs.next()) {
 				resultados.add(construirReservaEntidad(rs));
@@ -80,7 +86,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 
 	@Override
 	public ReservaEntidad consultarPorId(final UUID id) {
-		final String sql = "SELECT id, fechaReserva, fechaExpiracion, estadoReservaId, usuarioId, libroId FROM reserva WHERE id = ?";
+		final String sql = SELECT_BASE + " WHERE r.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
@@ -96,11 +102,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 
 	@Override
 	public List<ReservaEntidad> consultarPorFiltro(final ReservaEntidad filtro) {
-		final StringBuilder sql = new StringBuilder(
-				"SELECT r.id, r.fechaReserva, r.fechaExpiracion, r.estadoReservaId, r.usuarioId, r.libroId"
-				+ " FROM reserva r"
-				+ " LEFT JOIN estadoreserva er ON r.estadoReservaId = er.id"
-				+ " WHERE 1=1");
+		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
@@ -143,6 +145,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 				.fechaExpiracion(rs.getDate("fechaExpiracion").toLocalDate())
 				.estadoReserva(new EstadoReservaEntidad.Builder()
 						.id(UUID.fromString(rs.getString("estadoReservaId")))
+						.nombre(rs.getString("estadoReservaNombre"))
 						.build())
 				.usuario(new UsuarioEntidad.Builder()
 						.id(UUID.fromString(rs.getString("usuarioId")))

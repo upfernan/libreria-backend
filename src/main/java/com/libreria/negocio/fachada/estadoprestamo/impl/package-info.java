@@ -1,1 +1,1 @@
-﻿package com.libreria.negocio.fachada.estadoprestamo.impl;
+package com.libreria.negocio.fachada.estadoprestamo.impl;

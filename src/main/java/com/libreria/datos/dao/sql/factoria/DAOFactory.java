@@ -1,10 +1,15 @@
-﻿package com.libreria.datos.dao.sql.factoria;
+package com.libreria.datos.dao.sql.factoria;
 
 import java.sql.Connection;
 
+import com.libreria.datos.dao.AutorDAO;
+import com.libreria.datos.dao.AutorLibroDAO;
 import com.libreria.datos.dao.CategoriaDAO;
+import com.libreria.datos.dao.DevolucionDAO;
 import com.libreria.datos.dao.EditorialDAO;
 import com.libreria.datos.dao.EjemplarDAO;
+import com.libreria.datos.dao.PagoDAO;
+import com.libreria.datos.dao.TarifaMultaDAO;
 import com.libreria.datos.dao.EstadoPrestamoDAO;
 import com.libreria.datos.dao.EstadoReservaDAO;
 import com.libreria.datos.dao.LibroDAO;
@@ -68,5 +73,15 @@ public abstract class DAOFactory {
 	public abstract LibroDAO getLibroDAO();
 
 	public abstract SignaturaDAO getSignaturaDAO();
+
+	public abstract AutorDAO getAutorDAO();
+
+	public abstract AutorLibroDAO getAutorLibroDAO();
+
+	public abstract DevolucionDAO getDevolucionDAO();
+
+	public abstract PagoDAO getPagoDAO();
+
+	public abstract TarifaMultaDAO getTarifaMultaDAO();
 
 }

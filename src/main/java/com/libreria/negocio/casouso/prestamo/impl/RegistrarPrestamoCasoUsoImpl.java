@@ -45,7 +45,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		// P5 — Validar que el ejemplar no tenga un préstamo activo
 		validarEjemplarDisponible(datos.getEjemplar().getId());
 
-		// Combinación única — No puede existir otro préstamo con el mismo usuario + ejemplar + fechaPréstamo
+		// P8 — Combinación única: no puede existir otro préstamo con el mismo usuario + ejemplar + fechaPréstamo
 		final LocalDate fechaPrestamo = LocalDate.now();
 		validarCombinacionUnica(datos.getUsuario().getId(), datos.getEjemplar().getId(), fechaPrestamo);
 
@@ -88,10 +88,11 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P3 — Validar que el usuario no tenga multas con pagada = false
+	// P3 — Validar que el usuario no tenga multas sin pagar (pagada = false)
 	private void validarUsuarioSinMultasPendientes(final UUID usuarioId) {
 		final MultaEntidad filtroMulta = new MultaEntidad.Builder()
 				.usuarioAfectado(new UsuarioEntidad.Builder().id(usuarioId).build())
+				.pagada(false)
 				.build();
 		final List<MultaEntidad> multasPendientes = daoFactory.getMultaDAO().consultarPorFiltro(filtroMulta);
 		if (!UtilObjeto.esNulo(multasPendientes) && !multasPendientes.isEmpty()) {
@@ -230,35 +231,5 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		return resultados.get(0);
 	}
 
-	public static void main(final String[] args) {
-		System.out.println("=== Test Registrar Prestamo ===");
-
-		// Reemplaza estos UUIDs con IDs reales de tu BD
-		final UUID usuarioId = UUID.fromString("eeeeeeee-0000-0000-0000-000000000001");
-		final UUID ejemplarId = UUID.fromString("33333333-0000-0000-0000-000000000001");
-
-		final DAOFactory factory = DAOFactory.getFactory();
-		try {
-			factory.iniciarTransaccion();
-
-			final PrestamoDominio dominio = new PrestamoDominio.Builder()
-					.usuario(new com.libreria.negocio.dominio.UsuarioDominio.Builder().id(usuarioId).build())
-					.ejemplar(new com.libreria.negocio.dominio.EjemplarDominio.Builder().id(ejemplarId).build())
-					.build();
-
-			new RegistrarPrestamoCasoUsoImpl(factory).ejecutar(dominio);
-
-			factory.confirmarTransaccion();
-			System.out.println("Prestamo registrado exitosamente.");
-
-		} catch (final Exception e) {
-			factory.cancelarTransaccion();
-			System.err.println("Error: " + e.getMessage());
-		} finally {
-			factory.cerrarConexion();
-		}
-
-		System.out.println("=== Fin del test ===");
-	}
 
 }

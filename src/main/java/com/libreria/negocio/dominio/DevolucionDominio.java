@@ -1,4 +1,4 @@
-﻿package com.libreria.negocio.dominio;
+package com.libreria.negocio.dominio;
 
 import java.time.LocalDate;
 import java.util.UUID;

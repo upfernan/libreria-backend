@@ -1,4 +1,4 @@
-﻿package com.libreria.dto;
+package com.libreria.dto;
 
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilCaracter;

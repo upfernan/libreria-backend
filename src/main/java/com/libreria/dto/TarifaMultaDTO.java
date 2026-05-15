@@ -1,4 +1,4 @@
-﻿package com.libreria.dto;
+package com.libreria.dto;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -9,12 +9,14 @@ public class TarifaMultaDTO {
 
     private UUID id;
     private Double valorDiario;
-    private LocalDate fechaVigencia;
+    private LocalDate fechaInicioVigencia;
+    private LocalDate fechaFinVigencia;
 
     private TarifaMultaDTO(final Builder builder) {
         setId(builder.id);
         setValorDiario(builder.valorDiario);
-        setFechaVigencia(builder.fechaVigencia);
+        setFechaInicioVigencia(builder.fechaInicioVigencia);
+        setFechaFinVigencia(builder.fechaFinVigencia);
     }
 
     public UUID getId() {
@@ -25,8 +27,12 @@ public class TarifaMultaDTO {
         return valorDiario;
     }
 
-    public LocalDate getFechaVigencia() {
-        return fechaVigencia;
+    public LocalDate getFechaInicioVigencia() {
+        return fechaInicioVigencia;
+    }
+
+    public LocalDate getFechaFinVigencia() {
+        return fechaFinVigencia;
     }
 
     private void setId(final UUID id) {
@@ -37,14 +43,19 @@ public class TarifaMultaDTO {
         this.valorDiario = UtilNumero.obtenerValorDefecto(valorDiario, 0.0);
     }
 
-    private void setFechaVigencia(final LocalDate fechaVigencia) {
-        this.fechaVigencia = UtilFecha.obtenerValorDefecto(fechaVigencia);
+    private void setFechaInicioVigencia(final LocalDate fechaInicioVigencia) {
+        this.fechaInicioVigencia = UtilFecha.obtenerValorDefecto(fechaInicioVigencia);
+    }
+
+    private void setFechaFinVigencia(final LocalDate fechaFinVigencia) {
+        this.fechaFinVigencia = UtilFecha.obtenerValorDefecto(fechaFinVigencia);
     }
 
     public static class Builder {
         private UUID id;
         private Double valorDiario;
-        private LocalDate fechaVigencia;
+        private LocalDate fechaInicioVigencia;
+        private LocalDate fechaFinVigencia;
 
         public Builder id(final UUID id) {
             this.id = id;
@@ -56,8 +67,13 @@ public class TarifaMultaDTO {
             return this;
         }
 
-        public Builder fechaVigencia(final LocalDate fechaVigencia) {
-            this.fechaVigencia = UtilFecha.obtenerValorDefecto(fechaVigencia);
+        public Builder fechaInicioVigencia(final LocalDate fechaInicioVigencia) {
+            this.fechaInicioVigencia = UtilFecha.obtenerValorDefecto(fechaInicioVigencia);
+            return this;
+        }
+
+        public Builder fechaFinVigencia(final LocalDate fechaFinVigencia) {
+            this.fechaFinVigencia = UtilFecha.obtenerValorDefecto(fechaFinVigencia);
             return this;
         }
 

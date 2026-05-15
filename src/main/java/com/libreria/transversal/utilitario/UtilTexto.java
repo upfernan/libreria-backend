@@ -1,4 +1,4 @@
-﻿package com.libreria.transversal.utilitario;
+package com.libreria.transversal.utilitario;
 
 public final class UtilTexto {
 
@@ -22,5 +22,17 @@ public final class UtilTexto {
 
     public static String aplicarTrim(final String texto) {
         return obtenerValorDefecto(texto).trim();
+    }
+
+    public static boolean soloLetrasYEspacios(final String texto) {
+        return !esNula(texto) && aplicarTrim(texto).matches("^[\\p{L} ]+$");
+    }
+
+    public static boolean soloLetrasMayusculasYEspacios(final String texto) {
+        return !esNula(texto) && aplicarTrim(texto).matches("^[\\p{Lu} ]+$");
+    }
+
+    public static boolean tieneLongitudValida(final String texto, final int minimo, final int maximo) {
+        return !esNula(texto) && aplicarTrim(texto).length() >= minimo && aplicarTrim(texto).length() <= maximo;
     }
 }

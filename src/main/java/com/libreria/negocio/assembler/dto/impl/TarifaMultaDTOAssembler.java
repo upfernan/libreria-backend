@@ -1,4 +1,4 @@
-﻿package com.libreria.negocio.assembler.dto.impl;
+package com.libreria.negocio.assembler.dto.impl;
 
 import com.libreria.dto.TarifaMultaDTO;
 import com.libreria.negocio.assembler.dto.DTOAssembler;
@@ -26,7 +26,8 @@ public final class TarifaMultaDTOAssembler implements DTOAssembler<TarifaMultaDo
         return new TarifaMultaDominio.Builder()
                 .id(objeto.getId())
                 .valorDiario(objeto.getValorDiario())
-                .fechaVigencia(objeto.getFechaVigencia())
+                .fechaInicioVigencia(objeto.getFechaInicioVigencia())
+                .fechaFinVigencia(objeto.getFechaFinVigencia())
                 .build();
     }
 
@@ -36,7 +37,8 @@ public final class TarifaMultaDTOAssembler implements DTOAssembler<TarifaMultaDo
         return new TarifaMultaDTO.Builder()
                 .id(objeto.getId())
                 .valorDiario(objeto.getValorDiario())
-                .fechaVigencia(objeto.getFechaVigencia())
+                .fechaInicioVigencia(objeto.getFechaInicioVigencia())
+                .fechaFinVigencia(objeto.getFechaFinVigencia())
                 .build();
     }
 }

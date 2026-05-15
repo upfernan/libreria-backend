@@ -1,4 +1,4 @@
-﻿package com.libreria.negocio.assembler.entidad.impl;
+package com.libreria.negocio.assembler.entidad.impl;
 
 import com.libreria.entidad.LibroEntidad;
 import com.libreria.negocio.dominio.LibroDominio;

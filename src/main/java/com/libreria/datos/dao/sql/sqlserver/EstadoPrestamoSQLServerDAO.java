@@ -1,4 +1,4 @@
-﻿package com.libreria.datos.dao.sql.sqlserver;
+package com.libreria.datos.dao.sql.sqlserver;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

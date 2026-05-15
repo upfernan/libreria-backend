@@ -1,11 +1,21 @@
-﻿package com.libreria.datos.dao.sql.factoria.sqlserver;
+package com.libreria.datos.dao.sql.factoria.sqlserver;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.libreria.datos.dao.AutorDAO;
+import com.libreria.datos.dao.AutorLibroDAO;
 import com.libreria.datos.dao.CategoriaDAO;
+import com.libreria.datos.dao.DevolucionDAO;
 import com.libreria.datos.dao.EditorialDAO;
 import com.libreria.datos.dao.EjemplarDAO;
+import com.libreria.datos.dao.PagoDAO;
+import com.libreria.datos.dao.TarifaMultaDAO;
+import com.libreria.datos.dao.sql.sqlserver.AutorSQLServerDAO;
+import com.libreria.datos.dao.sql.sqlserver.AutorLibroSQLServerDAO;
+import com.libreria.datos.dao.sql.sqlserver.DevolucionSQLServerDAO;
+import com.libreria.datos.dao.sql.sqlserver.PagoSQLServerDAO;
+import com.libreria.datos.dao.sql.sqlserver.TarifaMultaSQLServerDAO;
 import com.libreria.datos.dao.EstadoPrestamoDAO;
 import com.libreria.datos.dao.EstadoReservaDAO;
 import com.libreria.datos.dao.LibroDAO;
@@ -154,6 +164,31 @@ public class SQLServerDAOFactory extends DAOFactory {
 	@Override
 	public SignaturaDAO getSignaturaDAO() {
 		return new SignaturaSQLServerDAO(conexion);
+	}
+
+	@Override
+	public AutorDAO getAutorDAO() {
+		return new AutorSQLServerDAO(conexion);
+	}
+
+	@Override
+	public AutorLibroDAO getAutorLibroDAO() {
+		return new AutorLibroSQLServerDAO(conexion);
+	}
+
+	@Override
+	public DevolucionDAO getDevolucionDAO() {
+		return new DevolucionSQLServerDAO(conexion);
+	}
+
+	@Override
+	public PagoDAO getPagoDAO() {
+		return new PagoSQLServerDAO(conexion);
+	}
+
+	@Override
+	public TarifaMultaDAO getTarifaMultaDAO() {
+		return new TarifaMultaSQLServerDAO(conexion);
 	}
 
 }

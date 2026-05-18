@@ -25,6 +25,16 @@ public class PrestamoDTO {
         setEjemplar(builder.ejemplar);
     }
 
+    public PrestamoDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setFechaPrestamo(null);
+        setFechaDevolucionEsperada(null);
+        setEstadoPrestamo(null);
+        setReserva(null);
+        setUsuario(null);
+        setEjemplar(null);
+    }
+
     public UUID getId() {
         return id;
     }

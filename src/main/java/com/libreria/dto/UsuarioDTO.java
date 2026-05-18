@@ -26,6 +26,17 @@ public class UsuarioDTO {
         setCorreoElectronico(builder.correoElectronico);
     }
 
+    public UsuarioDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setTipoIdentificacion(null);
+        setNumeroIdentificacion(null);
+        setPrimerNombre(null);
+        setSegundoNombre(null);
+        setPrimerApellido(null);
+        setSegundoApellido(null);
+        setCorreoElectronico(null);
+    }
+
     public UUID getId() {
         return id;
     }

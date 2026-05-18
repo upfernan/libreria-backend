@@ -15,6 +15,12 @@ public class TipoIdentificacionDTO {
         setDescripcion(builder.descripcion);
     }
 
+    public TipoIdentificacionDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setNombre(null);
+        setDescripcion(null);
+    }
+
     public UUID getId() {
         return id;
     }

@@ -50,5 +50,38 @@ public class RegistrarPrestamoFachadaImpl implements RegistrarPrestamoFachada {
 			daoFactory.cerrarConexion();
 		}
 	}
+	public static void main(final String[] args) {
+
+
+	 
+	    final java.util.UUID usuarioId  =
+	            java.util.UUID.fromString("00000000-0000-0000-0000-000000000000");
+	    final java.util.UUID ejemplarId =
+	            java.util.UUID.fromString("00000000-0000-0000-0000-000000000000");
+
+	    final com.libreria.dto.UsuarioDTO usuario =
+	            new com.libreria.dto.UsuarioDTO.Builder()
+	                    .id(usuarioId)
+	                    .build();
+
+	    final com.libreria.dto.EjemplarDTO ejemplar =
+	            new com.libreria.dto.EjemplarDTO.Builder()
+	                    .id(ejemplarId)
+	                    .build();
+
+	    final com.libreria.dto.PrestamoDTO datos =
+	            new com.libreria.dto.PrestamoDTO.Builder()
+	                    .usuario(usuario)
+	                    .ejemplar(ejemplar)
+	                    .build();
+
+	    try {
+	        new RegistrarPrestamoFachadaImpl().ejecutar(datos);
+	        System.out.println("Préstamo registrado exitosamente.");
+	    } catch (Exception e) {
+	        System.err.println("Error: " + e.getMessage());
+	    }
+	}
+	
 
 }

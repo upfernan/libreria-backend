@@ -15,6 +15,12 @@ public class CategoriaDTO {
         setDescripcion(builder.descripcion);
     }
 
+    public CategoriaDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setNombre(null);
+        setDescripcion(null);
+    }
+
     public UUID getId() {
         return id;
     }

@@ -17,6 +17,12 @@ public class DevolucionDTO {
         setPrestamo(builder.prestamo);
     }
 
+    public DevolucionDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setFechaDevolucion(null);
+        setPrestamo(null);
+    }
+
     public UUID getId() {
         return id;
     }

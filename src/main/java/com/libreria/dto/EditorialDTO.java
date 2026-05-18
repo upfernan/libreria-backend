@@ -15,6 +15,12 @@ public class EditorialDTO {
         setNombre(builder.nombre);
     }
 
+    public EditorialDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setNit(null);
+        setNombre(null);
+    }
+
     public UUID getId() {
         return id;
     }

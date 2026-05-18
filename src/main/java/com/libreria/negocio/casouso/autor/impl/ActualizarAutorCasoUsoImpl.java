@@ -13,6 +13,8 @@ import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class ActualizarAutorCasoUsoImpl implements ActualizarAutorCasoUso {
 
+    private static final String SUFIJO_CARACTERES = " caracteres.";
+
     private final DAOFactory daoFactory;
 
     public ActualizarAutorCasoUsoImpl(final DAOFactory daoFactory) {
@@ -42,25 +44,25 @@ public class ActualizarAutorCasoUsoImpl implements ActualizarAutorCasoUso {
             throw GestorLibreriaExcepcion.crear("El primer nombre del autor es obligatorio.", "El campo primerNombre llegó nulo en AutorDominio.");
         }
         if (!UtilTexto.tieneLongitudValida(datos.getPrimerNombre(), 1, 20)) {
-            throw GestorLibreriaExcepcion.crear("El primer nombre del autor debe tener entre 1 y 20 caracteres.", "primerNombre con longitud inválida en AutorDominio: " + datos.getPrimerNombre().length() + " caracteres.");
+            throw GestorLibreriaExcepcion.crear("El primer nombre del autor debe tener entre 1 y 20 caracteres.", "primerNombre con longitud inválida en AutorDominio: " + datos.getPrimerNombre().length() + SUFIJO_CARACTERES);
         }
         if (UtilObjeto.esNulo(datos.getSegundoNombre())) {
             throw GestorLibreriaExcepcion.crear("El segundo nombre del autor es obligatorio.", "El campo segundoNombre llegó nulo en AutorDominio.");
         }
         if (!datos.getSegundoNombre().isEmpty() && !UtilTexto.tieneLongitudValida(datos.getSegundoNombre(), 1, 20)) {
-            throw GestorLibreriaExcepcion.crear("El segundo nombre del autor debe tener entre 1 y 20 caracteres si se indica.", "segundoNombre con longitud inválida en AutorDominio: " + datos.getSegundoNombre().length() + " caracteres.");
+            throw GestorLibreriaExcepcion.crear("El segundo nombre del autor debe tener entre 1 y 20 caracteres si se indica.", "segundoNombre con longitud inválida en AutorDominio: " + datos.getSegundoNombre().length() + SUFIJO_CARACTERES);
         }
         if (UtilTexto.esNula(datos.getPrimerApellido())) {
             throw GestorLibreriaExcepcion.crear("El primer apellido del autor es obligatorio.", "El campo primerApellido llegó nulo en AutorDominio.");
         }
         if (!UtilTexto.tieneLongitudValida(datos.getPrimerApellido(), 1, 20)) {
-            throw GestorLibreriaExcepcion.crear("El primer apellido del autor debe tener entre 1 y 20 caracteres.", "primerApellido con longitud inválida en AutorDominio: " + datos.getPrimerApellido().length() + " caracteres.");
+            throw GestorLibreriaExcepcion.crear("El primer apellido del autor debe tener entre 1 y 20 caracteres.", "primerApellido con longitud inválida en AutorDominio: " + datos.getPrimerApellido().length() + SUFIJO_CARACTERES);
         }
         if (UtilObjeto.esNulo(datos.getSegundoApellido())) {
             throw GestorLibreriaExcepcion.crear("El segundo apellido del autor es obligatorio.", "El campo segundoApellido llegó nulo en AutorDominio.");
         }
         if (!datos.getSegundoApellido().isEmpty() && !UtilTexto.tieneLongitudValida(datos.getSegundoApellido(), 1, 20)) {
-            throw GestorLibreriaExcepcion.crear("El segundo apellido del autor debe tener entre 1 y 20 caracteres si se indica.", "segundoApellido con longitud inválida en AutorDominio: " + datos.getSegundoApellido().length() + " caracteres.");
+            throw GestorLibreriaExcepcion.crear("El segundo apellido del autor debe tener entre 1 y 20 caracteres si se indica.", "segundoApellido con longitud inválida en AutorDominio: " + datos.getSegundoApellido().length() + SUFIJO_CARACTERES);
         }
     }
 

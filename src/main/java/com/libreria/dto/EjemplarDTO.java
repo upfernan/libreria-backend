@@ -15,6 +15,12 @@ public class EjemplarDTO {
         setSignatura(builder.signatura);
     }
 
+    public EjemplarDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setLibro(null);
+        setSignatura(null);
+    }
+
     public UUID getId() {
         return id;
     }

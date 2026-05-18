@@ -23,6 +23,15 @@ public class LibroDTO {
         setDisponibles(builder.disponibles);
     }
 
+    public LibroDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setTitulo(null);
+        setTipoLibro(null);
+        setCategoria(null);
+        setEditorial(null);
+        setDisponibles(null);
+    }
+
     public UUID getId() {
         return id;
     }

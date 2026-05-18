@@ -19,6 +19,14 @@ public class AutorDTO {
         setSegundoApellido(builder.segundoApellido);
     }
 
+    public AutorDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setPrimerNombre(null);
+        setSegundoNombre(null);
+        setPrimerApellido(null);
+        setSegundoApellido(null);
+    }
+
     public UUID getId() {
         return id;
     }

@@ -18,6 +18,13 @@ public class SignaturaDTO {
         setPosicion(builder.posicion);
     }
 
+    public SignaturaDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setPasillo((char) 0);
+        setEstante(null);
+        setPosicion(null);
+    }
+
     public UUID getId() {
         return id;
     }

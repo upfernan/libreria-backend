@@ -19,6 +19,13 @@ public class TarifaMultaDTO {
         setFechaFinVigencia(builder.fechaFinVigencia);
     }
 
+    public TarifaMultaDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setValorDiario(null);
+        setFechaInicioVigencia(null);
+        setFechaFinVigencia(null);
+    }
+
     public UUID getId() {
         return id;
     }

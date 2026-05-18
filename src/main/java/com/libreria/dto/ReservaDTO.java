@@ -23,6 +23,15 @@ public class ReservaDTO {
         setLibro(builder.libro);
     }
 
+    public ReservaDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setFechaReserva(null);
+        setFechaExpiracion(null);
+        setEstadoReserva(null);
+        setUsuario(null);
+        setLibro(null);
+    }
+
     public UUID getId() {
         return id;
     }

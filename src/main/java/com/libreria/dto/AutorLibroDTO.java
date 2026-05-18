@@ -15,6 +15,12 @@ public class AutorLibroDTO {
         setLibro(builder.libro);
     }
 
+    public AutorLibroDTO() {
+        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        setAutor(null);
+        setLibro(null);
+    }
+
     public UUID getId() {
         return id;
     }

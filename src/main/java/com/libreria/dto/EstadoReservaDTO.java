@@ -2,6 +2,7 @@ package com.libreria.dto;
 
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class EstadoReservaDTO {
 
@@ -16,9 +17,9 @@ public class EstadoReservaDTO {
     }
 
     public EstadoReservaDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setNombre(null);
-        setDescripcion(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setNombre(UtilTexto.VACIO);
+        setDescripcion(UtilTexto.VACIO);
     }
 
     public UUID getId() {
@@ -34,7 +35,7 @@ public class EstadoReservaDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setNombre(final String nombre) {

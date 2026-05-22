@@ -13,7 +13,7 @@ public final class EstadoPrestamoDTOAssembler implements DTOAssembler<EstadoPres
         super();
     }
 
-    public synchronized static final DTOAssembler<EstadoPrestamoDominio, EstadoPrestamoDTO> getInstance() {
+    public static final synchronized DTOAssembler<EstadoPrestamoDominio, EstadoPrestamoDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EstadoPrestamoDTOAssembler();
         }

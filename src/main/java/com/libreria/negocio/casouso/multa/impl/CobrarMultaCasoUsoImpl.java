@@ -27,34 +27,28 @@ public class CobrarMultaCasoUsoImpl implements CobrarMultaCasoUso {
 
     @Override
     public void ejecutar(final MultaDominio datos) {
-        // P5 — Validar que el identificador de la devolución sea obligatorio
-        if (UtilObjeto.esNulo(datos.getDevolucion().getId())) {
-            throw GestorLibreriaExcepcion.crear("El identificador de la devolución es obligatorio para cobrar una multa.", "devolucion.id nulo en MultaDominio.");
-        }
+        // P5 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+        validarDatos(datos);
 
-        // P2 — Validar que la devolución exista en el sistema
-        final DevolucionEntidad devolucion = daoFactory.getDevolucionDAO().consultarPorId(datos.getDevolucion().getId());
-        if (UtilObjeto.esNulo(devolucion) || UtilObjeto.esNulo(devolucion.getId())) {
-            throw GestorLibreriaExcepcion.crear("La devolución indicada no existe en el sistema.", "No se encontró Devolucion con id: " + datos.getDevolucion().getId());
-        }
+        // P2 — La devolución debe estar registrada en el sistema
+        final DevolucionEntidad devolucion = validarDevolucionExiste(datos.getDevolucion().getId());
 
-        // P3 — Validar que el libro sea de tipo físico
-        final String tipoLibroNombre = devolucion.getPrestamo().getEjemplar().getLibro().getTipoLibro().getNombre();
-        if (!"físico".equalsIgnoreCase(tipoLibroNombre)) {
-            throw GestorLibreriaExcepcion.crear("Solo se generan multas para préstamos de libros de tipo físico.", "tipoLibro no físico: " + tipoLibroNombre);
-        }
+        // Obtener el préstamo completo para acceder a todos sus datos
+        final PrestamoEntidad prestamo = daoFactory.getPrestamoDAO().consultarPorId(devolucion.getPrestamo().getId());
 
-        // P4 — Validar que no exista ya una multa para esta devolución (combinación única)
+        // P6 — El libro asociado al préstamo debe ser de tipo físico
+        validarLibroFisico(prestamo);
+
+        // P7 — La devolución no puede tener una multa previamente registrada
         validarSinMultaPrevia(datos.getDevolucion().getId());
 
-        // P5b — Validar que la devolución haya ocurrido con días de retraso (proxy de era vencido)
-        final PrestamoEntidad prestamo = devolucion.getPrestamo();
+        // P3 — El préstamo debe encontrarse en estado vencido al momento de registrar la devolución
         final int diasRetraso = (int) ChronoUnit.DAYS.between(prestamo.getFechaDevolucionEsperada(), devolucion.getFechaDevolucion());
         if (diasRetraso <= 0) {
             throw GestorLibreriaExcepcion.crear("El préstamo no presentó retraso en la devolución y no corresponde generar una multa.", "diasRetraso calculado: " + diasRetraso);
         }
 
-        // P6 — Validar que exista una tarifa de multa vigente
+        // P4 — Debe existir una tarifa de multa vigente en el sistema
         final TarifaMultaEntidad tarifaVigente = obtenerTarifaVigente();
         if (UtilObjeto.esNulo(tarifaVigente.getId())) {
             throw GestorLibreriaExcepcion.crear("No existe una tarifa de multa vigente para calcular el monto.", "No se encontró TarifaMulta vigente en el sistema.");
@@ -77,7 +71,31 @@ public class CobrarMultaCasoUsoImpl implements CobrarMultaCasoUso {
                 .build());
     }
 
-    // P4 — Validar ausencia de multa previa para la misma devolución
+    // P5 — Los datos requeridos deben ser válidos
+    private void validarDatos(final MultaDominio datos) {
+        if (UtilObjeto.esNulo(datos) || UtilObjeto.esNulo(datos.getDevolucion()) || UtilObjeto.esNulo(datos.getDevolucion().getId())) {
+            throw GestorLibreriaExcepcion.crear("El identificador de la devolución es obligatorio para cobrar una multa.", "devolucion.id nulo en MultaDominio.");
+        }
+    }
+
+    // P2 — La devolución debe estar registrada en el sistema
+    private DevolucionEntidad validarDevolucionExiste(final UUID devolucionId) {
+        final DevolucionEntidad devolucion = daoFactory.getDevolucionDAO().consultarPorId(devolucionId);
+        if (UtilObjeto.esNulo(devolucion) || UtilObjeto.esNulo(devolucion.getId())) {
+            throw GestorLibreriaExcepcion.crear("La devolución indicada no existe en el sistema.", "No se encontró Devolucion con id: " + devolucionId);
+        }
+        return devolucion;
+    }
+
+    // P6 — El libro asociado al préstamo debe ser de tipo físico
+    private void validarLibroFisico(final PrestamoEntidad prestamo) {
+        final String tipoLibroNombre = prestamo.getEjemplar().getLibro().getTipoLibro().getNombre();
+        if (!"físico".equalsIgnoreCase(tipoLibroNombre)) {
+            throw GestorLibreriaExcepcion.crear("Solo se generan multas para préstamos de libros de tipo físico.", "tipoLibro no físico: " + tipoLibroNombre);
+        }
+    }
+
+    // P7 — La devolución no puede tener una multa previamente registrada
     private void validarSinMultaPrevia(final UUID devolucionId) {
         final MultaEntidad filtro = new MultaEntidad.Builder()
                 .devolucion(new DevolucionEntidad.Builder().id(devolucionId).build())

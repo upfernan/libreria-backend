@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilNumero;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class TarifaMultaDTO {
 
@@ -20,10 +21,10 @@ public class TarifaMultaDTO {
     }
 
     public TarifaMultaDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setValorDiario(null);
-        setFechaInicioVigencia(null);
-        setFechaFinVigencia(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setValorDiario(UtilNumero.DECIMAL_DEFECTO);
+        setFechaInicioVigencia(UtilFecha.FECHA_DEFECTO);
+        setFechaFinVigencia(UtilFecha.FECHA_DEFECTO);
     }
 
     public UUID getId() {
@@ -43,7 +44,7 @@ public class TarifaMultaDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setValorDiario(final Double valorDiario) {

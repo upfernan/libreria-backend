@@ -3,11 +3,10 @@ package com.libreria.negocio.fachada.reserva.impl;
 import java.util.UUID;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
-import com.libreria.dto.EstadoReservaDTO;
-import com.libreria.dto.LibroDTO;
 import com.libreria.dto.ReservaDTO;
-import com.libreria.dto.UsuarioDTO;
 import com.libreria.entidad.ReservaEntidad;
+import com.libreria.negocio.assembler.dto.impl.ReservaDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.ReservaEntidadAssembler;
 import com.libreria.negocio.casouso.reserva.ConsultarReservaPorIdCasoUso;
 import com.libreria.negocio.casouso.reserva.impl.ConsultarReservaPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.reserva.ConsultarReservaPorIdFachada;
@@ -28,7 +27,8 @@ public class ConsultarReservaPorIdFachadaImpl implements ConsultarReservaPorIdFa
     public ReservaDTO ejecutar(final UUID id) {
         try {
             final ReservaEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new ReservaEntidad.Builder().build());
-            return construirReservaDTO(entidad);
+            return ReservaDTOAssembler.getInstance().ensamblarDTO(
+                    ReservaEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;
@@ -39,24 +39,6 @@ public class ConsultarReservaPorIdFachadaImpl implements ConsultarReservaPorIdFa
         } finally {
             daoFactory.cerrarConexion();
         }
-    }
-
-    private ReservaDTO construirReservaDTO(final ReservaEntidad entidad) {
-        return new ReservaDTO.Builder()
-                .id(entidad.getId())
-                .fechaReserva(entidad.getFechaReserva())
-                .fechaExpiracion(entidad.getFechaExpiracion())
-                .estadoReserva(new EstadoReservaDTO.Builder()
-                        .id(entidad.getEstadoReserva().getId())
-                        .nombre(entidad.getEstadoReserva().getNombre())
-                        .build())
-                .usuario(new UsuarioDTO.Builder()
-                        .id(entidad.getUsuario().getId())
-                        .build())
-                .libro(new LibroDTO.Builder()
-                        .id(entidad.getLibro().getId())
-                        .build())
-                .build();
     }
 
 }

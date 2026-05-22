@@ -4,9 +4,9 @@ import java.util.UUID;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.EjemplarDTO;
-import com.libreria.dto.LibroDTO;
-import com.libreria.dto.SignaturaDTO;
 import com.libreria.entidad.EjemplarEntidad;
+import com.libreria.negocio.assembler.dto.impl.EjemplarDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.EjemplarEntidadAssembler;
 import com.libreria.negocio.casouso.ejemplar.ConsultarEjemplarPorIdCasoUso;
 import com.libreria.negocio.casouso.ejemplar.impl.ConsultarEjemplarPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.ejemplar.ConsultarEjemplarPorIdFachada;
@@ -27,15 +27,8 @@ public class ConsultarEjemplarPorIdFachadaImpl implements ConsultarEjemplarPorId
     public EjemplarDTO ejecutar(final UUID id) {
         try {
             final EjemplarEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new EjemplarEntidad.Builder().build());
-            return new EjemplarDTO.Builder()
-                    .id(entidad.getId())
-                    .libro(new LibroDTO.Builder()
-                            .id(entidad.getLibro().getId())
-                            .build())
-                    .signatura(new SignaturaDTO.Builder()
-                            .id(entidad.getSignatura().getId())
-                            .build())
-                    .build();
+            return EjemplarDTOAssembler.getInstance().ensamblarDTO(
+                    EjemplarEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;

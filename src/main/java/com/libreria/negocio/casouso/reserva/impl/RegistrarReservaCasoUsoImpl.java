@@ -137,41 +137,4 @@ public class RegistrarReservaCasoUsoImpl implements RegistrarReservaCasoUso {
 		daoFactory.getReservaDAO().crear(nuevaReserva);
 	}
 
-	public static void main(final String[] args) {
-		System.out.println("=== Test Registrar Reserva ===");
-
-		final DAOFactory factory = DAOFactory.getFactory();
-		try {
-			factory.iniciarTransaccion();
-
-			// Reemplaza con IDs reales de tu BD
-			// SELECT id FROM usuario WHERE numeroIdentificacion = '4125215'
-			// SELECT id FROM libro
-			final UUID usuarioId = UUID.fromString("237dd266-2efb-48f0-b8ac-20d01ac48e39");
-			final UUID libroId   = UUID.fromString("539dec14-ad5b-4dc0-832a-5753bda78a80");
-
-			final ReservaDominio dominio = new ReservaDominio.Builder()
-					.usuario(new com.libreria.negocio.dominio.UsuarioDominio.Builder()
-							.id(usuarioId)
-							.build())
-					.libro(new com.libreria.negocio.dominio.LibroDominio.Builder()
-							.id(libroId)
-							.build())
-					.build();
-
-			new RegistrarReservaCasoUsoImpl(factory).ejecutar(dominio);
-
-			factory.confirmarTransaccion();
-			System.out.println("Reserva registrada exitosamente.");
-
-		} catch (final Exception e) {
-			factory.cancelarTransaccion();
-			System.err.println("Error: " + e.getMessage());
-		} finally {
-			factory.cerrarConexion();
-		}
-
-		System.out.println("=== Fin del test ===");
-	}
-
 }

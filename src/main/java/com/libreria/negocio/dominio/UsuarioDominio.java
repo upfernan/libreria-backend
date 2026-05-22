@@ -1,6 +1,7 @@
 package com.libreria.negocio.dominio;
 
 import java.util.UUID;
+
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
 

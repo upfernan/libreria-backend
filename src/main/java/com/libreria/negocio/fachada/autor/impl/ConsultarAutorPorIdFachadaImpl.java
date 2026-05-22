@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.AutorDTO;
 import com.libreria.entidad.AutorEntidad;
+import com.libreria.negocio.assembler.dto.impl.AutorDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.AutorEntidadAssembler;
 import com.libreria.negocio.casouso.autor.ConsultarAutorPorIdCasoUso;
 import com.libreria.negocio.casouso.autor.impl.ConsultarAutorPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.autor.ConsultarAutorPorIdFachada;
@@ -25,13 +27,8 @@ public class ConsultarAutorPorIdFachadaImpl implements ConsultarAutorPorIdFachad
     public AutorDTO ejecutar(final UUID id) {
         try {
             final AutorEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new AutorEntidad.Builder().build());
-            return new AutorDTO.Builder()
-                    .id(entidad.getId())
-                    .primerNombre(entidad.getPrimerNombre())
-                    .segundoNombre(entidad.getSegundoNombre())
-                    .primerApellido(entidad.getPrimerApellido())
-                    .segundoApellido(entidad.getSegundoApellido())
-                    .build();
+            return AutorDTOAssembler.getInstance().ensamblarDTO(
+                    AutorEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;

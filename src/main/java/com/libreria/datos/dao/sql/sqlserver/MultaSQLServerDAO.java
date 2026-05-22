@@ -15,9 +15,19 @@ import com.libreria.entidad.MultaEntidad;
 import com.libreria.entidad.TarifaMultaEntidad;
 import com.libreria.entidad.UsuarioEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
+
+	private static final String SELECT_BASE =
+			"SELECT m.id, m.montoTotal, m.fechaGeneracion, m.pagada, m.diasRetraso,"
+			+ " m.tarifaMultaId, tm.valorDiario AS tarifaValorDiario,"
+			+ " m.devolucionId,"
+			+ " m.usuarioAfectadoId, u.primerNombre AS usuarioPrimerNombre, u.primerApellido AS usuarioPrimerApellido"
+			+ " FROM multa m"
+			+ " LEFT JOIN tarifamulta tm ON m.tarifaMultaId = tm.id"
+			+ " LEFT JOIN usuario u ON m.usuarioAfectadoId = u.id";
 
 	public MultaSQLServerDAO(final Connection conexion) {
 		super(conexion);
@@ -37,7 +47,7 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 			ps.setString(8, entidad.getUsuarioAfectado().getId().toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar la multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la multa.");
 		}
 	}
 
@@ -49,7 +59,7 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 			ps.setString(2, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar la multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la multa.");
 		}
 	}
 
@@ -60,28 +70,27 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar la multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la multa.");
 		}
 	}
 
 	@Override
 	public List<MultaEntidad> consultarTodos() {
-		final String sql = "SELECT id, montoTotal, fechaGeneracion, pagada, diasRetraso, tarifaMultaId, devolucionId, usuarioAfectadoId FROM multa";
 		final List<MultaEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(sql);
+		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
 				ResultSet rs = ps.executeQuery()) {
 			while (rs.next()) {
 				resultados.add(construirMultaEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las multas.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las multas.");
 		}
 		return resultados;
 	}
 
 	@Override
 	public MultaEntidad consultarPorId(final UUID id) {
-		final String sql = "SELECT id, montoTotal, fechaGeneracion, pagada, diasRetraso, tarifaMultaId, devolucionId, usuarioAfectadoId FROM multa WHERE id = ?";
+		final String sql = SELECT_BASE + " WHERE m.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
@@ -90,27 +99,30 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar la multa por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la multa por identificador.");
 		}
-		return null;
+		return new MultaEntidad.Builder().build();
 	}
 
 	@Override
 	public List<MultaEntidad> consultarPorFiltro(final MultaEntidad filtro) {
-		final StringBuilder sql = new StringBuilder(
-				"SELECT id, montoTotal, fechaGeneracion, pagada, diasRetraso, tarifaMultaId, devolucionId, usuarioAfectadoId FROM multa WHERE 1=1");
+		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getUsuarioAfectado()) && !UtilObjeto.esNulo(filtro.getUsuarioAfectado().getId())) {
-				sql.append(" AND usuarioAfectadoId = ?");
+			if (!UtilObjeto.esNulo(filtro.getUsuarioAfectado()) && UtilUUID.tieneValor(filtro.getUsuarioAfectado().getId())) {
+				sql.append(" AND m.usuarioAfectadoId = ?");
 				parametros.add(filtro.getUsuarioAfectado().getId().toString());
-				sql.append(" AND pagada = ?");
+				sql.append(" AND m.pagada = ?");
 				parametros.add(filtro.getPagada());
 			}
-			if (!UtilObjeto.esNulo(filtro.getId())) {
-				sql.append(" AND id = ?");
+			if (UtilUUID.tieneValor(filtro.getId())) {
+				sql.append(" AND m.id = ?");
 				parametros.add(filtro.getId().toString());
+			}
+			if (!UtilObjeto.esNulo(filtro.getDevolucion()) && UtilUUID.tieneValor(filtro.getDevolucion().getId())) {
+				sql.append(" AND m.devolucionId = ?");
+				parametros.add(filtro.getDevolucion().getId().toString());
 			}
 		}
 
@@ -125,7 +137,7 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las multas por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las multas por filtro.");
 		}
 		return resultados;
 	}
@@ -139,12 +151,15 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 				.diasRetraso(rs.getInt("diasRetraso"))
 				.tarifaMulta(new TarifaMultaEntidad.Builder()
 						.id(UUID.fromString(rs.getString("tarifaMultaId")))
+						.valorDiario(rs.getDouble("tarifaValorDiario"))
 						.build())
 				.devolucion(new DevolucionEntidad.Builder()
 						.id(UUID.fromString(rs.getString("devolucionId")))
 						.build())
 				.usuarioAfectado(new UsuarioEntidad.Builder()
 						.id(UUID.fromString(rs.getString("usuarioAfectadoId")))
+						.primerNombre(rs.getString("usuarioPrimerNombre"))
+						.primerApellido(rs.getString("usuarioPrimerApellido"))
 						.build())
 				.build();
 	}

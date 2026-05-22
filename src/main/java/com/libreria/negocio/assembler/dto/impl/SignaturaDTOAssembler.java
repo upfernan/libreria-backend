@@ -13,7 +13,7 @@ public final class SignaturaDTOAssembler implements DTOAssembler<SignaturaDomini
         super();
     }
 
-    public synchronized static final DTOAssembler<SignaturaDominio, SignaturaDTO> getInstance() {
+    public static final synchronized DTOAssembler<SignaturaDominio, SignaturaDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new SignaturaDTOAssembler();
         }

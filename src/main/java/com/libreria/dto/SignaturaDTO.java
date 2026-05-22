@@ -3,6 +3,7 @@ package com.libreria.dto;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilCaracter;
 import com.libreria.transversal.utilitario.UtilNumero;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class SignaturaDTO {
 
@@ -19,10 +20,10 @@ public class SignaturaDTO {
     }
 
     public SignaturaDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setPasillo((char) 0);
-        setEstante(null);
-        setPosicion(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setPasillo(UtilCaracter.CARACTER_DEFECTO);
+        setEstante(UtilNumero.ENTERO_DEFECTO);
+        setPosicion(UtilNumero.ENTERO_DEFECTO);
     }
 
     public UUID getId() {
@@ -42,7 +43,7 @@ public class SignaturaDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setPasillo(final char pasillo) {

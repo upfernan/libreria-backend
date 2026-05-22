@@ -25,4 +25,8 @@ public final class UtilUUID {
     public static UUID generar() {
         return UUID.randomUUID();
     }
+
+    public static boolean tieneValor(final UUID id) {
+        return !esNulo(id) && !UUID_DEFECTO.equals(id);
+    }
 }

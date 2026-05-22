@@ -57,12 +57,10 @@ public class AgregarTarifaMultaCasoUsoImpl implements AgregarTarifaMultaCasoUso 
     // P2 — La fecha de inicio de vigencia debe ser posterior a la de la tarifa actualmente vigente
     private void validarFechaInicioVigenciaPosteriorAVigente(final java.time.LocalDate fechaInicioVigencia) {
         final TarifaMultaEntidad tarifaVigente = obtenerTarifaVigente();
-        if (!UtilObjeto.esNulo(tarifaVigente.getId())) {
-            if (!fechaInicioVigencia.isAfter(tarifaVigente.getFechaInicioVigencia())) {
-                throw GestorLibreriaExcepcion.crear(
-                        "La fecha de inicio de vigencia de la nueva tarifa debe ser posterior a la de la tarifa actualmente vigente.",
-                        "fechaInicioVigencia: " + fechaInicioVigencia + " no es posterior a la vigente: " + tarifaVigente.getFechaInicioVigencia());
-            }
+        if (!UtilObjeto.esNulo(tarifaVigente.getId()) && !fechaInicioVigencia.isAfter(tarifaVigente.getFechaInicioVigencia())) {
+            throw GestorLibreriaExcepcion.crear(
+                    "La fecha de inicio de vigencia de la nueva tarifa debe ser posterior a la de la tarifa actualmente vigente.",
+                    "fechaInicioVigencia: " + fechaInicioVigencia + " no es posterior a la vigente: " + tarifaVigente.getFechaInicioVigencia());
         }
     }
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class DevolucionDTO {
 
@@ -18,9 +19,9 @@ public class DevolucionDTO {
     }
 
     public DevolucionDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setFechaDevolucion(null);
-        setPrestamo(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setFechaDevolucion(UtilFecha.FECHA_DEFECTO);
+        setPrestamo(new PrestamoDTO.Builder().build());
     }
 
     public UUID getId() {
@@ -36,7 +37,7 @@ public class DevolucionDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setFechaDevolucion(final LocalDate fechaDevolucion) {

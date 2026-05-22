@@ -1,7 +1,7 @@
 package com.libreria.datos;
 
-public interface ActualizarDAO<E, ID> {
+public interface ActualizarDAO<E, I> {
 
-	void actualizar(ID id, E entidad);
+	void actualizar(I id, E entidad);
 
 }

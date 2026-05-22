@@ -13,7 +13,7 @@ public final class PagoDTOAssembler implements DTOAssembler<PagoDominio, PagoDTO
         super();
     }
 
-    public synchronized static final DTOAssembler<PagoDominio, PagoDTO> getInstance() {
+    public static final synchronized DTOAssembler<PagoDominio, PagoDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new PagoDTOAssembler();
         }

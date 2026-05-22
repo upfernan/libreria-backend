@@ -41,11 +41,11 @@ public class AsociarAutorLibroCasoUsoImpl implements AsociarAutorLibroCasoUso {
         if (UtilObjeto.esNulo(datos)) {
             throw GestorLibreriaExcepcion.crear("Los datos de la relación autor-libro son obligatorios.", "Se recibió un objeto AutorLibroDominio nulo.");
         }
-        if (UtilObjeto.esNulo(datos.getAutor()) || UtilUUID.esNulo(datos.getAutor().getId())) {
-            throw GestorLibreriaExcepcion.crear("El autor de la relación es obligatorio.", "El campo autor o su id llegó nulo en AutorLibroDominio.");
+        if (UtilObjeto.esNulo(datos.getAutor()) || !UtilUUID.tieneValor(datos.getAutor().getId())) {
+            throw GestorLibreriaExcepcion.crear("El autor de la relación es obligatorio.", "El campo autor o su id no tiene un valor válido en AutorLibroDominio.");
         }
-        if (UtilObjeto.esNulo(datos.getLibro()) || UtilUUID.esNulo(datos.getLibro().getId())) {
-            throw GestorLibreriaExcepcion.crear("El libro de la relación es obligatorio.", "El campo libro o su id llegó nulo en AutorLibroDominio.");
+        if (UtilObjeto.esNulo(datos.getLibro()) || !UtilUUID.tieneValor(datos.getLibro().getId())) {
+            throw GestorLibreriaExcepcion.crear("El libro de la relación es obligatorio.", "El campo libro o su id no tiene un valor válido en AutorLibroDominio.");
         }
     }
 

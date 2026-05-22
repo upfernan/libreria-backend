@@ -16,6 +16,7 @@ import com.libreria.entidad.LibroEntidad;
 import com.libreria.entidad.TipoLibroEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
@@ -46,7 +47,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 			ps.setInt(6, entidad.getDisponibles());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el libro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el libro.");
 		}
 	}
 
@@ -62,7 +63,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 			ps.setString(6, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el libro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el libro.");
 		}
 	}
 
@@ -73,7 +74,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el libro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el libro.");
 		}
 	}
 
@@ -86,7 +87,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 				resultados.add(construirLibroEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los libros.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los libros.");
 		}
 		return resultados;
 	}
@@ -102,7 +103,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el libro por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el libro por identificador.");
 		}
 		return null;
 	}
@@ -112,16 +113,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
-		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getId())) {
-				sql.append(" AND l.id = ?");
-				parametros.add(filtro.getId().toString());
-			}
-			if (!UtilTexto.esNula(filtro.getTitulo())) {
-				sql.append(" AND l.titulo = ?");
-				parametros.add(filtro.getTitulo());
-			}
-		}
+		aplicarFiltros(filtro, sql, parametros);
 
 		final List<LibroEntidad> resultados = new ArrayList<>();
 		try (PreparedStatement ps = getConexion().prepareStatement(sql.toString())) {
@@ -134,9 +126,35 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los libros por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los libros por filtro.");
 		}
 		return resultados;
+	}
+
+	private void aplicarFiltros(final LibroEntidad filtro, final StringBuilder sql, final List<Object> parametros) {
+		if (UtilObjeto.esNulo(filtro)) {
+			return;
+		}
+		if (UtilUUID.tieneValor(filtro.getId())) {
+			sql.append(" AND l.id = ?");
+			parametros.add(filtro.getId().toString());
+		}
+		if (UtilTexto.tieneContenido(filtro.getTitulo())) {
+			sql.append(" AND l.titulo = ?");
+			parametros.add(filtro.getTitulo());
+		}
+		if (!UtilObjeto.esNulo(filtro.getTipoLibro()) && UtilUUID.tieneValor(filtro.getTipoLibro().getId())) {
+			sql.append(" AND l.tipoLibroId = ?");
+			parametros.add(filtro.getTipoLibro().getId().toString());
+		}
+		if (!UtilObjeto.esNulo(filtro.getCategoria()) && UtilUUID.tieneValor(filtro.getCategoria().getId())) {
+			sql.append(" AND l.categoriaId = ?");
+			parametros.add(filtro.getCategoria().getId().toString());
+		}
+		if (!UtilObjeto.esNulo(filtro.getEditorial()) && UtilUUID.tieneValor(filtro.getEditorial().getId())) {
+			sql.append(" AND l.editorialId = ?");
+			parametros.add(filtro.getEditorial().getId().toString());
+		}
 	}
 
 	private LibroEntidad construirLibroEntidad(final ResultSet rs) throws SQLException {

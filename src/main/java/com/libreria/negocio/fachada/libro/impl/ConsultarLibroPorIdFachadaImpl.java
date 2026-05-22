@@ -3,11 +3,10 @@ package com.libreria.negocio.fachada.libro.impl;
 import java.util.UUID;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
-import com.libreria.dto.CategoriaDTO;
-import com.libreria.dto.EditorialDTO;
 import com.libreria.dto.LibroDTO;
-import com.libreria.dto.TipoLibroDTO;
 import com.libreria.entidad.LibroEntidad;
+import com.libreria.negocio.assembler.dto.impl.LibroDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.LibroEntidadAssembler;
 import com.libreria.negocio.casouso.libro.ConsultarLibroPorIdCasoUso;
 import com.libreria.negocio.casouso.libro.impl.ConsultarLibroPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.libro.ConsultarLibroPorIdFachada;
@@ -28,23 +27,8 @@ public class ConsultarLibroPorIdFachadaImpl implements ConsultarLibroPorIdFachad
     public LibroDTO ejecutar(final UUID id) {
         try {
             final LibroEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new LibroEntidad.Builder().build());
-            return new LibroDTO.Builder()
-                    .id(entidad.getId())
-                    .titulo(entidad.getTitulo())
-                    .disponibles(entidad.getDisponibles())
-                    .tipoLibro(new TipoLibroDTO.Builder()
-                            .id(entidad.getTipoLibro().getId())
-                            .nombre(entidad.getTipoLibro().getNombre())
-                            .build())
-                    .categoria(new CategoriaDTO.Builder()
-                            .id(entidad.getCategoria().getId())
-                            .nombre(entidad.getCategoria().getNombre())
-                            .build())
-                    .editorial(new EditorialDTO.Builder()
-                            .id(entidad.getEditorial().getId())
-                            .nombre(entidad.getEditorial().getNombre())
-                            .build())
-                    .build();
+            return LibroDTOAssembler.getInstance().ensamblarDTO(
+                    LibroEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;

@@ -2,6 +2,7 @@ package com.libreria.dto;
 
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class AutorDTO {
 
@@ -20,11 +21,11 @@ public class AutorDTO {
     }
 
     public AutorDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setPrimerNombre(null);
-        setSegundoNombre(null);
-        setPrimerApellido(null);
-        setSegundoApellido(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setPrimerNombre(UtilTexto.VACIO);
+        setSegundoNombre(UtilTexto.VACIO);
+        setPrimerApellido(UtilTexto.VACIO);
+        setSegundoApellido(UtilTexto.VACIO);
     }
 
     public UUID getId() {
@@ -48,7 +49,7 @@ public class AutorDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setPrimerNombre(final String primerNombre) {

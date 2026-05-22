@@ -23,19 +23,19 @@ public class ActualizarEjemplarCasoUsoImpl implements ActualizarEjemplarCasoUso 
 
     @Override
     public void ejecutar(final EjemplarDominio datos) {
-        // P2 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
+        // P4 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
         validarDatosObligatorios(datos);
-        // P3 — Validar que el ejemplar exista en el sistema
+        // P5 — Validar que el ejemplar exista en el sistema
         validarExistenciaEjemplar(datos.getId());
-        // P4 — Validar que el libro exista en el sistema
+        // P2 — Validar que el libro exista en el sistema
         validarExistenciaLibro(datos.getLibro().getId());
-        // P5 — Validar que la signatura exista en el sistema
+        // Validar que la signatura exista en el sistema
         validarExistenciaSignatura(datos.getSignatura().getId());
         // P1 — Actualizar el ejemplar en el sistema
         daoFactory.getEjemplarDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 
-    // P2 — Datos requeridos válidos en tipo, obligatoriedad y formato
+    // P4 — Datos requeridos válidos en tipo, obligatoriedad y formato
     private void validarDatosObligatorios(final EjemplarDominio datos) {
         if (UtilObjeto.esNulo(datos)) {
             throw GestorLibreriaExcepcion.crear("Los datos del ejemplar son obligatorios.", "Se recibió un objeto EjemplarDominio nulo.");
@@ -51,7 +51,7 @@ public class ActualizarEjemplarCasoUsoImpl implements ActualizarEjemplarCasoUso 
         }
     }
 
-    // P3 — Validar que el ejemplar exista en el sistema
+    // P5 — Validar que el ejemplar exista en el sistema
     private void validarExistenciaEjemplar(final UUID id) {
         final EjemplarEntidad entidad = daoFactory.getEjemplarDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -59,7 +59,7 @@ public class ActualizarEjemplarCasoUsoImpl implements ActualizarEjemplarCasoUso 
         }
     }
 
-    // P4 — Validar que el libro exista en el sistema
+    // P2 — Validar que el libro exista en el sistema
     private void validarExistenciaLibro(final UUID libroId) {
         final LibroEntidad libro = daoFactory.getLibroDAO().consultarPorId(libroId);
         if (UtilObjeto.esNulo(libro) || UtilObjeto.esNulo(libro.getId())) {
@@ -67,7 +67,7 @@ public class ActualizarEjemplarCasoUsoImpl implements ActualizarEjemplarCasoUso 
         }
     }
 
-    // P5 — Validar que la signatura exista en el sistema
+    // Validar que la signatura exista en el sistema
     private void validarExistenciaSignatura(final UUID signaturaId) {
         final SignaturaEntidad signatura = daoFactory.getSignaturaDAO().consultarPorId(signaturaId);
         if (UtilObjeto.esNulo(signatura) || UtilObjeto.esNulo(signatura.getId())) {

@@ -13,6 +13,7 @@ import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.CategoriaEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
@@ -30,7 +31,7 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 			ps.setString(3, entidad.getDescripcion());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar la categoría.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la categoría.");
 		}
 	}
 
@@ -43,7 +44,7 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar la categoría.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la categoría.");
 		}
 	}
 
@@ -54,7 +55,7 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar la categoría.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la categoría.");
 		}
 	}
 
@@ -68,7 +69,7 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 				resultados.add(construirCategoriaEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las categorías.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las categorías.");
 		}
 		return resultados;
 	}
@@ -84,7 +85,7 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar la categoría por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la categoría por identificador.");
 		}
 		return null;
 	}
@@ -95,11 +96,11 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getId())) {
+			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND id = ?");
 				parametros.add(filtro.getId().toString());
 			}
-			if (!UtilTexto.esNula(filtro.getNombre())) {
+			if (UtilTexto.tieneContenido(filtro.getNombre())) {
 				sql.append(" AND nombre = ?");
 				parametros.add(filtro.getNombre());
 			}
@@ -116,7 +117,7 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las categorías por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las categorías por filtro.");
 		}
 		return resultados;
 	}

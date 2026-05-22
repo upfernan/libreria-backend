@@ -19,7 +19,6 @@ public class ConsultarLibroPorIdCasoUsoImpl implements ConsultarLibroPorIdCasoUs
 
     @Override
     public LibroEntidad ejecutar(final UUID id) {
-        // Validar que el identificador sea obligatorio
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar libro.");
         }

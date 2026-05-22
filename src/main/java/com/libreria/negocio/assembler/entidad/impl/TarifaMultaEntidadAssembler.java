@@ -13,7 +13,7 @@ public final class TarifaMultaEntidadAssembler implements EntidadAssembler<Tarif
         super();
     }
 
-    public synchronized static final EntidadAssembler<TarifaMultaDominio, TarifaMultaEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<TarifaMultaDominio, TarifaMultaEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new TarifaMultaEntidadAssembler();
         }

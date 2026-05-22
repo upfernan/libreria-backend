@@ -22,19 +22,19 @@ public class CerrarPrestamoCasoUsoImpl implements CerrarPrestamoCasoUso {
 
     @Override
     public void ejecutar(final UUID id) {
-        // Validar que el identificador sea obligatorio
+        // P11 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador del préstamo es obligatorio.", "Se recibió un UUID nulo para cerrar préstamo.");
         }
-        // P3 — Validar que el préstamo exista en el sistema
+        // P9 — El préstamo debe estar registrado en el sistema
         final PrestamoEntidad prestamo = validarExistencia(id);
-        // P4 — Validar que el préstamo esté en un estado que permita cerrarlo
+        // P10 — El préstamo debe estar en estado activo
         validarEstadoCerrable(prestamo);
-        // P1 — Cerrar el préstamo actualizando su estado a "finalizado"
+        // Actualizar el estado del préstamo a "finalizado"
         cerrarPrestamo(prestamo);
     }
 
-    // P3 — Validar que el préstamo exista en el sistema
+    // P9 — El préstamo debe estar registrado en el sistema
     private PrestamoEntidad validarExistencia(final UUID id) {
         final PrestamoEntidad entidad = daoFactory.getPrestamoDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -43,7 +43,7 @@ public class CerrarPrestamoCasoUsoImpl implements CerrarPrestamoCasoUso {
         return entidad;
     }
 
-    // P4 — Validar que el préstamo tenga un estado que permita cerrarlo (activo o vencido)
+    // P10 — El préstamo debe estar en estado activo
     private void validarEstadoCerrable(final PrestamoEntidad prestamo) {
         final String estadoNombre = prestamo.getEstadoPrestamo().getNombre();
         if (!"activo".equalsIgnoreCase(estadoNombre) && !"vencido".equalsIgnoreCase(estadoNombre)) {
@@ -53,7 +53,7 @@ public class CerrarPrestamoCasoUsoImpl implements CerrarPrestamoCasoUso {
         }
     }
 
-    // P1 — Actualizar el estado del préstamo a "finalizado"
+    // Actualizar el estado del préstamo a "finalizado"
     private void cerrarPrestamo(final PrestamoEntidad prestamo) {
         final List<EstadoPrestamoEntidad> estados = daoFactory.getEstadoPrestamoDAO()
                 .consultarPorFiltro(new EstadoPrestamoEntidad.Builder().nombre("finalizado").build());

@@ -2,6 +2,7 @@ package com.libreria.dto;
 
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class EditorialDTO {
 
@@ -16,9 +17,9 @@ public class EditorialDTO {
     }
 
     public EditorialDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setNit(null);
-        setNombre(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setNit(UtilTexto.VACIO);
+        setNombre(UtilTexto.VACIO);
     }
 
     public UUID getId() {
@@ -34,7 +35,7 @@ public class EditorialDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setNit(final String nit) {

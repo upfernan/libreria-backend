@@ -60,10 +60,20 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 		return libro;
 	}
 
-	// P3 — Físico: valida campos, verifica unicidad libro+signatura y crea la signatura. No físico: retorna la semilla.
+	// P3 — Físico: si se provee ID usa la signatura existente; si no, crea una nueva desde pasillo/estante/posicion. No físico: retorna la semilla.
 	private SignaturaEntidad resolverSignatura(final LibroEntidad libro, final com.libreria.negocio.dominio.SignaturaDominio signaturaDominio) {
 		final TipoLibroEntidad tipoLibro = daoFactory.getTipoLibroDAO().consultarPorId(libro.getTipoLibro().getId());
 		if (!UtilObjeto.esNulo(tipoLibro) && "físico".equalsIgnoreCase(tipoLibro.getNombre())) {
+			if (!UtilObjeto.esNulo(signaturaDominio) && UtilUUID.tieneValor(signaturaDominio.getId())) {
+				// Selección por ID: usar la signatura existente directamente
+				final SignaturaEntidad existente = daoFactory.getSignaturaDAO().consultarPorId(signaturaDominio.getId());
+				if (UtilObjeto.esNulo(existente) || UtilObjeto.esNulo(existente.getId())) {
+					throw GestorLibreriaExcepcion.crear("La signatura indicada no existe en el sistema.", "signaturaId: " + signaturaDominio.getId());
+				}
+				validarCombinacionLibroSignaturaUnicaPorId(libro.getId(), existente.getId());
+				return existente;
+			}
+			// Creación por valores: validar y crear nueva signatura
 			if (UtilObjeto.esNulo(signaturaDominio) || signaturaDominio.getPasillo() == '\0' || signaturaDominio.getPasillo() == ' ') {
 				throw GestorLibreriaExcepcion.crear("Los ejemplares físicos deben tener una signatura asociada.", "El pasillo de la signatura llegó vacío para un libro de tipo físico.");
 			}
@@ -71,6 +81,20 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 			return crearNuevaSignatura(signaturaDominio);
 		}
 		return obtenerSignaturaPorDefecto();
+	}
+
+	// Verifica que no exista ya un ejemplar del mismo libro con la misma signatura (por ID)
+	private void validarCombinacionLibroSignaturaUnicaPorId(final UUID libroId, final UUID signaturaId) {
+		final EjemplarEntidad filtroEjemplar = new EjemplarEntidad.Builder()
+				.libro(new LibroEntidad.Builder().id(libroId).build())
+				.signatura(new SignaturaEntidad.Builder().id(signaturaId).build())
+				.build();
+		final List<EjemplarEntidad> ejemplares = daoFactory.getEjemplarDAO().consultarPorFiltro(filtroEjemplar);
+		if (!UtilObjeto.esNulo(ejemplares) && !ejemplares.isEmpty()) {
+			throw GestorLibreriaExcepcion.crear(
+					"Ya existe un ejemplar con esa combinación de libro y signatura.",
+					"libroId: " + libroId + ", signaturaId: " + signaturaId);
+		}
 	}
 
 	// Verifica que no exista ya un ejemplar con la misma combinación libro + pasillo + estante + posicion
@@ -144,43 +168,6 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 				.build();
 
 		daoFactory.getEjemplarDAO().crear(nuevoEjemplar);
-	}
-
-	public static void main(final String[] args) {
-		System.out.println("=== Test Registrar Ejemplar ===");
-
-		final DAOFactory factory = DAOFactory.getFactory();
-		try {
-			factory.iniciarTransaccion();
-
-			// Libro físico: pasa pasillo, estante y posicion
-			// Libro digital: omite signatura, se asigna la semilla automáticamente
-			final UUID libroId = UUID.fromString("539dec14-ad5b-4dc0-832a-5753bda78a80");
-
-			final EjemplarDominio dominio = new EjemplarDominio.Builder()
-					.libro(new com.libreria.negocio.dominio.LibroDominio.Builder()
-							.id(libroId)
-							.build())
-					.signatura(new com.libreria.negocio.dominio.SignaturaDominio.Builder()
-							.pasillo('A')
-							.estante(1)
-							.posicion(1)
-							.build())
-					.build();
-
-			new RegistrarEjemplarCasoUsoImpl(factory).ejecutar(dominio);
-
-			factory.confirmarTransaccion();
-			System.out.println("Ejemplar registrado exitosamente.");
-
-		} catch (final Exception e) {
-			factory.cancelarTransaccion();
-			System.err.println("Error: " + e.getMessage());
-		} finally {
-			factory.cerrarConexion();
-		}
-
-		System.out.println("=== Fin del test ===");
 	}
 
 }

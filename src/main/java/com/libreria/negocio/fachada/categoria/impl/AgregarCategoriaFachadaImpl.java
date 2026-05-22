@@ -2,9 +2,9 @@ package com.libreria.negocio.fachada.categoria.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.CategoriaDTO;
+import com.libreria.negocio.assembler.dto.impl.CategoriaDTOAssembler;
 import com.libreria.negocio.casouso.categoria.AgregarCategoriaCasoUso;
 import com.libreria.negocio.casouso.categoria.impl.AgregarCategoriaCasoUsoImpl;
-import com.libreria.negocio.dominio.CategoriaDominio;
 import com.libreria.negocio.fachada.categoria.AgregarCategoriaFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -23,12 +23,7 @@ public class AgregarCategoriaFachadaImpl implements AgregarCategoriaFachada {
 		try {
 			daoFactory.iniciarTransaccion();
 
-			final CategoriaDominio dominio = new CategoriaDominio.Builder()
-					.nombre(datos.getNombre())
-					.descripcion(datos.getDescripcion())
-					.build();
-
-			casoUso.ejecutar(dominio);
+			casoUso.ejecutar(CategoriaDTOAssembler.getInstance().ensamblarDominio(datos));
 
 			daoFactory.confirmarTransaccion();
 

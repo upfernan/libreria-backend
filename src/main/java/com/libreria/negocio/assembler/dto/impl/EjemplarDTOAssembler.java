@@ -13,7 +13,7 @@ public final class EjemplarDTOAssembler implements DTOAssembler<EjemplarDominio,
         super();
     }
 
-    public synchronized static final DTOAssembler<EjemplarDominio, EjemplarDTO> getInstance() {
+    public static final synchronized DTOAssembler<EjemplarDominio, EjemplarDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EjemplarDTOAssembler();
         }

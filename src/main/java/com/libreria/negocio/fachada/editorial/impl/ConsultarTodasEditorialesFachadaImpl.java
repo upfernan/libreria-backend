@@ -6,8 +6,11 @@ import java.util.List;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.EditorialDTO;
 import com.libreria.entidad.EditorialEntidad;
+import com.libreria.negocio.assembler.dto.impl.EditorialDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.EditorialEntidadAssembler;
 import com.libreria.negocio.casouso.editorial.ConsultarTodasEditorialesCasoUso;
 import com.libreria.negocio.casouso.editorial.impl.ConsultarTodasEditorialesCasoUsoImpl;
+import com.libreria.negocio.dominio.EditorialDominio;
 import com.libreria.negocio.fachada.editorial.ConsultarTodasEditorialesFachada;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
@@ -26,19 +29,14 @@ public class ConsultarTodasEditorialesFachadaImpl implements ConsultarTodasEdito
 	public List<EditorialDTO> ejecutar(final EditorialDTO filtro) {
 		try {
 			final EditorialDTO filtroEfectivo = UtilObjeto.obtenerValorDefecto(filtro, new EditorialDTO.Builder().build());
-			final EditorialEntidad filtroEntidad = new EditorialEntidad.Builder()
-					.nit(filtroEfectivo.getNit())
-					.nombre(filtroEfectivo.getNombre())
-					.build();
+			final EditorialEntidad filtroEntidad = EditorialEntidadAssembler.getInstance().ensamblarEntidad(
+					EditorialDTOAssembler.getInstance().ensamblarDominio(filtroEfectivo));
 
 			final List<EditorialEntidad> entidades = casoUso.ejecutar(filtroEntidad);
 			final List<EditorialDTO> resultado = new ArrayList<>();
 			for (final EditorialEntidad entidad : entidades) {
-				resultado.add(new EditorialDTO.Builder()
-						.id(entidad.getId())
-						.nit(entidad.getNit())
-						.nombre(entidad.getNombre())
-						.build());
+				final EditorialDominio dominio = EditorialEntidadAssembler.getInstance().ensamblarDominio(entidad);
+				resultado.add(EditorialDTOAssembler.getInstance().ensamblarDTO(dominio));
 			}
 			return resultado;
 

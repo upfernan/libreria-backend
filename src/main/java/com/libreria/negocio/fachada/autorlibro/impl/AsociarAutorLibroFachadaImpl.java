@@ -1,14 +1,10 @@
 package com.libreria.negocio.fachada.autorlibro.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
-import com.libreria.dto.AutorDTO;
 import com.libreria.dto.AutorLibroDTO;
-import com.libreria.dto.LibroDTO;
+import com.libreria.negocio.assembler.dto.impl.AutorLibroDTOAssembler;
 import com.libreria.negocio.casouso.autorlibro.AsociarAutorLibroCasoUso;
 import com.libreria.negocio.casouso.autorlibro.impl.AsociarAutorLibroCasoUsoImpl;
-import com.libreria.negocio.dominio.AutorDominio;
-import com.libreria.negocio.dominio.AutorLibroDominio;
-import com.libreria.negocio.dominio.LibroDominio;
 import com.libreria.negocio.fachada.autorlibro.AsociarAutorLibroFachada;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
@@ -28,15 +24,8 @@ public class AsociarAutorLibroFachadaImpl implements AsociarAutorLibroFachada {
         try {
             daoFactory.iniciarTransaccion();
 
-            final AutorDTO autorEfectivo = UtilObjeto.obtenerValorDefecto(datos.getAutor(), new AutorDTO.Builder().build());
-            final LibroDTO libroEfectivo = UtilObjeto.obtenerValorDefecto(datos.getLibro(), new LibroDTO.Builder().build());
-
-            final AutorLibroDominio dominio = new AutorLibroDominio.Builder()
-                    .autor(new AutorDominio.Builder().id(autorEfectivo.getId()).build())
-                    .libro(new LibroDominio.Builder().id(libroEfectivo.getId()).build())
-                    .build();
-
-            casoUso.ejecutar(dominio);
+            final AutorLibroDTO datosEfectivos = UtilObjeto.obtenerValorDefecto(datos, new AutorLibroDTO.Builder().build());
+            casoUso.ejecutar(AutorLibroDTOAssembler.getInstance().ensamblarDominio(datosEfectivos));
 
             daoFactory.confirmarTransaccion();
 

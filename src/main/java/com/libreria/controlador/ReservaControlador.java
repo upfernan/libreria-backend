@@ -4,7 +4,7 @@ import com.libreria.controlador.respuesta.RespuestaExito;
 import com.libreria.dto.ReservaDTO;
 import com.libreria.negocio.fachada.reserva.impl.RegistrarReservaFachadaImpl;
 import com.libreria.negocio.fachada.reserva.impl.CancelarReservaFachadaImpl;
-import com.libreria.negocio.fachada.reserva.impl.AtenderReservaFachadaImpl;
+import com.libreria.negocio.fachada.reserva.impl.RetirarReservaFachadaImpl;
 import com.libreria.negocio.fachada.reserva.impl.ConsultarReservaPorIdFachadaImpl;
 import com.libreria.negocio.fachada.reserva.impl.ConsultarTodasReservasFachadaImpl;
 import org.springframework.http.HttpStatus;
@@ -25,15 +25,15 @@ public class ReservaControlador {
     }
 
     @DeleteMapping("/{id}")
+    public ResponseEntity<RespuestaExito<String>> eliminar(@PathVariable UUID id) {
+        new RetirarReservaFachadaImpl().ejecutar(id);
+        return new ResponseEntity<>(RespuestaExito.crear("La reserva se eliminó exitosamente.", ""), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/cancelar")
     public ResponseEntity<RespuestaExito<String>> cancelar(@PathVariable UUID id) {
         new CancelarReservaFachadaImpl().ejecutar(id);
         return new ResponseEntity<>(RespuestaExito.crear("La reserva se canceló exitosamente.", ""), HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}/atender")
-    public ResponseEntity<RespuestaExito<String>> atender(@PathVariable UUID id) {
-        new AtenderReservaFachadaImpl().ejecutar(id);
-        return new ResponseEntity<>(RespuestaExito.crear("La reserva se atendió exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

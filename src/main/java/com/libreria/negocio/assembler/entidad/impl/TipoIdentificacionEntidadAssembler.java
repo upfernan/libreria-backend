@@ -13,7 +13,7 @@ public final class TipoIdentificacionEntidadAssembler implements EntidadAssemble
         super();
     }
 
-    public synchronized static final EntidadAssembler<TipoIdentificacionDominio, TipoIdentificacionEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<TipoIdentificacionDominio, TipoIdentificacionEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new TipoIdentificacionEntidadAssembler();
         }

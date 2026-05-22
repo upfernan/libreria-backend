@@ -13,7 +13,7 @@ public final class DevolucionDTOAssembler implements DTOAssembler<DevolucionDomi
         super();
     }
 
-    public synchronized static final DTOAssembler<DevolucionDominio, DevolucionDTO> getInstance() {
+    public static final synchronized DTOAssembler<DevolucionDominio, DevolucionDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new DevolucionDTOAssembler();
         }

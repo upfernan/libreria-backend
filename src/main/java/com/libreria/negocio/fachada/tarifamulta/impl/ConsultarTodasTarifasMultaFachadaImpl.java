@@ -6,6 +6,8 @@ import java.util.List;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.TarifaMultaDTO;
 import com.libreria.entidad.TarifaMultaEntidad;
+import com.libreria.negocio.assembler.dto.impl.TarifaMultaDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.TarifaMultaEntidadAssembler;
 import com.libreria.negocio.casouso.tarifamulta.ConsultarTodasTarifasMultaCasoUso;
 import com.libreria.negocio.casouso.tarifamulta.impl.ConsultarTodasTarifasMultaCasoUsoImpl;
 import com.libreria.negocio.fachada.tarifamulta.ConsultarTodasTarifasMultaFachada;
@@ -26,21 +28,14 @@ public class ConsultarTodasTarifasMultaFachadaImpl implements ConsultarTodasTari
     public List<TarifaMultaDTO> ejecutar(final TarifaMultaDTO filtro) {
         try {
             final TarifaMultaDTO filtroEfectivo = UtilObjeto.obtenerValorDefecto(filtro, new TarifaMultaDTO.Builder().build());
-            final TarifaMultaEntidad filtroEntidad = new TarifaMultaEntidad.Builder()
-                    .valorDiario(filtroEfectivo.getValorDiario())
-                    .fechaInicioVigencia(filtroEfectivo.getFechaInicioVigencia())
-                    .fechaFinVigencia(filtroEfectivo.getFechaFinVigencia())
-                    .build();
+            final TarifaMultaEntidad filtroEntidad = TarifaMultaEntidadAssembler.getInstance().ensamblarEntidad(
+                    TarifaMultaDTOAssembler.getInstance().ensamblarDominio(filtroEfectivo));
 
             final List<TarifaMultaEntidad> entidades = casoUso.ejecutar(filtroEntidad);
             final List<TarifaMultaDTO> resultado = new ArrayList<>();
             for (final TarifaMultaEntidad entidad : entidades) {
-                resultado.add(new TarifaMultaDTO.Builder()
-                        .id(entidad.getId())
-                        .valorDiario(entidad.getValorDiario())
-                        .fechaInicioVigencia(entidad.getFechaInicioVigencia())
-                        .fechaFinVigencia(entidad.getFechaFinVigencia())
-                        .build());
+                resultado.add(TarifaMultaDTOAssembler.getInstance().ensamblarDTO(
+                        TarifaMultaEntidadAssembler.getInstance().ensamblarDominio(entidad)));
             }
             return resultado;
 

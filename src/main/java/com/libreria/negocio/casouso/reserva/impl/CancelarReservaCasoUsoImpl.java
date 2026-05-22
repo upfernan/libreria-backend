@@ -22,20 +22,18 @@ public class CancelarReservaCasoUsoImpl implements CancelarReservaCasoUso {
 
     @Override
     public void ejecutar(final UUID id) {
-        // Validar que el identificador sea obligatorio
+        // P7 — La reserva debe estar registrada
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador de la reserva es obligatorio.", "Se recibió un UUID nulo para cancelar reserva.");
         }
-
-        // Validar que la reserva exista en el sistema
         final ReservaEntidad reserva = daoFactory.getReservaDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(reserva) || UtilObjeto.esNulo(reserva.getId())) {
             throw GestorLibreriaExcepcion.crear("La reserva indicada no existe en el sistema.", "No se encontró Reserva con id: " + id);
         }
 
-        // Validar que la reserva esté en un estado cancelable (pendiente o asignada)
+        // P8 — La reserva debe estar en estado pendiente o disponible para poder cancelarse
         final String estadoNombre = reserva.getEstadoReserva().getNombre();
-        if (!"pendiente".equalsIgnoreCase(estadoNombre) && !"asignada".equalsIgnoreCase(estadoNombre)) {
+        if (!"pendiente".equalsIgnoreCase(estadoNombre) && !"disponible".equalsIgnoreCase(estadoNombre)) {
             throw GestorLibreriaExcepcion.crear(
                     "La reserva no puede cancelarse porque su estado actual es '" + estadoNombre + "'.",
                     "estadoReserva inválido para cancelación: " + estadoNombre + " — reservaId: " + id);
@@ -48,7 +46,7 @@ public class CancelarReservaCasoUsoImpl implements CancelarReservaCasoUso {
             throw GestorLibreriaExcepcion.crear("No se encontró el estado 'cancelada' requerido para cancelar la reserva.", "EstadoReserva 'cancelada' no configurado en el sistema.");
         }
 
-        // Actualizar el estado de la reserva a "cancelada"
+        // P1 — Actualizar el estado de la reserva a "cancelada"
         daoFactory.getReservaDAO().actualizar(reserva.getId(), new ReservaEntidad.Builder()
                 .id(reserva.getId())
                 .fechaReserva(reserva.getFechaReserva())

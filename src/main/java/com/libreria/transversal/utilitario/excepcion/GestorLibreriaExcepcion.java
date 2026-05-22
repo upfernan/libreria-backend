@@ -27,6 +27,10 @@ public final class GestorLibreriaExcepcion extends RuntimeException {
 		return new GestorLibreriaExcepcion(new Exception(), mensajeUsuario, mensajeTecnico);
 	}
 
+	public static GestorLibreriaExcepcion crear(final Throwable excepcionRaiz, final String mensajeUsuario) {
+		return new GestorLibreriaExcepcion(excepcionRaiz, mensajeUsuario, mensajeUsuario);
+	}
+
 	public static GestorLibreriaExcepcion crear(final Throwable excepcionRaiz, final String mensajeUsuario, final String mensajeTecnico) {
 		return new GestorLibreriaExcepcion(excepcionRaiz, mensajeUsuario, mensajeTecnico);
 	}

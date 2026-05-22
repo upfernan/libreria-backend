@@ -13,7 +13,7 @@ public final class AutorEntidadAssembler implements EntidadAssembler<AutorDomini
         super();
     }
 
-    public synchronized static final EntidadAssembler<AutorDominio, AutorEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<AutorDominio, AutorEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new AutorEntidadAssembler();
         }

@@ -4,6 +4,7 @@ import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilNumero;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class LibroDTO {
 
@@ -24,12 +25,12 @@ public class LibroDTO {
     }
 
     public LibroDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setTitulo(null);
-        setTipoLibro(null);
-        setCategoria(null);
-        setEditorial(null);
-        setDisponibles(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setTitulo(UtilTexto.VACIO);
+        setTipoLibro(new TipoLibroDTO.Builder().build());
+        setCategoria(new CategoriaDTO.Builder().build());
+        setEditorial(new EditorialDTO.Builder().build());
+        setDisponibles(UtilNumero.ENTERO_DEFECTO);
     }
 
     public UUID getId() {
@@ -57,7 +58,7 @@ public class LibroDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setTitulo(final String titulo) {

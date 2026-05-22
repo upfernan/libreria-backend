@@ -13,7 +13,7 @@ public final class EstadoReservaDTOAssembler implements DTOAssembler<EstadoReser
         super();
     }
 
-    public synchronized static final DTOAssembler<EstadoReservaDominio, EstadoReservaDTO> getInstance() {
+    public static final synchronized DTOAssembler<EstadoReservaDominio, EstadoReservaDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EstadoReservaDTOAssembler();
         }

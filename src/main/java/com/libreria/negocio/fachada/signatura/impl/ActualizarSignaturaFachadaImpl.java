@@ -2,9 +2,9 @@ package com.libreria.negocio.fachada.signatura.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.SignaturaDTO;
+import com.libreria.negocio.assembler.dto.impl.SignaturaDTOAssembler;
 import com.libreria.negocio.casouso.signatura.ActualizarSignaturaCasoUso;
 import com.libreria.negocio.casouso.signatura.impl.ActualizarSignaturaCasoUsoImpl;
-import com.libreria.negocio.dominio.SignaturaDominio;
 import com.libreria.negocio.fachada.signatura.ActualizarSignaturaFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -23,14 +23,7 @@ public class ActualizarSignaturaFachadaImpl implements ActualizarSignaturaFachad
         try {
             daoFactory.iniciarTransaccion();
 
-            final SignaturaDominio dominio = new SignaturaDominio.Builder()
-                    .id(datos.getId())
-                    .pasillo(datos.getPasillo())
-                    .estante(datos.getEstante())
-                    .posicion(datos.getPosicion())
-                    .build();
-
-            casoUso.ejecutar(dominio);
+            casoUso.ejecutar(SignaturaDTOAssembler.getInstance().ensamblarDominio(datos));
 
             daoFactory.confirmarTransaccion();
 

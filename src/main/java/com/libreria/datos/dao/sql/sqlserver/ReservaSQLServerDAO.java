@@ -16,6 +16,7 @@ import com.libreria.entidad.ReservaEntidad;
 import com.libreria.entidad.UsuarioEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
@@ -23,9 +24,12 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 	private static final String SELECT_BASE =
 			"SELECT r.id, r.fechaReserva, r.fechaExpiracion,"
 			+ " r.estadoReservaId, er.nombre AS estadoReservaNombre,"
-			+ " r.usuarioId, r.libroId"
+			+ " r.usuarioId, u.primerNombre AS usuarioPrimerNombre, u.primerApellido AS usuarioPrimerApellido,"
+			+ " r.libroId, l.titulo AS libroTitulo"
 			+ " FROM reserva r"
-			+ " LEFT JOIN estadoreserva er ON r.estadoReservaId = er.id";
+			+ " LEFT JOIN estadoreserva er ON r.estadoReservaId = er.id"
+			+ " LEFT JOIN usuario u ON r.usuarioId = u.id"
+			+ " LEFT JOIN libro l ON r.libroId = l.id";
 
 	public ReservaSQLServerDAO(final Connection conexion) {
 		super(conexion);
@@ -43,7 +47,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 			ps.setString(6, entidad.getLibro().getId().toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar la reserva.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la reserva.");
 		}
 	}
 
@@ -55,7 +59,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 			ps.setString(2, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar la reserva.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la reserva.");
 		}
 	}
 
@@ -66,7 +70,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar la reserva.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la reserva.");
 		}
 	}
 
@@ -79,7 +83,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 				resultados.add(construirReservaEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las reservas.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las reservas.");
 		}
 		return resultados;
 	}
@@ -95,7 +99,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar la reserva por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la reserva por identificador.");
 		}
 		return null;
 	}
@@ -105,20 +109,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
-		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getLibro()) && !UtilObjeto.esNulo(filtro.getLibro().getId())) {
-				sql.append(" AND r.libroId = ?");
-				parametros.add(filtro.getLibro().getId().toString());
-			}
-			if (!UtilObjeto.esNulo(filtro.getUsuario()) && !UtilObjeto.esNulo(filtro.getUsuario().getId())) {
-				sql.append(" AND r.usuarioId = ?");
-				parametros.add(filtro.getUsuario().getId().toString());
-			}
-			if (!UtilObjeto.esNulo(filtro.getEstadoReserva()) && !UtilTexto.esNula(filtro.getEstadoReserva().getNombre())) {
-				sql.append(" AND er.nombre = ?");
-				parametros.add(filtro.getEstadoReserva().getNombre());
-			}
-		}
+		aplicarFiltros(filtro, sql, parametros);
 
 		sql.append(" ORDER BY r.fechaReserva ASC");
 
@@ -133,9 +124,31 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las reservas por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las reservas por filtro.");
 		}
 		return resultados;
+	}
+
+	private void aplicarFiltros(final ReservaEntidad filtro, final StringBuilder sql, final List<Object> parametros) {
+		if (UtilObjeto.esNulo(filtro)) {
+			return;
+		}
+		if (!UtilObjeto.esNulo(filtro.getLibro()) && UtilUUID.tieneValor(filtro.getLibro().getId())) {
+			sql.append(" AND r.libroId = ?");
+			parametros.add(filtro.getLibro().getId().toString());
+		}
+		if (!UtilObjeto.esNulo(filtro.getUsuario()) && UtilUUID.tieneValor(filtro.getUsuario().getId())) {
+			sql.append(" AND r.usuarioId = ?");
+			parametros.add(filtro.getUsuario().getId().toString());
+		}
+		if (!UtilObjeto.esNulo(filtro.getEstadoReserva()) && UtilUUID.tieneValor(filtro.getEstadoReserva().getId())) {
+			sql.append(" AND r.estadoReservaId = ?");
+			parametros.add(filtro.getEstadoReserva().getId().toString());
+		}
+		if (!UtilObjeto.esNulo(filtro.getEstadoReserva()) && UtilTexto.tieneContenido(filtro.getEstadoReserva().getNombre())) {
+			sql.append(" AND er.nombre = ?");
+			parametros.add(filtro.getEstadoReserva().getNombre());
+		}
 	}
 
 	private ReservaEntidad construirReservaEntidad(final ResultSet rs) throws SQLException {
@@ -149,9 +162,12 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 						.build())
 				.usuario(new UsuarioEntidad.Builder()
 						.id(UUID.fromString(rs.getString("usuarioId")))
+						.primerNombre(rs.getString("usuarioPrimerNombre"))
+						.primerApellido(rs.getString("usuarioPrimerApellido"))
 						.build())
 				.libro(new LibroEntidad.Builder()
 						.id(UUID.fromString(rs.getString("libroId")))
+						.titulo(rs.getString("libroTitulo"))
 						.build())
 				.build();
 	}

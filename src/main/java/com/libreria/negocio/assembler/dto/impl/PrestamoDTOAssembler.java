@@ -13,7 +13,7 @@ public final class PrestamoDTOAssembler implements DTOAssembler<PrestamoDominio,
         super();
     }
 
-    public synchronized static final DTOAssembler<PrestamoDominio, PrestamoDTO> getInstance() {
+    public static final synchronized DTOAssembler<PrestamoDominio, PrestamoDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new PrestamoDTOAssembler();
         }

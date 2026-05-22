@@ -13,7 +13,7 @@ public final class TipoLibroEntidadAssembler implements EntidadAssembler<TipoLib
         super();
     }
 
-    public synchronized static final EntidadAssembler<TipoLibroDominio, TipoLibroEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<TipoLibroDominio, TipoLibroEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new TipoLibroEntidadAssembler();
         }

@@ -2,9 +2,9 @@ package com.libreria.negocio.fachada.autor.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.AutorDTO;
+import com.libreria.negocio.assembler.dto.impl.AutorDTOAssembler;
 import com.libreria.negocio.casouso.autor.AgregarAutorCasoUso;
 import com.libreria.negocio.casouso.autor.impl.AgregarAutorCasoUsoImpl;
-import com.libreria.negocio.dominio.AutorDominio;
 import com.libreria.negocio.fachada.autor.AgregarAutorFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -23,14 +23,7 @@ public class AgregarAutorFachadaImpl implements AgregarAutorFachada {
         try {
             daoFactory.iniciarTransaccion();
 
-            final AutorDominio dominio = new AutorDominio.Builder()
-                    .primerNombre(datos.getPrimerNombre())
-                    .segundoNombre(datos.getSegundoNombre())
-                    .primerApellido(datos.getPrimerApellido())
-                    .segundoApellido(datos.getSegundoApellido())
-                    .build();
-
-            casoUso.ejecutar(dominio);
+            casoUso.ejecutar(AutorDTOAssembler.getInstance().ensamblarDominio(datos));
 
             daoFactory.confirmarTransaccion();
 

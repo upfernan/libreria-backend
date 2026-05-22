@@ -3,10 +3,10 @@ package com.libreria.negocio.fachada.autorlibro.impl;
 import java.util.UUID;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
-import com.libreria.dto.AutorDTO;
 import com.libreria.dto.AutorLibroDTO;
-import com.libreria.dto.LibroDTO;
 import com.libreria.entidad.AutorLibroEntidad;
+import com.libreria.negocio.assembler.dto.impl.AutorLibroDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.AutorLibroEntidadAssembler;
 import com.libreria.negocio.casouso.autorlibro.ConsultarAutorLibroPorIdCasoUso;
 import com.libreria.negocio.casouso.autorlibro.impl.ConsultarAutorLibroPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.autorlibro.ConsultarAutorLibroPorIdFachada;
@@ -27,20 +27,8 @@ public class ConsultarAutorLibroPorIdFachadaImpl implements ConsultarAutorLibroP
     public AutorLibroDTO ejecutar(final UUID id) {
         try {
             final AutorLibroEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new AutorLibroEntidad.Builder().build());
-            return new AutorLibroDTO.Builder()
-                    .id(entidad.getId())
-                    .autor(new AutorDTO.Builder()
-                            .id(entidad.getAutor().getId())
-                            .primerNombre(entidad.getAutor().getPrimerNombre())
-                            .segundoNombre(entidad.getAutor().getSegundoNombre())
-                            .primerApellido(entidad.getAutor().getPrimerApellido())
-                            .segundoApellido(entidad.getAutor().getSegundoApellido())
-                            .build())
-                    .libro(new LibroDTO.Builder()
-                            .id(entidad.getLibro().getId())
-                            .titulo(entidad.getLibro().getTitulo())
-                            .build())
-                    .build();
+            return AutorLibroDTOAssembler.getInstance().ensamblarDTO(
+                    AutorLibroEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;

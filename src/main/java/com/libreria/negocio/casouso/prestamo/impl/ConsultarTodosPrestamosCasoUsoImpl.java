@@ -17,7 +17,7 @@ public class ConsultarTodosPrestamosCasoUsoImpl implements ConsultarTodosPrestam
 
     @Override
     public List<PrestamoEntidad> ejecutar(final PrestamoEntidad filtro) {
-        // El filtro puede ser nulo (retorna todos), simplemente se delega al DAO
+        // P11 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato (filtro opcional)
         return daoFactory.getPrestamoDAO().consultarPorFiltro(filtro);
     }
 

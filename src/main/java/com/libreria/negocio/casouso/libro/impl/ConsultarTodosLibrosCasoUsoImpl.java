@@ -17,7 +17,6 @@ public class ConsultarTodosLibrosCasoUsoImpl implements ConsultarTodosLibrosCaso
 
     @Override
     public List<LibroEntidad> ejecutar(final LibroEntidad filtro) {
-        // El filtro puede ser nulo (retorna todos), simplemente se delega al DAO
         return daoFactory.getLibroDAO().consultarPorFiltro(filtro);
     }
 

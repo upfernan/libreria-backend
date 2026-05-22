@@ -1,7 +1,7 @@
 package com.libreria.datos;
 
-public interface ConsultarPorIdDAO<E, ID> {
+public interface ConsultarPorIdDAO<E, I> {
 
-	E consultarPorId(ID id);
+	E consultarPorId(I id);
 
 }

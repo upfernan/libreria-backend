@@ -13,7 +13,7 @@ public final class SignaturaEntidadAssembler implements EntidadAssembler<Signatu
         super();
     }
 
-    public synchronized static final EntidadAssembler<SignaturaDominio, SignaturaEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<SignaturaDominio, SignaturaEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new SignaturaEntidadAssembler();
         }

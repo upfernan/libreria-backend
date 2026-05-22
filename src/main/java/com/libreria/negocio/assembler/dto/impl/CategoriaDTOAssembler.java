@@ -13,7 +13,7 @@ public final class CategoriaDTOAssembler implements DTOAssembler<CategoriaDomini
         super();
     }
 
-    public synchronized static final DTOAssembler<CategoriaDominio, CategoriaDTO> getInstance() {
+    public static final synchronized DTOAssembler<CategoriaDominio, CategoriaDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new CategoriaDTOAssembler();
         }

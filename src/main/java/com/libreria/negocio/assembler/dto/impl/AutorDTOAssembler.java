@@ -13,7 +13,7 @@ public final class AutorDTOAssembler implements DTOAssembler<AutorDominio, Autor
         super();
     }
 
-    public synchronized static final DTOAssembler<AutorDominio, AutorDTO> getInstance() {
+    public static final synchronized DTOAssembler<AutorDominio, AutorDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new AutorDTOAssembler();
         }

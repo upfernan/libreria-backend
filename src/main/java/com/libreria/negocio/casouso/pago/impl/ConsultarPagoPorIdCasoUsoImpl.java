@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.entidad.PagoEntidad;
 import com.libreria.negocio.casouso.pago.ConsultarPagoPorIdCasoUso;
+import com.libreria.transversal.utilitario.UtilUUID;
+import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class ConsultarPagoPorIdCasoUsoImpl implements ConsultarPagoPorIdCasoUso {
 
@@ -17,7 +19,15 @@ public class ConsultarPagoPorIdCasoUsoImpl implements ConsultarPagoPorIdCasoUso 
 
     @Override
     public PagoEntidad ejecutar(final UUID id) {
-        // P1 — Delegar la consulta al DAO
+        // P6 — Asegurar que los datos enviados como filtro sean válidos en tipo de dato, longitud, obligatoriedad, formato y rango
+        validarFiltro(id);
         return daoFactory.getPagoDAO().consultarPorId(id);
+    }
+
+    // P6 — Asegurar que los datos enviados como filtro sean válidos en tipo de dato, longitud, obligatoriedad, formato y rango
+    private void validarFiltro(final UUID id) {
+        if (UtilUUID.esNulo(id) || !UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador del pago es obligatorio y debe ser un UUID válido para realizar la consulta.", "id nulo o defecto en ConsultarPagoPorId.");
+        }
     }
 }

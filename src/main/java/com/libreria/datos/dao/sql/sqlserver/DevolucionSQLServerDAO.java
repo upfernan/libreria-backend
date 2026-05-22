@@ -11,11 +11,25 @@ import java.util.UUID;
 import com.libreria.datos.dao.DevolucionDAO;
 import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.DevolucionEntidad;
+import com.libreria.entidad.EjemplarEntidad;
+import com.libreria.entidad.LibroEntidad;
 import com.libreria.entidad.PrestamoEntidad;
+import com.libreria.entidad.UsuarioEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class DevolucionSQLServerDAO extends SQLDAO implements DevolucionDAO {
+
+	private static final String SELECT_BASE =
+			"SELECT d.id, d.fechaDevolucion, d.prestamoId,"
+			+ " u.primerNombre AS usuarioPrimerNombre, u.primerApellido AS usuarioPrimerApellido,"
+			+ " l.titulo AS libroTitulo"
+			+ " FROM devolucion d"
+			+ " LEFT JOIN prestamo p ON d.prestamoId = p.id"
+			+ " LEFT JOIN usuario u ON p.usuarioId = u.id"
+			+ " LEFT JOIN ejemplar e ON p.ejemplarId = e.id"
+			+ " LEFT JOIN libro l ON e.libroId = l.id";
 
 	public DevolucionSQLServerDAO(final Connection conexion) {
 		super(conexion);
@@ -30,7 +44,7 @@ public class DevolucionSQLServerDAO extends SQLDAO implements DevolucionDAO {
 			ps.setString(3, entidad.getPrestamo().getId().toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar la devolución.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la devolución.");
 		}
 	}
 
@@ -42,7 +56,7 @@ public class DevolucionSQLServerDAO extends SQLDAO implements DevolucionDAO {
 			ps.setString(2, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar la devolución.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la devolución.");
 		}
 	}
 
@@ -53,28 +67,27 @@ public class DevolucionSQLServerDAO extends SQLDAO implements DevolucionDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar la devolución.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la devolución.");
 		}
 	}
 
 	@Override
 	public List<DevolucionEntidad> consultarTodos() {
-		final String sql = "SELECT id, fechaDevolucion, prestamoId FROM devolucion";
 		final List<DevolucionEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(sql);
+		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
 				ResultSet rs = ps.executeQuery()) {
 			while (rs.next()) {
 				resultados.add(construirDevolucionEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las devoluciones.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las devoluciones.");
 		}
 		return resultados;
 	}
 
 	@Override
 	public DevolucionEntidad consultarPorId(final UUID id) {
-		final String sql = "SELECT id, fechaDevolucion, prestamoId FROM devolucion WHERE id = ?";
+		final String sql = SELECT_BASE + " WHERE d.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
@@ -83,21 +96,19 @@ public class DevolucionSQLServerDAO extends SQLDAO implements DevolucionDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar la devolución por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la devolución por identificador.");
 		}
-		return null;
+		return new DevolucionEntidad.Builder().build();
 	}
 
 	@Override
 	public List<DevolucionEntidad> consultarPorFiltro(final DevolucionEntidad filtro) {
-		final StringBuilder sql = new StringBuilder("SELECT id, fechaDevolucion, prestamoId FROM devolucion WHERE 1=1");
+		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
-		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getPrestamo()) && !UtilObjeto.esNulo(filtro.getPrestamo().getId())) {
-				sql.append(" AND prestamoId = ?");
-				parametros.add(filtro.getPrestamo().getId().toString());
-			}
+		if (!UtilObjeto.esNulo(filtro) && !UtilObjeto.esNulo(filtro.getPrestamo()) && UtilUUID.tieneValor(filtro.getPrestamo().getId())) {
+			sql.append(" AND d.prestamoId = ?");
+			parametros.add(filtro.getPrestamo().getId().toString());
 		}
 
 		final List<DevolucionEntidad> resultados = new ArrayList<>();
@@ -111,7 +122,7 @@ public class DevolucionSQLServerDAO extends SQLDAO implements DevolucionDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las devoluciones por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las devoluciones por filtro.");
 		}
 		return resultados;
 	}
@@ -122,6 +133,15 @@ public class DevolucionSQLServerDAO extends SQLDAO implements DevolucionDAO {
 				.fechaDevolucion(rs.getDate("fechaDevolucion").toLocalDate())
 				.prestamo(new PrestamoEntidad.Builder()
 						.id(UUID.fromString(rs.getString("prestamoId")))
+						.usuario(new UsuarioEntidad.Builder()
+								.primerNombre(rs.getString("usuarioPrimerNombre"))
+								.primerApellido(rs.getString("usuarioPrimerApellido"))
+								.build())
+						.ejemplar(new EjemplarEntidad.Builder()
+								.libro(new LibroEntidad.Builder()
+										.titulo(rs.getString("libroTitulo"))
+										.build())
+								.build())
 						.build())
 				.build();
 	}

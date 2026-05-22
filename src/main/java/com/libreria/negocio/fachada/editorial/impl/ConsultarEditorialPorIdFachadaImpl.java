@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.EditorialDTO;
 import com.libreria.entidad.EditorialEntidad;
+import com.libreria.negocio.assembler.dto.impl.EditorialDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.EditorialEntidadAssembler;
 import com.libreria.negocio.casouso.editorial.ConsultarEditorialPorIdCasoUso;
 import com.libreria.negocio.casouso.editorial.impl.ConsultarEditorialPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.editorial.ConsultarEditorialPorIdFachada;
@@ -25,11 +27,8 @@ public class ConsultarEditorialPorIdFachadaImpl implements ConsultarEditorialPor
 	public EditorialDTO ejecutar(final UUID id) {
 		try {
 			final EditorialEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new EditorialEntidad.Builder().build());
-			return new EditorialDTO.Builder()
-					.id(entidad.getId())
-					.nit(entidad.getNit())
-					.nombre(entidad.getNombre())
-					.build();
+			return EditorialDTOAssembler.getInstance().ensamblarDTO(
+					EditorialEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
 		} catch (GestorLibreriaExcepcion excepcion) {
 			throw excepcion;

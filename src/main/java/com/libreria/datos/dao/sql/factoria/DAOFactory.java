@@ -30,10 +30,9 @@ public abstract class DAOFactory {
 	private static final TipoFactoriaEnum FACTORIA_ACTUAL = TipoFactoriaEnum.SQLSERVER;
 
 	public static DAOFactory getFactory() {
-		switch (FACTORIA_ACTUAL) {
-		case SQLSERVER:
+		if (FACTORIA_ACTUAL == TipoFactoriaEnum.SQLSERVER) {
 			return new SQLServerDAOFactory();
-		default:
+		} else {
 			throw GestorLibreriaExcepcion.crear("Tipo de factoría no soportada: " + FACTORIA_ACTUAL);
 		}
 	}

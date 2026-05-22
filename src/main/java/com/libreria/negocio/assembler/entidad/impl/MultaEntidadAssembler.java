@@ -13,7 +13,7 @@ public final class MultaEntidadAssembler implements EntidadAssembler<MultaDomini
         super();
     }
 
-    public synchronized static final EntidadAssembler<MultaDominio, MultaEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<MultaDominio, MultaEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new MultaEntidadAssembler();
         }

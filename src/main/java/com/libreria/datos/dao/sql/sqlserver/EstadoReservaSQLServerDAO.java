@@ -13,6 +13,7 @@ import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.EstadoReservaEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDAO {
@@ -30,7 +31,7 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 			ps.setString(3, entidad.getDescripcion());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el estado de reserva.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el estado de reserva.");
 		}
 	}
 
@@ -43,7 +44,7 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el estado de reserva.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el estado de reserva.");
 		}
 	}
 
@@ -54,7 +55,7 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el estado de reserva.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el estado de reserva.");
 		}
 	}
 
@@ -68,7 +69,7 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 				resultados.add(construirEstadoReservaEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los estados de reserva.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los estados de reserva.");
 		}
 		return resultados;
 	}
@@ -84,7 +85,7 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el estado de reserva por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el estado de reserva por identificador.");
 		}
 		return null;
 	}
@@ -95,11 +96,11 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilTexto.esNula(filtro.getNombre())) {
+			if (UtilTexto.tieneContenido(filtro.getNombre())) {
 				sql.append(" AND nombre = ?");
 				parametros.add(filtro.getNombre());
 			}
-			if (!UtilObjeto.esNulo(filtro.getId())) {
+			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND id = ?");
 				parametros.add(filtro.getId().toString());
 			}
@@ -116,7 +117,7 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los estados de reserva por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los estados de reserva por filtro.");
 		}
 		return resultados;
 	}

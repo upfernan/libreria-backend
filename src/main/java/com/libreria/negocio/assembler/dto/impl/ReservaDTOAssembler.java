@@ -13,7 +13,7 @@ public final class ReservaDTOAssembler implements DTOAssembler<ReservaDominio, R
         super();
     }
 
-    public synchronized static final DTOAssembler<ReservaDominio, ReservaDTO> getInstance() {
+    public static final synchronized DTOAssembler<ReservaDominio, ReservaDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new ReservaDTOAssembler();
         }

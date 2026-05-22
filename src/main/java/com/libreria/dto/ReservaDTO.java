@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class ReservaDTO {
 
@@ -24,12 +25,12 @@ public class ReservaDTO {
     }
 
     public ReservaDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setFechaReserva(null);
-        setFechaExpiracion(null);
-        setEstadoReserva(null);
-        setUsuario(null);
-        setLibro(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setFechaReserva(UtilFecha.FECHA_DEFECTO);
+        setFechaExpiracion(UtilFecha.FECHA_DEFECTO);
+        setEstadoReserva(new EstadoReservaDTO.Builder().build());
+        setUsuario(new UsuarioDTO.Builder().build());
+        setLibro(new LibroDTO.Builder().build());
     }
 
     public UUID getId() {
@@ -57,7 +58,7 @@ public class ReservaDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setFechaReserva(final LocalDate fechaReserva) {

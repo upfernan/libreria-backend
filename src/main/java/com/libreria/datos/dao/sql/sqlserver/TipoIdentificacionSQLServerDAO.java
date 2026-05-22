@@ -13,6 +13,7 @@ import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.TipoIdentificacionEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdentificacionDAO {
@@ -30,7 +31,7 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 			ps.setString(3, entidad.getDescripcion());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el tipo de identificación.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el tipo de identificación.");
 		}
 	}
 
@@ -43,7 +44,7 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el tipo de identificación.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el tipo de identificación.");
 		}
 	}
 
@@ -54,7 +55,7 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el tipo de identificación.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el tipo de identificación.");
 		}
 	}
 
@@ -68,7 +69,7 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 				resultados.add(construirTipoIdentificacionEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los tipos de identificación.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los tipos de identificación.");
 		}
 		return resultados;
 	}
@@ -84,7 +85,7 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el tipo de identificación por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el tipo de identificación por identificador.");
 		}
 		return null;
 	}
@@ -95,11 +96,11 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getId())) {
+			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND id = ?");
 				parametros.add(filtro.getId().toString());
 			}
-			if (!UtilTexto.esNula(filtro.getNombre())) {
+			if (UtilTexto.tieneContenido(filtro.getNombre())) {
 				sql.append(" AND nombre = ?");
 				parametros.add(filtro.getNombre());
 			}
@@ -116,7 +117,7 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los tipos de identificación por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los tipos de identificación por filtro.");
 		}
 		return resultados;
 	}

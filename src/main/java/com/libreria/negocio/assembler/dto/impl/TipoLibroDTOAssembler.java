@@ -13,7 +13,7 @@ public final class TipoLibroDTOAssembler implements DTOAssembler<TipoLibroDomini
         super();
     }
 
-    public synchronized static final DTOAssembler<TipoLibroDominio, TipoLibroDTO> getInstance() {
+    public static final synchronized DTOAssembler<TipoLibroDominio, TipoLibroDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new TipoLibroDTOAssembler();
         }

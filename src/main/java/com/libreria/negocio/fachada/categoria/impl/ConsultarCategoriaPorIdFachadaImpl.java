@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.CategoriaDTO;
 import com.libreria.entidad.CategoriaEntidad;
+import com.libreria.negocio.assembler.dto.impl.CategoriaDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.CategoriaEntidadAssembler;
 import com.libreria.negocio.casouso.categoria.ConsultarCategoriaPorIdCasoUso;
 import com.libreria.negocio.casouso.categoria.impl.ConsultarCategoriaPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.categoria.ConsultarCategoriaPorIdFachada;
@@ -26,11 +28,8 @@ public class ConsultarCategoriaPorIdFachadaImpl implements ConsultarCategoriaPor
 	public CategoriaDTO ejecutar(final UUID id) {
 		try {
 			final CategoriaEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new CategoriaEntidad.Builder().build());
-			return new CategoriaDTO.Builder()
-					.id(entidad.getId())
-					.nombre(entidad.getNombre())
-					.descripcion(entidad.getDescripcion())
-					.build();
+			return CategoriaDTOAssembler.getInstance().ensamblarDTO(
+					CategoriaEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
 		} catch (GestorLibreriaExcepcion excepcion) {
 			throw excepcion;

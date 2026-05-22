@@ -16,6 +16,7 @@ import com.libreria.entidad.UsuarioEntidad;
 import com.libreria.negocio.casouso.prestamo.RegistrarPrestamoCasoUso;
 import com.libreria.negocio.dominio.PrestamoDominio;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilPrestamo;
 import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -30,38 +31,41 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 
 	@Override
 	public void ejecutar(final PrestamoDominio datos) {
-		// P6 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
+		// P6 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
 		validarDatosObligatorios(datos);
 
-		// P2 — Validar que el usuario existe en el sistema
+		// P2 — El usuario debe estar registrado en el sistema
 		validarExistenciaUsuario(datos.getUsuario().getId());
 
-		// P3 — Validar que el usuario no tenga multas pendientes de pago
+		// P3 — El usuario no puede tener multas pendientes de pago
 		validarUsuarioSinMultasPendientes(datos.getUsuario().getId());
 
-		// P4 — Validar que el ejemplar existe en el sistema
+		// P8 — El usuario no puede superar el límite de préstamos simultáneos permitidos
+		validarLimitePrestamosUsuario(datos.getUsuario().getId());
+
+		// P4 — El ejemplar debe estar registrado en el sistema
 		final EjemplarEntidad ejemplar = validarExistenciaEjemplar(datos.getEjemplar().getId());
 
-		// P5 — Validar que el ejemplar no tenga un préstamo activo
+		// P5 — El ejemplar no puede tener un préstamo activo
 		validarEjemplarDisponible(datos.getEjemplar().getId());
 
-		// P8 — Combinación única: no puede existir otro préstamo con el mismo usuario + ejemplar + fechaPréstamo
+		// Combinación única: no puede existir otro préstamo con el mismo usuario + ejemplar + fechaPréstamo
 		final LocalDate fechaPrestamo = LocalDate.now();
 		validarCombinacionUnica(datos.getUsuario().getId(), datos.getEjemplar().getId(), fechaPrestamo);
 
-		// P7 — Validar la cola de reservas del libro y obtener la reserva del usuario si existe
+		// P7 — Si el ejemplar tiene reservas activas, se debe respetar el orden de la cola para asignarlo
 		final ReservaEntidad reservaPendiente = validarColaDeReservas(datos.getUsuario().getId(), ejemplar.getLibro().getId());
 
-		// P1 — Registrar el préstamo garantizando identificador único
+		// P1 — No puede existir otro préstamo con el mismo identificador
 		guardarNuevoPrestamo(datos, reservaPendiente, fechaPrestamo);
 
-		// Marcar la reserva como atendida si el préstamo se originó desde una reserva real (no "sin reserva")
+		// Marcar la reserva como atendida si el préstamo se originó desde una reserva real no "sin reserva" RECORDAR
 		if (esReservaReal(reservaPendiente)) {
 			marcarReservaComoAtendida(reservaPendiente);
 		}
 	}
 
-	// P6 — Datos requeridos válidos en tipo, obligatoriedad y formato
+	// P6 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
 	private void validarDatosObligatorios(final PrestamoDominio datos) {
 		if (UtilObjeto.esNulo(datos)) {
 			throw GestorLibreriaExcepcion.crear("Los datos del préstamo son obligatorios.", "Se recibió un objeto PrestamoDominio nulo.");
@@ -80,7 +84,28 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P2 — Validar que el usuario exista en la base de datos
+	// P8 — El usuario no puede superar el límite de préstamos simultáneos permitidos
+	private void validarLimitePrestamosUsuario(final UUID usuarioId) {
+		final List<PrestamoEntidad> activos = daoFactory.getPrestamoDAO()
+				.consultarPorFiltro(new PrestamoEntidad.Builder()
+						.usuario(new UsuarioEntidad.Builder().id(usuarioId).build())
+						.estadoPrestamo(new EstadoPrestamoEntidad.Builder().nombre("activo").build())
+						.build());
+		final List<PrestamoEntidad> vencidos = daoFactory.getPrestamoDAO()
+				.consultarPorFiltro(new PrestamoEntidad.Builder()
+						.usuario(new UsuarioEntidad.Builder().id(usuarioId).build())
+						.estadoPrestamo(new EstadoPrestamoEntidad.Builder().nombre("vencido").build())
+						.build());
+		final int total = (UtilObjeto.esNulo(activos) ? 0 : activos.size())
+				+ (UtilObjeto.esNulo(vencidos) ? 0 : vencidos.size());
+		if (total >= UtilPrestamo.LIMITE_PRESTAMOS_POR_USUARIO) {
+			throw GestorLibreriaExcepcion.crear(
+					"El usuario ya tiene el máximo de préstamos permitidos (" + UtilPrestamo.LIMITE_PRESTAMOS_POR_USUARIO + " activos o vencidos).",
+					"usuarioId: " + usuarioId + ", préstamos activos/vencidos: " + total);
+		}
+	}
+
+	// P2 — El usuario debe estar registrado en el sistema
 	private void validarExistenciaUsuario(final UUID usuarioId) {
 		final UsuarioEntidad usuario = daoFactory.getUsuarioDAO().consultarPorId(usuarioId);
 		if (UtilObjeto.esNulo(usuario) || UtilObjeto.esNulo(usuario.getId())) {
@@ -88,19 +113,19 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P3 — Validar que el usuario no tenga multas sin pagar (pagada = false)
+	// P3 — El usuario no puede tener multas pendientes de pago
 	private void validarUsuarioSinMultasPendientes(final UUID usuarioId) {
 		final MultaEntidad filtroMulta = new MultaEntidad.Builder()
 				.usuarioAfectado(new UsuarioEntidad.Builder().id(usuarioId).build())
 				.pagada(false)
 				.build();
-		final List<MultaEntidad> multasPendientes = daoFactory.getMultaDAO().consultarPorFiltro(filtroMulta);
+		final var multasPendientes = daoFactory.getMultaDAO().consultarPorFiltro(filtroMulta);
 		if (!UtilObjeto.esNulo(multasPendientes) && !multasPendientes.isEmpty()) {
 			throw GestorLibreriaExcepcion.crear("El usuario tiene multas pendientes de pago.", "El usuario con id " + usuarioId + " tiene " + multasPendientes.size() + " multa(s) pendiente(s) sin pagar.");
 		}
 	}
 
-	// P4 — Validar que el ejemplar exista y retornarlo para uso posterior
+	// P4 — El ejemplar debe estar registrado en el sistema
 	private EjemplarEntidad validarExistenciaEjemplar(final UUID ejemplarId) {
 		final EjemplarEntidad ejemplar = daoFactory.getEjemplarDAO().consultarPorId(ejemplarId);
 		if (UtilObjeto.esNulo(ejemplar) || UtilObjeto.esNulo(ejemplar.getId())) {
@@ -109,7 +134,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		return ejemplar;
 	}
 
-	// P5 — Validar que el ejemplar no tenga un préstamo en estado activo
+	// P5 — El ejemplar no puede tener un préstamo activo
 	private void validarEjemplarDisponible(final UUID ejemplarId) {
 		final PrestamoEntidad filtroPrestamo = new PrestamoEntidad.Builder()
 				.ejemplar(new EjemplarEntidad.Builder().id(ejemplarId).build())
@@ -136,7 +161,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P7 — Validar cola de reservas — retorna la reserva pendiente del usuario o el registro "sin reserva"
+	// P7 — Si el ejemplar tiene reservas activas, se debe respetar el orden de la cola para asignarlo
 	private ReservaEntidad validarColaDeReservas(final UUID usuarioId, final UUID libroId) {
 		final ReservaEntidad filtroReserva = new ReservaEntidad.Builder()
 				.libro(new LibroEntidad.Builder().id(libroId).build())
@@ -184,7 +209,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		daoFactory.getReservaDAO().actualizar(reserva.getId(), reservaAtendida);
 	}
 
-	// P1 — Generar un identificador único garantizando que no exista en la BD
+	// P1 — No puede existir otro préstamo con el mismo identificador (generación de id único garantizado)
 	private UUID generarIdUnico() {
 		UUID id = UtilUUID.generar();
 		while (!UtilObjeto.esNulo(daoFactory.getPrestamoDAO().consultarPorId(id))) {
@@ -193,7 +218,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		return id;
 	}
 
-	// P1 — Construir y persistir el nuevo préstamo con id único garantizado
+	// P1 — No puede existir otro préstamo con el mismo identificador (construcción y persistencia)
 	private void guardarNuevoPrestamo(final PrestamoDominio datos, final ReservaEntidad reserva, final LocalDate fechaPrestamo) {
 		final EstadoPrestamoEntidad filtroEstado = new EstadoPrestamoEntidad.Builder()
 				.nombre("activo")

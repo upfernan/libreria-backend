@@ -5,7 +5,7 @@ import com.libreria.dto.AutorLibroDTO;
 import com.libreria.negocio.fachada.autorlibro.impl.AsociarAutorLibroFachadaImpl;
 import com.libreria.negocio.fachada.autorlibro.impl.QuitarAutorLibroFachadaImpl;
 import com.libreria.negocio.fachada.autorlibro.impl.ConsultarAutorLibroPorIdFachadaImpl;
-import com.libreria.negocio.fachada.autorlibro.impl.ConsultarAutoresPorLibroFachadaImpl;
+import com.libreria.negocio.fachada.autorlibro.impl.ConsultarTodosAutoresLibroFachadaImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +35,9 @@ public class AutorLibroControlador {
         return new ResponseEntity<>(RespuestaExito.crear("Autor-libro consultado exitosamente.", resultado), HttpStatus.OK);
     }
 
-    @GetMapping("/libro/{libroId}")
-    public ResponseEntity<RespuestaExito<List<AutorLibroDTO>>> consultarPorLibro(@PathVariable UUID libroId) {
-        var resultado = new ConsultarAutoresPorLibroFachadaImpl().ejecutar(libroId);
-        return new ResponseEntity<>(RespuestaExito.crear("Autores del libro consultados exitosamente.", resultado), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<RespuestaExito<List<AutorLibroDTO>>> consultarTodos() {
+        var resultado = new ConsultarTodosAutoresLibroFachadaImpl().ejecutar(new AutorLibroDTO.Builder().build());
+        return new ResponseEntity<>(RespuestaExito.crear("Autores-libro consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

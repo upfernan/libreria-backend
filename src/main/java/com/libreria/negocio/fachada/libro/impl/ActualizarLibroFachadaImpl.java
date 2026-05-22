@@ -2,12 +2,9 @@ package com.libreria.negocio.fachada.libro.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.LibroDTO;
+import com.libreria.negocio.assembler.dto.impl.LibroDTOAssembler;
 import com.libreria.negocio.casouso.libro.ActualizarLibroCasoUso;
 import com.libreria.negocio.casouso.libro.impl.ActualizarLibroCasoUsoImpl;
-import com.libreria.negocio.dominio.CategoriaDominio;
-import com.libreria.negocio.dominio.EditorialDominio;
-import com.libreria.negocio.dominio.LibroDominio;
-import com.libreria.negocio.dominio.TipoLibroDominio;
 import com.libreria.negocio.fachada.libro.ActualizarLibroFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -26,22 +23,7 @@ public class ActualizarLibroFachadaImpl implements ActualizarLibroFachada {
         try {
             daoFactory.iniciarTransaccion();
 
-            final LibroDominio dominio = new LibroDominio.Builder()
-                    .id(datos.getId())
-                    .titulo(datos.getTitulo())
-                    .tipoLibro(new TipoLibroDominio.Builder()
-                            .id(datos.getTipoLibro().getId())
-                            .build())
-                    .categoria(new CategoriaDominio.Builder()
-                            .id(datos.getCategoria().getId())
-                            .build())
-                    .editorial(new EditorialDominio.Builder()
-                            .id(datos.getEditorial().getId())
-                            .build())
-                    .disponibles(datos.getDisponibles())
-                    .build();
-
-            casoUso.ejecutar(dominio);
+            casoUso.ejecutar(LibroDTOAssembler.getInstance().ensamblarDominio(datos));
 
             daoFactory.confirmarTransaccion();
 

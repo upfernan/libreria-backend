@@ -3,6 +3,7 @@ package com.libreria.dto;
 import java.time.LocalDate;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilBooleano;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilNumero;
 import com.libreria.transversal.utilitario.UtilObjeto;
@@ -30,14 +31,14 @@ public class MultaDTO {
     }
 
     public MultaDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setMontoTotal(null);
-        setFechaGeneracion(null);
-        setPagada(null);
-        setDiasRetraso(null);
-        setTarifaMulta(null);
-        setDevolucion(null);
-        setUsuarioAfectado(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setMontoTotal(UtilNumero.DECIMAL_DEFECTO);
+        setFechaGeneracion(UtilFecha.FECHA_DEFECTO);
+        setPagada(UtilBooleano.FALSO);
+        setDiasRetraso(UtilNumero.ENTERO_DEFECTO);
+        setTarifaMulta(new TarifaMultaDTO.Builder().build());
+        setDevolucion(new DevolucionDTO.Builder().build());
+        setUsuarioAfectado(new UsuarioDTO.Builder().build());
     }
 
     public UUID getId() {
@@ -73,7 +74,7 @@ public class MultaDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setMontoTotal(final Double montoTotal) {

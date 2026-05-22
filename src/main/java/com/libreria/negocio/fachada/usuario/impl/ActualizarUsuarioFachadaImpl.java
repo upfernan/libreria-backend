@@ -2,10 +2,9 @@ package com.libreria.negocio.fachada.usuario.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.UsuarioDTO;
+import com.libreria.negocio.assembler.dto.impl.UsuarioDTOAssembler;
 import com.libreria.negocio.casouso.usuario.ActualizarUsuarioCasoUso;
 import com.libreria.negocio.casouso.usuario.impl.ActualizarUsuarioCasoUsoImpl;
-import com.libreria.negocio.dominio.TipoIdentificacionDominio;
-import com.libreria.negocio.dominio.UsuarioDominio;
 import com.libreria.negocio.fachada.usuario.ActualizarUsuarioFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -24,20 +23,7 @@ public class ActualizarUsuarioFachadaImpl implements ActualizarUsuarioFachada {
         try {
             daoFactory.iniciarTransaccion();
 
-            final UsuarioDominio dominio = new UsuarioDominio.Builder()
-                    .id(datos.getId())
-                    .tipoIdentificacion(new TipoIdentificacionDominio.Builder()
-                            .id(datos.getTipoIdentificacion().getId())
-                            .build())
-                    .numeroIdentificacion(datos.getNumeroIdentificacion())
-                    .primerNombre(datos.getPrimerNombre())
-                    .segundoNombre(datos.getSegundoNombre())
-                    .primerApellido(datos.getPrimerApellido())
-                    .segundoApellido(datos.getSegundoApellido())
-                    .correoElectronico(datos.getCorreoElectronico())
-                    .build();
-
-            casoUso.ejecutar(dominio);
+            casoUso.ejecutar(UsuarioDTOAssembler.getInstance().ensamblarDominio(datos));
 
             daoFactory.confirmarTransaccion();
 

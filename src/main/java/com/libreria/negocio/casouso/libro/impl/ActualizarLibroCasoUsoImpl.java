@@ -25,23 +25,23 @@ public class ActualizarLibroCasoUsoImpl implements ActualizarLibroCasoUso {
 
     @Override
     public void ejecutar(final LibroDominio datos) {
-        // Validar tipo de dato, obligatoriedad y formato de los datos de entrada
+        // P5 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
         validarDatosObligatorios(datos);
-        // Validar que el libro exista en el sistema
+        // P6 — Validar que el libro exista en el sistema
         validarExistenciaLibro(datos.getId());
-        // Validar que la categoría existe en el sistema
+        // P2 — Validar que la categoría existe en el sistema
         validarExistenciaCategoria(datos.getCategoria().getId());
-        // Validar que el tipo de libro existe en el sistema
-        // iMPROTANTE NO MOVER: el tipo de libro determina la signatura al crear ejemplares
+        // P3 — Validar que el tipo de libro existe en el sistema
+        // IMPORTANTE NO MOVER: el tipo de libro determina la signatura al crear ejemplares
         // cambiar el tipoLibro de un libro existente no modifica las signaturas ya asignadas a sus ejemplares.
         validarExistenciaTipoLibro(datos.getTipoLibro().getId());
-        // Validar que la editorial existe en el sistema
+        // P4 — Validar que la editorial existe en el sistema
         validarExistenciaEditorial(datos.getEditorial().getId());
-        // Actualizar el libro en el sistema
+        // P1 — Actualizar el libro en el sistema
         daoFactory.getLibroDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 
-    // Datos requeridos válidos en tipo, obligatoriedad y formato
+    // P5 — Datos requeridos válidos en tipo, obligatoriedad y formato
     private void validarDatosObligatorios(final LibroDominio datos) {
         if (UtilObjeto.esNulo(datos)) {
             throw GestorLibreriaExcepcion.crear("Los datos del libro son obligatorios.", "Se recibió un objeto LibroDominio nulo.");
@@ -75,7 +75,7 @@ public class ActualizarLibroCasoUsoImpl implements ActualizarLibroCasoUso {
         }
     }
 
-    // Validar que el libro exista en la base de datos
+    // P6 — Validar que el libro exista en la base de datos
     private void validarExistenciaLibro(final UUID id) {
         final LibroEntidad entidad = daoFactory.getLibroDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -83,7 +83,7 @@ public class ActualizarLibroCasoUsoImpl implements ActualizarLibroCasoUso {
         }
     }
 
-    // Validar que la categoría exista en la base de datos
+    // P2 — Validar que la categoría exista en la base de datos
     private void validarExistenciaCategoria(final UUID categoriaId) {
         final com.libreria.entidad.CategoriaEntidad categoria = daoFactory.getCategoriaDAO().consultarPorId(categoriaId);
         if (UtilObjeto.esNulo(categoria) || UtilObjeto.esNulo(categoria.getId())) {
@@ -91,7 +91,7 @@ public class ActualizarLibroCasoUsoImpl implements ActualizarLibroCasoUso {
         }
     }
 
-    // Validar que el tipo de libro exista en la base de datos
+    // P3 — Validar que el tipo de libro exista en la base de datos
     private void validarExistenciaTipoLibro(final UUID tipoLibroId) {
         final TipoLibroEntidad tipoLibro = daoFactory.getTipoLibroDAO().consultarPorId(tipoLibroId);
         if (UtilObjeto.esNulo(tipoLibro) || UtilObjeto.esNulo(tipoLibro.getId())) {
@@ -99,7 +99,7 @@ public class ActualizarLibroCasoUsoImpl implements ActualizarLibroCasoUso {
         }
     }
 
-    // Validar que la editorial exista en la base de datos
+    // P4 — Validar que la editorial exista en la base de datos
     private void validarExistenciaEditorial(final UUID editorialId) {
         final EditorialEntidad editorial = daoFactory.getEditorialDAO().consultarPorId(editorialId);
         if (UtilObjeto.esNulo(editorial) || UtilObjeto.esNulo(editorial.getId())) {

@@ -55,11 +55,10 @@ public class SQLServerDAOFactory extends DAOFactory {
 	@Override
 	protected void abrirConexion() {
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
 			conexion.setAutoCommit(false);
-		} catch (ClassNotFoundException | SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible abrir la conexión con la base de datos.");
+		} catch (SQLException e) {
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible abrir la conexión con la base de datos.");
 		}
 	}
 
@@ -70,7 +69,7 @@ public class SQLServerDAOFactory extends DAOFactory {
 				conexion.close();
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible cerrar la conexión con la base de datos.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible cerrar la conexión con la base de datos.");
 		}
 	}
 
@@ -79,7 +78,7 @@ public class SQLServerDAOFactory extends DAOFactory {
 		try {
 			conexion.setAutoCommit(false);
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible iniciar la transacción.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible iniciar la transacción.");
 		}
 	}
 
@@ -88,7 +87,7 @@ public class SQLServerDAOFactory extends DAOFactory {
 		try {
 			conexion.commit();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible confirmar la transacción.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible confirmar la transacción.");
 		}
 	}
 
@@ -97,7 +96,7 @@ public class SQLServerDAOFactory extends DAOFactory {
 		try {
 			conexion.rollback();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible cancelar la transacción.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible cancelar la transacción.");
 		}
 	}
 

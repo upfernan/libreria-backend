@@ -13,7 +13,7 @@ public final class EstadoPrestamoEntidadAssembler implements EntidadAssembler<Es
         super();
     }
 
-    public synchronized static final EntidadAssembler<EstadoPrestamoDominio, EstadoPrestamoEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<EstadoPrestamoDominio, EstadoPrestamoEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EstadoPrestamoEntidadAssembler();
         }

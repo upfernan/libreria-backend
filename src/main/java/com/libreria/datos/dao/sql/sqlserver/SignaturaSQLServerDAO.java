@@ -12,6 +12,7 @@ import com.libreria.datos.dao.SignaturaDAO;
 import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.SignaturaEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
@@ -30,7 +31,7 @@ public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
 			ps.setInt(4, entidad.getPosicion());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar la signatura.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la signatura.");
 		}
 	}
 
@@ -44,7 +45,7 @@ public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
 			ps.setString(4, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar la signatura.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la signatura.");
 		}
 	}
 
@@ -55,7 +56,7 @@ public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar la signatura.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la signatura.");
 		}
 	}
 
@@ -69,7 +70,7 @@ public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
 				resultados.add(construirSignaturaEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las signaturas.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las signaturas.");
 		}
 		return resultados;
 	}
@@ -85,7 +86,7 @@ public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar la signatura por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la signatura por identificador.");
 		}
 		return null;
 	}
@@ -96,7 +97,7 @@ public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getId())) {
+			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND id = ?");
 				parametros.add(filtro.getId().toString());
 			}
@@ -119,7 +120,7 @@ public class SignaturaSQLServerDAO extends SQLDAO implements SignaturaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las signaturas por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las signaturas por filtro.");
 		}
 		return resultados;
 	}

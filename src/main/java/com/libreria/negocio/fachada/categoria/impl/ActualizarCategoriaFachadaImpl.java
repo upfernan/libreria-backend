@@ -2,9 +2,9 @@ package com.libreria.negocio.fachada.categoria.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.CategoriaDTO;
+import com.libreria.negocio.assembler.dto.impl.CategoriaDTOAssembler;
 import com.libreria.negocio.casouso.categoria.ActualizarCategoriaCasoUso;
 import com.libreria.negocio.casouso.categoria.impl.ActualizarCategoriaCasoUsoImpl;
-import com.libreria.negocio.dominio.CategoriaDominio;
 import com.libreria.negocio.fachada.categoria.ActualizarCategoriaFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -23,13 +23,7 @@ public class ActualizarCategoriaFachadaImpl implements ActualizarCategoriaFachad
 		try {
 			daoFactory.iniciarTransaccion();
 
-			final CategoriaDominio dominio = new CategoriaDominio.Builder()
-					.id(datos.getId())
-					.nombre(datos.getNombre())
-					.descripcion(datos.getDescripcion())
-					.build();
-
-			casoUso.ejecutar(dominio);
+			casoUso.ejecutar(CategoriaDTOAssembler.getInstance().ensamblarDominio(datos));
 
 			daoFactory.confirmarTransaccion();
 

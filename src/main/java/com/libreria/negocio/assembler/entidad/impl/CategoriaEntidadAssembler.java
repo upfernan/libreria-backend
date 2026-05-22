@@ -13,7 +13,7 @@ public final class CategoriaEntidadAssembler implements EntidadAssembler<Categor
         super();
     }
 
-    public synchronized static final EntidadAssembler<CategoriaDominio, CategoriaEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<CategoriaDominio, CategoriaEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new CategoriaEntidadAssembler();
         }

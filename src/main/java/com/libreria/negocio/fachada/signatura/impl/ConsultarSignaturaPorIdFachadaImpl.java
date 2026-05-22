@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.SignaturaDTO;
 import com.libreria.entidad.SignaturaEntidad;
+import com.libreria.negocio.assembler.dto.impl.SignaturaDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.SignaturaEntidadAssembler;
 import com.libreria.negocio.casouso.signatura.ConsultarSignaturaPorIdCasoUso;
 import com.libreria.negocio.casouso.signatura.impl.ConsultarSignaturaPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.signatura.ConsultarSignaturaPorIdFachada;
@@ -25,12 +27,8 @@ public class ConsultarSignaturaPorIdFachadaImpl implements ConsultarSignaturaPor
     public SignaturaDTO ejecutar(final UUID id) {
         try {
             final SignaturaEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new SignaturaEntidad.Builder().build());
-            return new SignaturaDTO.Builder()
-                    .id(entidad.getId())
-                    .pasillo(entidad.getPasillo())
-                    .estante(entidad.getEstante())
-                    .posicion(entidad.getPosicion())
-                    .build();
+            return SignaturaDTOAssembler.getInstance().ensamblarDTO(
+                    SignaturaEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;

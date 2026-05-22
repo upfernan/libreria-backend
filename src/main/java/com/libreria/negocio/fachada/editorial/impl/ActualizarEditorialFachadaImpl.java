@@ -2,9 +2,9 @@ package com.libreria.negocio.fachada.editorial.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.EditorialDTO;
+import com.libreria.negocio.assembler.dto.impl.EditorialDTOAssembler;
 import com.libreria.negocio.casouso.editorial.ActualizarEditorialCasoUso;
 import com.libreria.negocio.casouso.editorial.impl.ActualizarEditorialCasoUsoImpl;
-import com.libreria.negocio.dominio.EditorialDominio;
 import com.libreria.negocio.fachada.editorial.ActualizarEditorialFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -23,13 +23,7 @@ public class ActualizarEditorialFachadaImpl implements ActualizarEditorialFachad
 		try {
 			daoFactory.iniciarTransaccion();
 
-			final EditorialDominio dominio = new EditorialDominio.Builder()
-					.id(datos.getId())
-					.nit(datos.getNit())
-					.nombre(datos.getNombre())
-					.build();
-
-			casoUso.ejecutar(dominio);
+			casoUso.ejecutar(EditorialDTOAssembler.getInstance().ensamblarDominio(datos));
 
 			daoFactory.confirmarTransaccion();
 

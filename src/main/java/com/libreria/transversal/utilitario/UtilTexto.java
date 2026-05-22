@@ -12,6 +12,10 @@ public final class UtilTexto {
         return UtilObjeto.esNulo(texto);
     }
 
+    public static boolean tieneContenido(final String texto) {
+        return !esNula(texto) && !aplicarTrim(texto).isEmpty();
+    }
+
     public static String obtenerValorDefecto(final String texto, final String valorDefecto) {
         return UtilObjeto.obtenerValorDefecto(texto, valorDefecto);
     }

@@ -13,7 +13,7 @@ public final class EditorialDTOAssembler implements DTOAssembler<EditorialDomini
         super();
     }
 
-    public synchronized static final DTOAssembler<EditorialDominio, EditorialDTO> getInstance() {
+    public static final synchronized DTOAssembler<EditorialDominio, EditorialDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EditorialDTOAssembler();
         }

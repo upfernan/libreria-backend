@@ -13,7 +13,7 @@ public final class MultaDTOAssembler implements DTOAssembler<MultaDominio, Multa
         super();
     }
 
-    public synchronized static final DTOAssembler<MultaDominio, MultaDTO> getInstance() {
+    public static final synchronized DTOAssembler<MultaDominio, MultaDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new MultaDTOAssembler();
         }

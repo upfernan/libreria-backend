@@ -14,6 +14,7 @@ import com.libreria.entidad.TipoIdentificacionEntidad;
 import com.libreria.entidad.UsuarioEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
@@ -36,7 +37,7 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 			ps.setString(8, entidad.getCorreoElectronico());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el usuario.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el usuario.");
 		}
 	}
 
@@ -54,7 +55,7 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 			ps.setString(8, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el usuario.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el usuario.");
 		}
 	}
 
@@ -65,7 +66,7 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el usuario.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el usuario.");
 		}
 	}
 
@@ -79,7 +80,7 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 				resultados.add(construirUsuarioEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los usuarios.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los usuarios.");
 		}
 		return resultados;
 	}
@@ -95,7 +96,7 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el usuario por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el usuario por identificador.");
 		}
 		return null;
 	}
@@ -107,15 +108,15 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getId())) {
+			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND id = ?");
 				parametros.add(filtro.getId().toString());
 			}
-			if (!UtilTexto.esNula(filtro.getNumeroIdentificacion())) {
+			if (UtilTexto.tieneContenido(filtro.getNumeroIdentificacion())) {
 				sql.append(" AND numeroIdentificacion = ?");
 				parametros.add(filtro.getNumeroIdentificacion());
 			}
-			if (!UtilObjeto.esNulo(filtro.getTipoIdentificacion()) && !UtilObjeto.esNulo(filtro.getTipoIdentificacion().getId())) {
+			if (!UtilObjeto.esNulo(filtro.getTipoIdentificacion()) && UtilUUID.tieneValor(filtro.getTipoIdentificacion().getId())) {
 				sql.append(" AND tipoIdentificacionId = ?");
 				parametros.add(filtro.getTipoIdentificacion().getId().toString());
 			}
@@ -132,7 +133,7 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los usuarios por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los usuarios por filtro.");
 		}
 		return resultados;
 	}

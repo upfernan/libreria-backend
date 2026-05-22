@@ -31,7 +31,7 @@ public class TarifaMultaSQLServerDAO extends SQLDAO implements TarifaMultaDAO {
 			ps.setDate(4, java.sql.Date.valueOf(entidad.getFechaFinVigencia()));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar la tarifa de multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la tarifa de multa.");
 		}
 	}
 
@@ -45,7 +45,7 @@ public class TarifaMultaSQLServerDAO extends SQLDAO implements TarifaMultaDAO {
 			ps.setString(4, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar la tarifa de multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la tarifa de multa.");
 		}
 	}
 
@@ -56,7 +56,7 @@ public class TarifaMultaSQLServerDAO extends SQLDAO implements TarifaMultaDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar la tarifa de multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la tarifa de multa.");
 		}
 	}
 
@@ -70,7 +70,7 @@ public class TarifaMultaSQLServerDAO extends SQLDAO implements TarifaMultaDAO {
 				resultados.add(construirTarifaMultaEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las tarifas de multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las tarifas de multa.");
 		}
 		return resultados;
 	}
@@ -86,7 +86,7 @@ public class TarifaMultaSQLServerDAO extends SQLDAO implements TarifaMultaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar la tarifa de multa por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la tarifa de multa por identificador.");
 		}
 		return null;
 	}
@@ -118,7 +118,7 @@ public class TarifaMultaSQLServerDAO extends SQLDAO implements TarifaMultaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las tarifas de multa por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las tarifas de multa por filtro.");
 		}
 		return resultados;
 	}

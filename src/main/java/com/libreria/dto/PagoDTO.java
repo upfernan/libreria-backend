@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class PagoDTO {
 
@@ -18,9 +19,9 @@ public class PagoDTO {
     }
 
     public PagoDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setFechaPago(null);
-        setMulta(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setFechaPago(UtilFecha.FECHA_DEFECTO);
+        setMulta(new MultaDTO.Builder().build());
     }
 
     public UUID getId() {
@@ -36,7 +37,7 @@ public class PagoDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setFechaPago(final LocalDate fechaPago) {

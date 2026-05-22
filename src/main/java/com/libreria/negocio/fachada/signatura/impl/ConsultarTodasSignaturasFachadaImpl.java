@@ -6,6 +6,8 @@ import java.util.List;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.SignaturaDTO;
 import com.libreria.entidad.SignaturaEntidad;
+import com.libreria.negocio.assembler.dto.impl.SignaturaDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.SignaturaEntidadAssembler;
 import com.libreria.negocio.casouso.signatura.ConsultarTodasSignaturasCasoUso;
 import com.libreria.negocio.casouso.signatura.impl.ConsultarTodasSignaturasCasoUsoImpl;
 import com.libreria.negocio.fachada.signatura.ConsultarTodasSignaturasFachada;
@@ -26,21 +28,14 @@ public class ConsultarTodasSignaturasFachadaImpl implements ConsultarTodasSignat
     public List<SignaturaDTO> ejecutar(final SignaturaDTO filtro) {
         try {
             final SignaturaDTO filtroEfectivo = UtilObjeto.obtenerValorDefecto(filtro, new SignaturaDTO.Builder().build());
-            final SignaturaEntidad filtroEntidad = new SignaturaEntidad.Builder()
-                    .pasillo(filtroEfectivo.getPasillo())
-                    .estante(filtroEfectivo.getEstante())
-                    .posicion(filtroEfectivo.getPosicion())
-                    .build();
+            final SignaturaEntidad filtroEntidad = SignaturaEntidadAssembler.getInstance().ensamblarEntidad(
+                    SignaturaDTOAssembler.getInstance().ensamblarDominio(filtroEfectivo));
 
             final List<SignaturaEntidad> entidades = casoUso.ejecutar(filtroEntidad);
             final List<SignaturaDTO> resultado = new ArrayList<>();
             for (final SignaturaEntidad entidad : entidades) {
-                resultado.add(new SignaturaDTO.Builder()
-                        .id(entidad.getId())
-                        .pasillo(entidad.getPasillo())
-                        .estante(entidad.getEstante())
-                        .posicion(entidad.getPosicion())
-                        .build());
+                resultado.add(SignaturaDTOAssembler.getInstance().ensamblarDTO(
+                        SignaturaEntidadAssembler.getInstance().ensamblarDominio(entidad)));
             }
             return resultado;
 

@@ -13,7 +13,7 @@ public final class EditorialEntidadAssembler implements EntidadAssembler<Editori
         super();
     }
 
-    public synchronized static final EntidadAssembler<EditorialDominio, EditorialEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<EditorialDominio, EditorialEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EditorialEntidadAssembler();
         }

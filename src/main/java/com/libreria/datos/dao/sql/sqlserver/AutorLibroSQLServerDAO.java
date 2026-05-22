@@ -14,6 +14,7 @@ import com.libreria.entidad.AutorEntidad;
 import com.libreria.entidad.AutorLibroEntidad;
 import com.libreria.entidad.LibroEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
@@ -31,7 +32,7 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 			ps.setString(3, entidad.getLibro().getId().toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el autor-libro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el autor-libro.");
 		}
 	}
 
@@ -44,7 +45,7 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el autor-libro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el autor-libro.");
 		}
 	}
 
@@ -55,7 +56,7 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el autor-libro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el autor-libro.");
 		}
 	}
 
@@ -69,7 +70,7 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 				resultados.add(construirAutorLibroEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los autores-libro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los autores-libro.");
 		}
 		return resultados;
 	}
@@ -85,7 +86,7 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el autor-libro por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el autor-libro por identificador.");
 		}
 		return null;
 	}
@@ -96,11 +97,11 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getAutor()) && !UtilObjeto.esNulo(filtro.getAutor().getId())) {
+			if (!UtilObjeto.esNulo(filtro.getAutor()) && UtilUUID.tieneValor(filtro.getAutor().getId())) {
 				sql.append(" AND autorId = ?");
 				parametros.add(filtro.getAutor().getId().toString());
 			}
-			if (!UtilObjeto.esNulo(filtro.getLibro()) && !UtilObjeto.esNulo(filtro.getLibro().getId())) {
+			if (!UtilObjeto.esNulo(filtro.getLibro()) && UtilUUID.tieneValor(filtro.getLibro().getId())) {
 				sql.append(" AND libroId = ?");
 				parametros.add(filtro.getLibro().getId().toString());
 			}
@@ -117,7 +118,7 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los autores-libro por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los autores-libro por filtro.");
 		}
 		return resultados;
 	}

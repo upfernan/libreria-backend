@@ -13,7 +13,7 @@ public final class TipoIdentificacionDTOAssembler implements DTOAssembler<TipoId
         super();
     }
 
-    public synchronized static final DTOAssembler<TipoIdentificacionDominio, TipoIdentificacionDTO> getInstance() {
+    public static final synchronized DTOAssembler<TipoIdentificacionDominio, TipoIdentificacionDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new TipoIdentificacionDTOAssembler();
         }

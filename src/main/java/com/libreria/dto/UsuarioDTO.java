@@ -3,6 +3,7 @@ package com.libreria.dto;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class UsuarioDTO {
 
@@ -27,14 +28,14 @@ public class UsuarioDTO {
     }
 
     public UsuarioDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setTipoIdentificacion(null);
-        setNumeroIdentificacion(null);
-        setPrimerNombre(null);
-        setSegundoNombre(null);
-        setPrimerApellido(null);
-        setSegundoApellido(null);
-        setCorreoElectronico(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setTipoIdentificacion(new TipoIdentificacionDTO.Builder().build());
+        setNumeroIdentificacion(UtilTexto.VACIO);
+        setPrimerNombre(UtilTexto.VACIO);
+        setSegundoNombre(UtilTexto.VACIO);
+        setPrimerApellido(UtilTexto.VACIO);
+        setSegundoApellido(UtilTexto.VACIO);
+        setCorreoElectronico(UtilTexto.VACIO);
     }
 
     public UUID getId() {
@@ -70,7 +71,7 @@ public class UsuarioDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setTipoIdentificacion(final TipoIdentificacionDTO tipoIdentificacion) {

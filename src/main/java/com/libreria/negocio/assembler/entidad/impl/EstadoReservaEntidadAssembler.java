@@ -13,7 +13,7 @@ public final class EstadoReservaEntidadAssembler implements EntidadAssembler<Est
         super();
     }
 
-    public synchronized static final EntidadAssembler<EstadoReservaDominio, EstadoReservaEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<EstadoReservaDominio, EstadoReservaEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EstadoReservaEntidadAssembler();
         }

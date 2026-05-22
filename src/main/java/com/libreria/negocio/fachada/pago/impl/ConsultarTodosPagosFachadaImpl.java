@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
-import com.libreria.dto.DevolucionDTO;
-import com.libreria.dto.MultaDTO;
 import com.libreria.dto.PagoDTO;
-import com.libreria.dto.TarifaMultaDTO;
-import com.libreria.dto.UsuarioDTO;
 import com.libreria.entidad.PagoEntidad;
+import com.libreria.negocio.assembler.dto.impl.PagoDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.PagoEntidadAssembler;
 import com.libreria.negocio.casouso.pago.ConsultarTodosPagosCasoUso;
 import com.libreria.negocio.casouso.pago.impl.ConsultarTodosPagosCasoUsoImpl;
 import com.libreria.negocio.fachada.pago.ConsultarTodosPagosFachada;
@@ -30,45 +28,14 @@ public class ConsultarTodosPagosFachadaImpl implements ConsultarTodosPagosFachad
     public List<PagoDTO> ejecutar(final PagoDTO filtro) {
         try {
             final PagoDTO filtroEfectivo = UtilObjeto.obtenerValorDefecto(filtro, new PagoDTO.Builder().build());
-            final MultaDTO multaFiltro = UtilObjeto.obtenerValorDefecto(filtroEfectivo.getMulta(), new MultaDTO.Builder().build());
-
-            final PagoEntidad filtroEntidad = new PagoEntidad.Builder()
-                    .multa(new com.libreria.entidad.MultaEntidad.Builder()
-                            .id(multaFiltro.getId())
-                            .build())
-                    .build();
+            final PagoEntidad filtroEntidad = PagoEntidadAssembler.getInstance().ensamblarEntidad(
+                    PagoDTOAssembler.getInstance().ensamblarDominio(filtroEfectivo));
 
             final List<PagoEntidad> entidades = casoUso.ejecutar(filtroEntidad);
             final List<PagoDTO> resultado = new ArrayList<>();
             for (final PagoEntidad entidad : entidades) {
-                resultado.add(new PagoDTO.Builder()
-                        .id(entidad.getId())
-                        .fechaPago(entidad.getFechaPago())
-                        .multa(new MultaDTO.Builder()
-                                .id(entidad.getMulta().getId())
-                                .montoTotal(entidad.getMulta().getMontoTotal())
-                                .fechaGeneracion(entidad.getMulta().getFechaGeneracion())
-                                .pagada(entidad.getMulta().getPagada())
-                                .diasRetraso(entidad.getMulta().getDiasRetraso())
-                                .tarifaMulta(new TarifaMultaDTO.Builder()
-                                        .id(entidad.getMulta().getTarifaMulta().getId())
-                                        .valorDiario(entidad.getMulta().getTarifaMulta().getValorDiario())
-                                        .fechaInicioVigencia(entidad.getMulta().getTarifaMulta().getFechaInicioVigencia())
-                                        .fechaFinVigencia(entidad.getMulta().getTarifaMulta().getFechaFinVigencia())
-                                        .build())
-                                .devolucion(new DevolucionDTO.Builder()
-                                        .id(entidad.getMulta().getDevolucion().getId())
-                                        .fechaDevolucion(entidad.getMulta().getDevolucion().getFechaDevolucion())
-                                        .build())
-                                .usuarioAfectado(new UsuarioDTO.Builder()
-                                        .id(entidad.getMulta().getUsuarioAfectado().getId())
-                                        .primerNombre(entidad.getMulta().getUsuarioAfectado().getPrimerNombre())
-                                        .segundoNombre(entidad.getMulta().getUsuarioAfectado().getSegundoNombre())
-                                        .primerApellido(entidad.getMulta().getUsuarioAfectado().getPrimerApellido())
-                                        .segundoApellido(entidad.getMulta().getUsuarioAfectado().getSegundoApellido())
-                                        .build())
-                                .build())
-                        .build());
+                resultado.add(PagoDTOAssembler.getInstance().ensamblarDTO(
+                        PagoEntidadAssembler.getInstance().ensamblarDominio(entidad)));
             }
             return resultado;
 

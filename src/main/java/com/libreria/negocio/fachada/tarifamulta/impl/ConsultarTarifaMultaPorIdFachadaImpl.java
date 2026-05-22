@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.TarifaMultaDTO;
 import com.libreria.entidad.TarifaMultaEntidad;
+import com.libreria.negocio.assembler.dto.impl.TarifaMultaDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.TarifaMultaEntidadAssembler;
 import com.libreria.negocio.casouso.tarifamulta.ConsultarTarifaMultaPorIdCasoUso;
 import com.libreria.negocio.casouso.tarifamulta.impl.ConsultarTarifaMultaPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.tarifamulta.ConsultarTarifaMultaPorIdFachada;
@@ -25,12 +27,8 @@ public class ConsultarTarifaMultaPorIdFachadaImpl implements ConsultarTarifaMult
     public TarifaMultaDTO ejecutar(final UUID id) {
         try {
             final TarifaMultaEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new TarifaMultaEntidad.Builder().build());
-            return new TarifaMultaDTO.Builder()
-                    .id(entidad.getId())
-                    .valorDiario(entidad.getValorDiario())
-                    .fechaInicioVigencia(entidad.getFechaInicioVigencia())
-                    .fechaFinVigencia(entidad.getFechaFinVigencia())
-                    .build();
+            return TarifaMultaDTOAssembler.getInstance().ensamblarDTO(
+                    TarifaMultaEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;

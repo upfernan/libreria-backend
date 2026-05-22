@@ -13,7 +13,7 @@ public final class ReservaEntidadAssembler implements EntidadAssembler<ReservaDo
         super();
     }
 
-    public synchronized static final EntidadAssembler<ReservaDominio, ReservaEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<ReservaDominio, ReservaEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new ReservaEntidadAssembler();
         }

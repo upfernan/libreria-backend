@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.DevolucionDTO;
-import com.libreria.dto.PrestamoDTO;
 import com.libreria.entidad.DevolucionEntidad;
+import com.libreria.negocio.assembler.dto.impl.DevolucionDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.DevolucionEntidadAssembler;
 import com.libreria.negocio.casouso.devolucion.ConsultarTodasDevolucionesCasoUso;
 import com.libreria.negocio.casouso.devolucion.impl.ConsultarTodasDevolucionesCasoUsoImpl;
 import com.libreria.negocio.fachada.devolucion.ConsultarTodasDevolucionesFachada;
@@ -27,24 +28,14 @@ public class ConsultarTodasDevolucionesFachadaImpl implements ConsultarTodasDevo
     public List<DevolucionDTO> ejecutar(final DevolucionDTO filtro) {
         try {
             final DevolucionDTO filtroEfectivo = UtilObjeto.obtenerValorDefecto(filtro, new DevolucionDTO.Builder().build());
-            final PrestamoDTO prestamoFiltro = UtilObjeto.obtenerValorDefecto(filtroEfectivo.getPrestamo(), new PrestamoDTO.Builder().build());
-
-            final DevolucionEntidad filtroEntidad = new DevolucionEntidad.Builder()
-                    .prestamo(new com.libreria.entidad.PrestamoEntidad.Builder()
-                            .id(prestamoFiltro.getId())
-                            .build())
-                    .build();
+            final DevolucionEntidad filtroEntidad = DevolucionEntidadAssembler.getInstance().ensamblarEntidad(
+                    DevolucionDTOAssembler.getInstance().ensamblarDominio(filtroEfectivo));
 
             final List<DevolucionEntidad> entidades = casoUso.ejecutar(filtroEntidad);
             final List<DevolucionDTO> resultado = new ArrayList<>();
             for (final DevolucionEntidad entidad : entidades) {
-                resultado.add(new DevolucionDTO.Builder()
-                        .id(entidad.getId())
-                        .fechaDevolucion(entidad.getFechaDevolucion())
-                        .prestamo(new PrestamoDTO.Builder()
-                                .id(entidad.getPrestamo().getId())
-                                .build())
-                        .build());
+                resultado.add(DevolucionDTOAssembler.getInstance().ensamblarDTO(
+                        DevolucionEntidadAssembler.getInstance().ensamblarDominio(entidad)));
             }
             return resultado;
 

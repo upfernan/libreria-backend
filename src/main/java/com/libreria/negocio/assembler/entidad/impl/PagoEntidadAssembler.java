@@ -13,7 +13,7 @@ public final class PagoEntidadAssembler implements EntidadAssembler<PagoDominio,
         super();
     }
 
-    public synchronized static final EntidadAssembler<PagoDominio, PagoEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<PagoDominio, PagoEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new PagoEntidadAssembler();
         }

@@ -19,7 +19,7 @@ public class ConsultarPrestamoPorIdCasoUsoImpl implements ConsultarPrestamoPorId
 
     @Override
     public PrestamoEntidad ejecutar(final UUID id) {
-        // Validar que el identificador sea obligatorio
+        // P11 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar préstamo.");
         }

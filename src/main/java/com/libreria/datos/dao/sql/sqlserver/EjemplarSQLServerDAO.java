@@ -14,6 +14,7 @@ import com.libreria.entidad.EjemplarEntidad;
 import com.libreria.entidad.LibroEntidad;
 import com.libreria.entidad.SignaturaEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class EjemplarSQLServerDAO extends SQLDAO implements EjemplarDAO {
@@ -34,7 +35,7 @@ public class EjemplarSQLServerDAO extends SQLDAO implements EjemplarDAO {
 			ps.setString(3, signaturaId);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el ejemplar.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el ejemplar.");
 		}
 	}
 
@@ -50,7 +51,7 @@ public class EjemplarSQLServerDAO extends SQLDAO implements EjemplarDAO {
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el ejemplar.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el ejemplar.");
 		}
 	}
 
@@ -61,28 +62,35 @@ public class EjemplarSQLServerDAO extends SQLDAO implements EjemplarDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el ejemplar.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el ejemplar.");
 		}
 	}
 
+	private static final String SELECT_BASE =
+			"SELECT e.id, e.libroId, e.signaturaId,"
+			+ " l.titulo AS libroTitulo,"
+			+ " s.pasillo AS sigPasillo, s.estante AS sigEstante, s.posicion AS sigPosicion"
+			+ " FROM ejemplar e"
+			+ " LEFT JOIN libro l ON e.libroId = l.id"
+			+ " LEFT JOIN signatura s ON e.signaturaId = s.id";
+
 	@Override
 	public List<EjemplarEntidad> consultarTodos() {
-		final String sql = "SELECT id, libroId, signaturaId FROM ejemplar";
 		final List<EjemplarEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(sql);
+		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
 				ResultSet rs = ps.executeQuery()) {
 			while (rs.next()) {
 				resultados.add(construirEjemplarEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los ejemplares.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los ejemplares.");
 		}
 		return resultados;
 	}
 
 	@Override
 	public EjemplarEntidad consultarPorId(final UUID id) {
-		final String sql = "SELECT id, libroId, signaturaId FROM ejemplar WHERE id = ?";
+		final String sql = SELECT_BASE + " WHERE e.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
@@ -91,27 +99,27 @@ public class EjemplarSQLServerDAO extends SQLDAO implements EjemplarDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el ejemplar por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el ejemplar por identificador.");
 		}
 		return null;
 	}
 
 	@Override
 	public List<EjemplarEntidad> consultarPorFiltro(final EjemplarEntidad filtro) {
-		final StringBuilder sql = new StringBuilder("SELECT id, libroId, signaturaId FROM ejemplar WHERE 1=1");
+		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getId())) {
-				sql.append(" AND id = ?");
+			if (UtilUUID.tieneValor(filtro.getId())) {
+				sql.append(" AND e.id = ?");
 				parametros.add(filtro.getId().toString());
 			}
-			if (!UtilObjeto.esNulo(filtro.getLibro()) && !UtilObjeto.esNulo(filtro.getLibro().getId())) {
-				sql.append(" AND libroId = ?");
+			if (!UtilObjeto.esNulo(filtro.getLibro()) && UtilUUID.tieneValor(filtro.getLibro().getId())) {
+				sql.append(" AND e.libroId = ?");
 				parametros.add(filtro.getLibro().getId().toString());
 			}
-			if (!UtilObjeto.esNulo(filtro.getSignatura()) && !UtilObjeto.esNulo(filtro.getSignatura().getId())) {
-				sql.append(" AND signaturaId = ?");
+			if (!UtilObjeto.esNulo(filtro.getSignatura()) && UtilUUID.tieneValor(filtro.getSignatura().getId())) {
+				sql.append(" AND e.signaturaId = ?");
 				parametros.add(filtro.getSignatura().getId().toString());
 			}
 		}
@@ -127,21 +135,30 @@ public class EjemplarSQLServerDAO extends SQLDAO implements EjemplarDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los ejemplares por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los ejemplares por filtro.");
 		}
 		return resultados;
 	}
 
 	private EjemplarEntidad construirEjemplarEntidad(final ResultSet rs) throws SQLException {
 		final String signaturaId = rs.getString("signaturaId");
+		final String sigPasilloStr = rs.getString("sigPasillo");
+		final char sigPasillo = sigPasilloStr != null && !sigPasilloStr.isEmpty() ? sigPasilloStr.charAt(0) : '\0';
+		final SignaturaEntidad signatura = UtilObjeto.esNulo(signaturaId)
+				? new SignaturaEntidad.Builder().build()
+				: new SignaturaEntidad.Builder()
+						.id(UUID.fromString(signaturaId))
+						.pasillo(sigPasillo)
+						.estante(rs.getInt("sigEstante"))
+						.posicion(rs.getInt("sigPosicion"))
+						.build();
 		return new EjemplarEntidad.Builder()
 				.id(UUID.fromString(rs.getString("id")))
 				.libro(new LibroEntidad.Builder()
 						.id(UUID.fromString(rs.getString("libroId")))
+						.titulo(rs.getString("libroTitulo"))
 						.build())
-				.signatura(!UtilObjeto.esNulo(signaturaId)
-						? new SignaturaEntidad.Builder().id(UUID.fromString(signaturaId)).build()
-						: new SignaturaEntidad.Builder().build())
+				.signatura(signatura)
 				.build();
 	}
 

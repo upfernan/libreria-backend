@@ -18,6 +18,7 @@ import com.libreria.negocio.casouso.devolucion.RecibirDevolucionCasoUso;
 import com.libreria.negocio.dominio.DevolucionDominio;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
@@ -31,10 +32,8 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
 
     @Override
     public void ejecutar(final DevolucionDominio datos) {
-        // P5 — Validar que el identificador del préstamo sea obligatorio
-        if (UtilObjeto.esNulo(datos.getPrestamo().getId())) {
-            throw GestorLibreriaExcepcion.crear("El identificador del préstamo es obligatorio para registrar una devolución.", "prestamo.id nulo en DevolucionDominio.");
-        }
+        // P4 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+        validarDatos(datos);
 
         // P2 — Validar que el préstamo exista en el sistema
         final PrestamoEntidad prestamo = daoFactory.getPrestamoDAO().consultarPorId(datos.getPrestamo().getId());
@@ -49,7 +48,7 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
         }
         final boolean eraVencido = "vencido".equalsIgnoreCase(estadoNombre);
 
-        // P4 — Validar que el préstamo no tenga ya una devolución registrada
+        // P5 — El préstamo no puede tener una devolución previamente registrada
         validarSinDevolucionPrevia(datos.getPrestamo().getId());
 
         // Determinar si el libro es físico (aplica multa, disponibles y reservas)
@@ -66,26 +65,33 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
                 .prestamo(prestamo)
                 .build());
 
-        // P6 — Cambiar el estado del préstamo a "devuelto"
+        // P6 — Al registrar la devolución, el estado del préstamo cambia a devuelto
         cambiarEstadoPrestamo(prestamo, "devuelto");
 
-        // P7 — Incrementar disponibles del libro (solo libros físicos)
+        // P7 — El ejemplar queda disponible para préstamo después de registrar la devolución
         if (esLibroFisico) {
             incrementarDisponiblesLibro(prestamo);
         }
 
-        // P8 — Generar multa si el préstamo era vencido y el libro es físico
+        // Generar multa si el préstamo era vencido y el libro es físico
         if (eraVencido && esLibroFisico) {
             generarMulta(prestamo, devolucionId, fechaDevolucion);
         }
 
-        // P9 — Asignar ejemplar al siguiente usuario en cola de reservas activas
+        // P8 — Si existen reservas pendientes, la más antigua pasa a estado disponible
         if (esLibroFisico) {
             asignarReservaActiva(prestamo);
         }
     }
 
-    // P4 — Validar ausencia de devolución previa para el mismo préstamo
+    // P4 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+    private void validarDatos(final DevolucionDominio datos) {
+        if (UtilObjeto.esNulo(datos) || UtilObjeto.esNulo(datos.getPrestamo()) || UtilObjeto.esNulo(datos.getPrestamo().getId())) {
+            throw GestorLibreriaExcepcion.crear("El identificador del préstamo es obligatorio para registrar una devolución.", "prestamo.id nulo en DevolucionDominio.");
+        }
+    }
+
+    // P5 — Validar ausencia de devolución previa para el mismo préstamo
     private void validarSinDevolucionPrevia(final UUID prestamoId) {
         final DevolucionEntidad filtro = new DevolucionEntidad.Builder()
                 .prestamo(new PrestamoEntidad.Builder().id(prestamoId).build())
@@ -101,11 +107,11 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
         UUID id;
         do {
             id = UUID.randomUUID();
-        } while (!UtilObjeto.esNulo(daoFactory.getDevolucionDAO().consultarPorId(id)));
+        } while (UtilUUID.tieneValor(daoFactory.getDevolucionDAO().consultarPorId(id).getId()));
         return id;
     }
 
-    // P6 — Buscar y aplicar el nuevo estado del préstamo
+    // P6 — Al registrar la devolución, el estado del préstamo cambia a devuelto
     private void cambiarEstadoPrestamo(final PrestamoEntidad prestamo, final String nombreEstado) {
         final List<EstadoPrestamoEntidad> estados = daoFactory.getEstadoPrestamoDAO()
                 .consultarPorFiltro(new EstadoPrestamoEntidad.Builder().nombre(nombreEstado).build());
@@ -123,7 +129,7 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
                 .build());
     }
 
-    // P7 — Incrementar el contador de ejemplares disponibles del libro
+    // P7 — El ejemplar queda disponible para préstamo después de registrar la devolución
     private void incrementarDisponiblesLibro(final PrestamoEntidad prestamo) {
         final LibroEntidad libro = prestamo.getEjemplar().getLibro();
         daoFactory.getLibroDAO().actualizar(libro.getId(), new LibroEntidad.Builder()
@@ -136,7 +142,7 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
                 .build());
     }
 
-    // P8 — Generar la multa calculada por días de retraso
+    // Generar la multa calculada por días de retraso
     private void generarMulta(final PrestamoEntidad prestamo, final UUID devolucionId, final LocalDate fechaDevolucion) {
         final TarifaMultaEntidad tarifaVigente = obtenerTarifaVigente();
         if (UtilObjeto.esNulo(tarifaVigente.getId())) {
@@ -177,45 +183,30 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
         return new TarifaMultaEntidad.Builder().build();
     }
 
-    // P9 — Asignar el ejemplar a la reserva activa más antigua para el mismo libro
+    // P8 — Si existen reservas pendientes, la más antigua pasa a estado disponible
     private void asignarReservaActiva(final PrestamoEntidad prestamo) {
         final LibroEntidad libro = prestamo.getEjemplar().getLibro();
-        final List<ReservaEntidad> reservas = daoFactory.getReservaDAO()
+        // Consultar solo reservas pendientes del libro, ordenadas por fechaReserva ASC
+        final List<ReservaEntidad> reservasPendientes = daoFactory.getReservaDAO()
                 .consultarPorFiltro(new ReservaEntidad.Builder()
                         .libro(new LibroEntidad.Builder().id(libro.getId()).build())
+                        .estadoReserva(new EstadoReservaEntidad.Builder().nombre("pendiente").build())
                         .build());
-        if (UtilObjeto.esNulo(reservas) || reservas.isEmpty()) {
+        if (UtilObjeto.esNulo(reservasPendientes) || reservasPendientes.isEmpty()) {
             return;
         }
 
-        ReservaEntidad reservaElegida = new ReservaEntidad.Builder().build();
-        for (final ReservaEntidad reserva : reservas) {
-            if ("activa".equalsIgnoreCase(reserva.getEstadoReserva().getNombre())) {
-                if (UtilObjeto.esNulo(reservaElegida.getId())) {
-                    reservaElegida = reserva;
-                } else if (reserva.getFechaReserva().isBefore(reservaElegida.getFechaReserva())) {
-                    reservaElegida = reserva;
-                }
-            }
-        }
+        // La primera en la lista es la más antigua (ORDER BY fechaReserva ASC del DAO)
+        final ReservaEntidad reservaMasAntigua = reservasPendientes.get(0);
 
-        if (UtilObjeto.esNulo(reservaElegida.getId())) {
+        final List<EstadoReservaEntidad> estadosDisponible = daoFactory.getEstadoReservaDAO()
+                .consultarPorFiltro(new EstadoReservaEntidad.Builder().nombre("disponible").build());
+        if (UtilObjeto.esNulo(estadosDisponible) || estadosDisponible.isEmpty()) {
             return;
         }
 
-        final List<EstadoReservaEntidad> estadosAsignada = daoFactory.getEstadoReservaDAO()
-                .consultarPorFiltro(new EstadoReservaEntidad.Builder().nombre("asignada").build());
-        if (UtilObjeto.esNulo(estadosAsignada) || estadosAsignada.isEmpty()) {
-            return;
-        }
-
-        daoFactory.getReservaDAO().actualizar(reservaElegida.getId(), new ReservaEntidad.Builder()
-                .id(reservaElegida.getId())
-                .fechaReserva(reservaElegida.getFechaReserva())
-                .fechaExpiracion(reservaElegida.getFechaExpiracion())
-                .estadoReserva(estadosAsignada.get(0))
-                .usuario(reservaElegida.getUsuario())
-                .libro(reservaElegida.getLibro())
+        daoFactory.getReservaDAO().actualizar(reservaMasAntigua.getId(), new ReservaEntidad.Builder()
+                .estadoReserva(estadosDisponible.get(0))
                 .build());
     }
 }

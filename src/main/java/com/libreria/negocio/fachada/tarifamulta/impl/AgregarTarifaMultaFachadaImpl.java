@@ -2,9 +2,9 @@ package com.libreria.negocio.fachada.tarifamulta.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.TarifaMultaDTO;
+import com.libreria.negocio.assembler.dto.impl.TarifaMultaDTOAssembler;
 import com.libreria.negocio.casouso.tarifamulta.AgregarTarifaMultaCasoUso;
 import com.libreria.negocio.casouso.tarifamulta.impl.AgregarTarifaMultaCasoUsoImpl;
-import com.libreria.negocio.dominio.TarifaMultaDominio;
 import com.libreria.negocio.fachada.tarifamulta.AgregarTarifaMultaFachada;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -23,12 +23,7 @@ public class AgregarTarifaMultaFachadaImpl implements AgregarTarifaMultaFachada 
         try {
             daoFactory.iniciarTransaccion();
 
-            final TarifaMultaDominio dominio = new TarifaMultaDominio.Builder()
-                    .valorDiario(datos.getValorDiario())
-                    .fechaInicioVigencia(datos.getFechaInicioVigencia())
-                    .build();
-
-            casoUso.ejecutar(dominio);
+            casoUso.ejecutar(TarifaMultaDTOAssembler.getInstance().ensamblarDominio(datos));
 
             daoFactory.confirmarTransaccion();
 

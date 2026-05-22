@@ -13,7 +13,7 @@ public final class TarifaMultaDTOAssembler implements DTOAssembler<TarifaMultaDo
         super();
     }
 
-    public synchronized static final DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> getInstance() {
+    public static final synchronized DTOAssembler<TarifaMultaDominio, TarifaMultaDTO> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new TarifaMultaDTOAssembler();
         }

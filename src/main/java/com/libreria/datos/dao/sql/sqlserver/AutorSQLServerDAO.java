@@ -32,7 +32,7 @@ public class AutorSQLServerDAO extends SQLDAO implements AutorDAO {
 			ps.setString(5, entidad.getSegundoApellido());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el autor.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el autor.");
 		}
 	}
 
@@ -47,7 +47,7 @@ public class AutorSQLServerDAO extends SQLDAO implements AutorDAO {
 			ps.setString(5, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el autor.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el autor.");
 		}
 	}
 
@@ -58,7 +58,7 @@ public class AutorSQLServerDAO extends SQLDAO implements AutorDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el autor.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el autor.");
 		}
 	}
 
@@ -72,7 +72,7 @@ public class AutorSQLServerDAO extends SQLDAO implements AutorDAO {
 				resultados.add(construirAutorEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los autores.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los autores.");
 		}
 		return resultados;
 	}
@@ -88,7 +88,7 @@ public class AutorSQLServerDAO extends SQLDAO implements AutorDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el autor por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el autor por identificador.");
 		}
 		return null;
 	}
@@ -99,11 +99,11 @@ public class AutorSQLServerDAO extends SQLDAO implements AutorDAO {
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilTexto.esNula(filtro.getPrimerNombre())) {
+			if (UtilTexto.tieneContenido(filtro.getPrimerNombre())) {
 				sql.append(" AND primerNombre = ?");
 				parametros.add(filtro.getPrimerNombre());
 			}
-			if (!UtilTexto.esNula(filtro.getPrimerApellido())) {
+			if (UtilTexto.tieneContenido(filtro.getPrimerApellido())) {
 				sql.append(" AND primerApellido = ?");
 				parametros.add(filtro.getPrimerApellido());
 			}
@@ -120,7 +120,7 @@ public class AutorSQLServerDAO extends SQLDAO implements AutorDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los autores por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los autores por filtro.");
 		}
 		return resultados;
 	}

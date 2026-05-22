@@ -5,10 +5,9 @@ import java.util.List;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.EjemplarDTO;
-import com.libreria.dto.LibroDTO;
-import com.libreria.dto.SignaturaDTO;
 import com.libreria.entidad.EjemplarEntidad;
-import com.libreria.entidad.LibroEntidad;
+import com.libreria.negocio.assembler.dto.impl.EjemplarDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.EjemplarEntidadAssembler;
 import com.libreria.negocio.casouso.ejemplar.ConsultarTodosEjemplaresCasoUso;
 import com.libreria.negocio.casouso.ejemplar.impl.ConsultarTodosEjemplaresCasoUsoImpl;
 import com.libreria.negocio.fachada.ejemplar.ConsultarTodosEjemplaresFachada;
@@ -29,26 +28,14 @@ public class ConsultarTodosEjemplaresFachadaImpl implements ConsultarTodosEjempl
     public List<EjemplarDTO> ejecutar(final EjemplarDTO filtro) {
         try {
             final EjemplarDTO filtroEfectivo = UtilObjeto.obtenerValorDefecto(filtro, new EjemplarDTO.Builder().build());
-            final EjemplarEntidad filtroEntidad = new EjemplarEntidad.Builder()
-                    .libro(filtroEfectivo.getLibro() != null && filtroEfectivo.getLibro().getId() != null
-                            ? new LibroEntidad.Builder()
-                                    .id(filtroEfectivo.getLibro().getId())
-                                    .build()
-                            : null)
-                    .build();
+            final EjemplarEntidad filtroEntidad = EjemplarEntidadAssembler.getInstance().ensamblarEntidad(
+                    EjemplarDTOAssembler.getInstance().ensamblarDominio(filtroEfectivo));
 
             final List<EjemplarEntidad> entidades = casoUso.ejecutar(filtroEntidad);
             final List<EjemplarDTO> resultado = new ArrayList<>();
             for (final EjemplarEntidad entidad : entidades) {
-                resultado.add(new EjemplarDTO.Builder()
-                        .id(entidad.getId())
-                        .libro(new LibroDTO.Builder()
-                                .id(entidad.getLibro().getId())
-                                .build())
-                        .signatura(new SignaturaDTO.Builder()
-                                .id(entidad.getSignatura().getId())
-                                .build())
-                        .build());
+                resultado.add(EjemplarDTOAssembler.getInstance().ensamblarDTO(
+                        EjemplarEntidadAssembler.getInstance().ensamblarDominio(entidad)));
             }
             return resultado;
 

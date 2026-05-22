@@ -1,7 +1,7 @@
 package com.libreria.datos;
 
-public interface EliminarDAO<ID> {
+public interface EliminarDAO<I> {
 
-	void eliminar(ID id);
+	void eliminar(I id);
 
 }

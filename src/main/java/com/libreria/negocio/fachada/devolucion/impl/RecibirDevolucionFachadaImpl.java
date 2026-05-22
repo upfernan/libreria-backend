@@ -2,11 +2,9 @@ package com.libreria.negocio.fachada.devolucion.impl;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.DevolucionDTO;
-import com.libreria.dto.PrestamoDTO;
+import com.libreria.negocio.assembler.dto.impl.DevolucionDTOAssembler;
 import com.libreria.negocio.casouso.devolucion.RecibirDevolucionCasoUso;
 import com.libreria.negocio.casouso.devolucion.impl.RecibirDevolucionCasoUsoImpl;
-import com.libreria.negocio.dominio.DevolucionDominio;
-import com.libreria.negocio.dominio.PrestamoDominio;
 import com.libreria.negocio.fachada.devolucion.RecibirDevolucionFachada;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
@@ -27,15 +25,7 @@ public class RecibirDevolucionFachadaImpl implements RecibirDevolucionFachada {
             daoFactory.iniciarTransaccion();
 
             final DevolucionDTO datosEfectivos = UtilObjeto.obtenerValorDefecto(datos, new DevolucionDTO.Builder().build());
-            final PrestamoDTO prestamoEfectivo = UtilObjeto.obtenerValorDefecto(datosEfectivos.getPrestamo(), new PrestamoDTO.Builder().build());
-
-            final DevolucionDominio dominio = new DevolucionDominio.Builder()
-                    .prestamo(new PrestamoDominio.Builder()
-                            .id(prestamoEfectivo.getId())
-                            .build())
-                    .build();
-
-            casoUso.ejecutar(dominio);
+            casoUso.ejecutar(DevolucionDTOAssembler.getInstance().ensamblarDominio(datosEfectivos));
 
             daoFactory.confirmarTransaccion();
 

@@ -2,6 +2,7 @@ package com.libreria.dto;
 
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class AutorLibroDTO {
 
@@ -16,9 +17,9 @@ public class AutorLibroDTO {
     }
 
     public AutorLibroDTO() {
-        setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        setAutor(null);
-        setLibro(null);
+        setId(UtilUUID.UUID_DEFECTO);
+        setAutor(new AutorDTO.Builder().build());
+        setLibro(new LibroDTO.Builder().build());
     }
 
     public UUID getId() {
@@ -34,7 +35,7 @@ public class AutorLibroDTO {
     }
 
     private void setId(final UUID id) {
-        this.id = id;
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     private void setAutor(final AutorDTO autor) {

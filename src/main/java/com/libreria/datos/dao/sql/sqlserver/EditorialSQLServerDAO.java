@@ -13,6 +13,7 @@ import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.EditorialEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
@@ -30,7 +31,7 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 			ps.setString(3, entidad.getNombre());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar la editorial.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la editorial.");
 		}
 	}
 
@@ -43,7 +44,7 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar la editorial.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la editorial.");
 		}
 	}
 
@@ -54,7 +55,7 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar la editorial.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la editorial.");
 		}
 	}
 
@@ -68,7 +69,7 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 				resultados.add(construirEditorialEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las editoriales.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las editoriales.");
 		}
 		return resultados;
 	}
@@ -84,7 +85,7 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar la editorial por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la editorial por identificador.");
 		}
 		return null;
 	}
@@ -95,15 +96,15 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getId())) {
+			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND id = ?");
 				parametros.add(filtro.getId().toString());
 			}
-			if (!UtilTexto.esNula(filtro.getNit())) {
+			if (UtilTexto.tieneContenido(filtro.getNit())) {
 				sql.append(" AND nit = ?");
 				parametros.add(filtro.getNit());
 			}
-			if (!UtilTexto.esNula(filtro.getNombre())) {
+			if (UtilTexto.tieneContenido(filtro.getNombre())) {
 				sql.append(" AND nombre = ?");
 				parametros.add(filtro.getNombre());
 			}
@@ -120,7 +121,7 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar las editoriales por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las editoriales por filtro.");
 		}
 		return resultados;
 	}

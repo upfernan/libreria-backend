@@ -13,6 +13,7 @@ import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.EstadoPrestamoEntidad;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamoDAO {
@@ -30,7 +31,7 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 			ps.setString(3, entidad.getDescripcion());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible registrar el estado de préstamo.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el estado de préstamo.");
 		}
 	}
 
@@ -43,7 +44,7 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible actualizar el estado de préstamo.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el estado de préstamo.");
 		}
 	}
 
@@ -54,7 +55,7 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible eliminar el estado de préstamo.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el estado de préstamo.");
 		}
 	}
 
@@ -68,7 +69,7 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 				resultados.add(construirEstadoPrestamoEntidad(rs));
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los estados de préstamo.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los estados de préstamo.");
 		}
 		return resultados;
 	}
@@ -84,7 +85,7 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar el estado de préstamo por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el estado de préstamo por identificador.");
 		}
 		return null;
 	}
@@ -95,11 +96,11 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilTexto.esNula(filtro.getNombre())) {
+			if (UtilTexto.tieneContenido(filtro.getNombre())) {
 				sql.append(" AND nombre = ?");
 				parametros.add(filtro.getNombre());
 			}
-			if (!UtilObjeto.esNulo(filtro.getId())) {
+			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND id = ?");
 				parametros.add(filtro.getId().toString());
 			}
@@ -116,7 +117,7 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 				}
 			}
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear("No fue posible consultar los estados de préstamo por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los estados de préstamo por filtro.");
 		}
 		return resultados;
 	}

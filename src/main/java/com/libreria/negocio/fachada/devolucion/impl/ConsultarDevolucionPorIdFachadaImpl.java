@@ -4,8 +4,9 @@ import java.util.UUID;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.dto.DevolucionDTO;
-import com.libreria.dto.PrestamoDTO;
 import com.libreria.entidad.DevolucionEntidad;
+import com.libreria.negocio.assembler.dto.impl.DevolucionDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.DevolucionEntidadAssembler;
 import com.libreria.negocio.casouso.devolucion.ConsultarDevolucionPorIdCasoUso;
 import com.libreria.negocio.casouso.devolucion.impl.ConsultarDevolucionPorIdCasoUsoImpl;
 import com.libreria.negocio.fachada.devolucion.ConsultarDevolucionPorIdFachada;
@@ -26,13 +27,8 @@ public class ConsultarDevolucionPorIdFachadaImpl implements ConsultarDevolucionP
     public DevolucionDTO ejecutar(final UUID id) {
         try {
             final DevolucionEntidad entidad = UtilObjeto.obtenerValorDefecto(casoUso.ejecutar(id), new DevolucionEntidad.Builder().build());
-            return new DevolucionDTO.Builder()
-                    .id(entidad.getId())
-                    .fechaDevolucion(entidad.getFechaDevolucion())
-                    .prestamo(new PrestamoDTO.Builder()
-                            .id(entidad.getPrestamo().getId())
-                            .build())
-                    .build();
+            return DevolucionDTOAssembler.getInstance().ensamblarDTO(
+                    DevolucionEntidadAssembler.getInstance().ensamblarDominio(entidad));
 
         } catch (GestorLibreriaExcepcion excepcion) {
             throw excepcion;

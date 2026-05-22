@@ -24,19 +24,19 @@ public class ActualizarUsuarioCasoUsoImpl implements ActualizarUsuarioCasoUso {
 
     @Override
     public void ejecutar(final UsuarioDominio datos) {
-        // Validar tipo de dato, obligatoriedad y formato de los datos de entrada
+        // P4 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
         validarDatosObligatorios(datos);
-        // Validar que el usuario exista en el sistema
+        // P5 — Validar que el usuario exista en el sistema
         validarExistenciaUsuario(datos.getId());
-        // Validar que el tipo de identificación existe en el sistema
+        // P3 — Validar que el tipo de identificación existe en el sistema
         validarExistenciaTipoIdentificacion(datos.getTipoIdentificacion().getId());
-        // Validar que la combinación número + tipo de identificación no esté ya registrada en otro usuario
+        // P2 — Validar que la combinación número + tipo de identificación no esté ya registrada en otro usuario
         validarCombinacionIdentificacionUnicaExcluyendo(datos.getNumeroIdentificacion(), datos.getTipoIdentificacion().getId(), datos.getId());
-        // Actualizar el usuario en el sistema
+        // P1 — Actualizar el usuario en el sistema
         daoFactory.getUsuarioDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 
-    // Datos requeridos válidos en tipo, obligatoriedad y formato
+    // P4 — Datos requeridos válidos en tipo, obligatoriedad y formato
     private void validarDatosObligatorios(final UsuarioDominio datos) {
         if (UtilObjeto.esNulo(datos)) {
             throw GestorLibreriaExcepcion.crear("Los datos del usuario son obligatorios.", "Se recibió un objeto UsuarioDominio nulo.");
@@ -67,7 +67,7 @@ public class ActualizarUsuarioCasoUsoImpl implements ActualizarUsuarioCasoUso {
         }
     }
 
-    // Validar que el usuario exista en la base de datos
+    // P5 — Validar que el usuario exista en la base de datos
     private void validarExistenciaUsuario(final UUID id) {
         final UsuarioEntidad entidad = daoFactory.getUsuarioDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -75,7 +75,7 @@ public class ActualizarUsuarioCasoUsoImpl implements ActualizarUsuarioCasoUso {
         }
     }
 
-    // Validar que el tipo de identificación exista en la base de datos
+    // P3 — Validar que el tipo de identificación exista en la base de datos
     private void validarExistenciaTipoIdentificacion(final UUID tipoIdentificacionId) {
         final TipoIdentificacionEntidad tipoIdentificacion = daoFactory.getTipoIdentificacionDAO().consultarPorId(tipoIdentificacionId);
         if (UtilObjeto.esNulo(tipoIdentificacion) || UtilObjeto.esNulo(tipoIdentificacion.getId())) {
@@ -83,7 +83,7 @@ public class ActualizarUsuarioCasoUsoImpl implements ActualizarUsuarioCasoUso {
         }
     }
 
-    // Validar que la combinación número + tipo de identificación no esté ya registrada en otro usuario
+    // P2 — Validar que la combinación número + tipo de identificación no esté ya registrada en otro usuario
     private void validarCombinacionIdentificacionUnicaExcluyendo(final String numeroIdentificacion, final UUID tipoIdentificacionId, final UUID usuarioId) {
         final UsuarioEntidad filtro = new UsuarioEntidad.Builder()
                 .numeroIdentificacion(numeroIdentificacion)

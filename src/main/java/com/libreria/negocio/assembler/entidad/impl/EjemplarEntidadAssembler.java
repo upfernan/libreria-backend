@@ -13,7 +13,7 @@ public final class EjemplarEntidadAssembler implements EntidadAssembler<Ejemplar
         super();
     }
 
-    public synchronized static final EntidadAssembler<EjemplarDominio, EjemplarEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<EjemplarDominio, EjemplarEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new EjemplarEntidadAssembler();
         }

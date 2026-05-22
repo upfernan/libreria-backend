@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
-import com.libreria.dto.TipoIdentificacionDTO;
 import com.libreria.dto.UsuarioDTO;
 import com.libreria.entidad.UsuarioEntidad;
+import com.libreria.negocio.assembler.dto.impl.UsuarioDTOAssembler;
+import com.libreria.negocio.assembler.entidad.impl.UsuarioEntidadAssembler;
 import com.libreria.negocio.casouso.usuario.ConsultarTodosUsuariosCasoUso;
 import com.libreria.negocio.casouso.usuario.impl.ConsultarTodosUsuariosCasoUsoImpl;
 import com.libreria.negocio.fachada.usuario.ConsultarTodosUsuariosFachada;
@@ -27,29 +28,14 @@ public class ConsultarTodosUsuariosFachadaImpl implements ConsultarTodosUsuarios
     public List<UsuarioDTO> ejecutar(final UsuarioDTO filtro) {
         try {
             final UsuarioDTO filtroEfectivo = UtilObjeto.obtenerValorDefecto(filtro, new UsuarioDTO.Builder().build());
-            final UsuarioEntidad filtroEntidad = new UsuarioEntidad.Builder()
-                    .tipoIdentificacion(filtroEfectivo.getTipoIdentificacion() != null
-                            ? new com.libreria.entidad.TipoIdentificacionEntidad.Builder()
-                                    .id(filtroEfectivo.getTipoIdentificacion().getId())
-                                    .build()
-                            : null)
-                    .build();
+            final UsuarioEntidad filtroEntidad = UsuarioEntidadAssembler.getInstance().ensamblarEntidad(
+                    UsuarioDTOAssembler.getInstance().ensamblarDominio(filtroEfectivo));
 
             final List<UsuarioEntidad> entidades = casoUso.ejecutar(filtroEntidad);
             final List<UsuarioDTO> resultado = new ArrayList<>();
             for (final UsuarioEntidad entidad : entidades) {
-                resultado.add(new UsuarioDTO.Builder()
-                        .id(entidad.getId())
-                        .tipoIdentificacion(new TipoIdentificacionDTO.Builder()
-                                .id(entidad.getTipoIdentificacion().getId())
-                                .build())
-                        .numeroIdentificacion(entidad.getNumeroIdentificacion())
-                        .primerNombre(entidad.getPrimerNombre())
-                        .segundoNombre(entidad.getSegundoNombre())
-                        .primerApellido(entidad.getPrimerApellido())
-                        .segundoApellido(entidad.getSegundoApellido())
-                        .correoElectronico(entidad.getCorreoElectronico())
-                        .build());
+                resultado.add(UsuarioDTOAssembler.getInstance().ensamblarDTO(
+                        UsuarioEntidadAssembler.getInstance().ensamblarDominio(entidad)));
             }
             return resultado;
 

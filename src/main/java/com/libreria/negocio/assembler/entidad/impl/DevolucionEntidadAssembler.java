@@ -13,7 +13,7 @@ public final class DevolucionEntidadAssembler implements EntidadAssembler<Devolu
         super();
     }
 
-    public synchronized static final EntidadAssembler<DevolucionDominio, DevolucionEntidad> getInstance() {
+    public static final synchronized EntidadAssembler<DevolucionDominio, DevolucionEntidad> getInstance() {
         if (UtilObjeto.esNulo(instancia)) {
             instancia = new DevolucionEntidadAssembler();
         }

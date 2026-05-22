@@ -5,8 +5,10 @@ import java.util.UUID;
 
 import com.libreria.datos.dao.sql.factoria.DAOFactory;
 import com.libreria.entidad.EstadoPrestamoEntidad;
+import com.libreria.entidad.EstadoReservaEntidad;
 import com.libreria.entidad.MultaEntidad;
 import com.libreria.entidad.PrestamoEntidad;
+import com.libreria.entidad.ReservaEntidad;
 import com.libreria.entidad.UsuarioEntidad;
 import com.libreria.negocio.casouso.usuario.RetirarUsuarioCasoUso;
 import com.libreria.transversal.utilitario.UtilObjeto;
@@ -28,17 +30,19 @@ public class RetirarUsuarioCasoUsoImpl implements RetirarUsuarioCasoUso {
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador del usuario es obligatorio.", "Se recibió un UUID nulo para retirar usuario.");
         }
-        // P3 — Validar que el usuario exista en el sistema
+        // P5 — Validar que el usuario exista en el sistema
         validarExistencia(id);
-        // P4 — Validar que el usuario no tenga préstamos activos
+        // P6 — Validar que el usuario no tenga préstamos activos
         validarSinPrestamosActivos(id);
-        // P5 — Validar que el usuario no tenga multas pendientes de pago
+        // P7 — Validar que el usuario no tenga reservas activas
+        validarSinReservasActivas(id);
+        // P8 — Validar que el usuario no tenga multas pendientes de pago
         validarSinMultasPendientes(id);
         // P1 — Eliminar el usuario del sistema
         daoFactory.getUsuarioDAO().eliminar(id);
     }
 
-    // P3 — Validar que el usuario exista en el sistema
+    // P5 — Validar que el usuario exista en el sistema
     private void validarExistencia(final UUID id) {
         final UsuarioEntidad entidad = daoFactory.getUsuarioDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -46,7 +50,7 @@ public class RetirarUsuarioCasoUsoImpl implements RetirarUsuarioCasoUso {
         }
     }
 
-    // P4 — Validar que el usuario no tenga préstamos activos
+    // P6 — Validar que el usuario no tenga préstamos activos
     private void validarSinPrestamosActivos(final UUID id) {
         final PrestamoEntidad filtro = new PrestamoEntidad.Builder()
                 .usuario(new UsuarioEntidad.Builder().id(id).build())
@@ -58,7 +62,19 @@ public class RetirarUsuarioCasoUsoImpl implements RetirarUsuarioCasoUso {
         }
     }
 
-    // P5 — Validar que el usuario no tenga multas sin pagar
+    // P7 — Validar que el usuario no tenga reservas activas
+    private void validarSinReservasActivas(final UUID id) {
+        final ReservaEntidad filtro = new ReservaEntidad.Builder()
+                .usuario(new UsuarioEntidad.Builder().id(id).build())
+                .estadoReserva(new EstadoReservaEntidad.Builder().nombre("pendiente").build())
+                .build();
+        final List<ReservaEntidad> reservasActivas = daoFactory.getReservaDAO().consultarPorFiltro(filtro);
+        if (!UtilObjeto.esNulo(reservasActivas) && !reservasActivas.isEmpty()) {
+            throw GestorLibreriaExcepcion.crear("El usuario tiene reservas activas y no puede eliminarse.", "usuarioId: " + id);
+        }
+    }
+
+    // P8 — Validar que el usuario no tenga multas sin pagar
     private void validarSinMultasPendientes(final UUID id) {
         final MultaEntidad filtro = new MultaEntidad.Builder()
                 .usuarioAfectado(new UsuarioEntidad.Builder().id(id).build())

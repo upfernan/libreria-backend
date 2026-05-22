@@ -25,7 +25,7 @@ public class RetirarEstadoPrestamoCasoUsoImpl implements RetirarEstadoPrestamoCa
         validarExistencia(id);
         // P5 — Validar que el estado de préstamo no esté en uso
         validarNoEnUso(id);
-        // P1 — Eliminar el estado de préstamo del sistema
+        
         daoFactory.getEstadoPrestamoDAO().eliminar(id);
     }
 

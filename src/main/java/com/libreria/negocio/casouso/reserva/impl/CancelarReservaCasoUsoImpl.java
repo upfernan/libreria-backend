@@ -46,7 +46,7 @@ public class CancelarReservaCasoUsoImpl implements CancelarReservaCasoUso {
             throw GestorLibreriaExcepcion.crear("No se encontró el estado 'cancelada' requerido para cancelar la reserva.", "EstadoReserva 'cancelada' no configurado en el sistema.");
         }
 
-        // P1 — Actualizar el estado de la reserva a "cancelada"
+        
         daoFactory.getReservaDAO().actualizar(reserva.getId(), new ReservaEntidad.Builder()
                 .id(reserva.getId())
                 .fechaReserva(reserva.getFechaReserva())

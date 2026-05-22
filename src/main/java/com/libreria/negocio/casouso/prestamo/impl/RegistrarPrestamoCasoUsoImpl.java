@@ -59,7 +59,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		// P1 — No puede existir otro préstamo con el mismo identificador
 		guardarNuevoPrestamo(datos, reservaPendiente, fechaPrestamo);
 
-		// Marcar la reserva como atendida si el préstamo se originó desde una reserva real no "sin reserva" RECORDAR
+		// Parte de la P7 Marcar la reserva como atendida si el préstamo se originó desde una reserva real no "sin reserva" RECORDAR
 		if (esReservaReal(reservaPendiente)) {
 			marcarReservaComoAtendida(reservaPendiente);
 		}
@@ -192,7 +192,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		return !reserva.getId().equals(sinReservaList.get(0).getId());
 	}
 
-	// Marcar la reserva como atendida dentro de la misma transacción del préstamo
+	// Parte de la P7 Marcar la reserva como atendida dentro de la misma transacción del préstamo
 	private void marcarReservaComoAtendida(final ReservaEntidad reserva) {
 		final EstadoReservaEntidad filtroEstado = new EstadoReservaEntidad.Builder()
 				.nombre("atendida")
@@ -218,7 +218,6 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		return id;
 	}
 
-	// P1 — No puede existir otro préstamo con el mismo identificador (construcción y persistencia)
 	private void guardarNuevoPrestamo(final PrestamoDominio datos, final ReservaEntidad reserva, final LocalDate fechaPrestamo) {
 		final EstadoPrestamoEntidad filtroEstado = new EstadoPrestamoEntidad.Builder()
 				.nombre("activo")

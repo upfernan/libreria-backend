@@ -25,7 +25,7 @@ public class RetirarCategoriaCasoUsoImpl implements RetirarCategoriaCasoUso {
         validarExistencia(id);
         // P5 — Validar que la categoría no esté en uso
         validarNoEnUso(id);
-        // P1 — Eliminar la categoría del sistema
+  
         daoFactory.getCategoriaDAO().eliminar(id);
     }
 

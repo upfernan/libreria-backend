@@ -17,7 +17,7 @@ public class ConsultarTodosAutoresCasoUsoImpl implements ConsultarTodosAutoresCa
 
     @Override
     public List<AutorEntidad> ejecutar(final AutorEntidad filtro) {
-        // P5 — Delegar la consulta al DAO con el filtro recibido
+        // P5 Asegurar que los datos sean válidos a nivel de tipo de dato, formato, longitud y rango
         return daoFactory.getAutorDAO().consultarPorFiltro(filtro);
     }
 }

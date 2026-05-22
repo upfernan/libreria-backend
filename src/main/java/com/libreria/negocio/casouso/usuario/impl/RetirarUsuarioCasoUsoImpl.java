@@ -38,7 +38,7 @@ public class RetirarUsuarioCasoUsoImpl implements RetirarUsuarioCasoUso {
         validarSinReservasActivas(id);
         // P8 — Validar que el usuario no tenga multas pendientes de pago
         validarSinMultasPendientes(id);
-        // P1 — Eliminar el usuario del sistema
+        
         daoFactory.getUsuarioDAO().eliminar(id);
     }
 

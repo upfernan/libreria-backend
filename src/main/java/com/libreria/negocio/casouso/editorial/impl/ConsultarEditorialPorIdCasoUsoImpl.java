@@ -19,7 +19,7 @@ public class ConsultarEditorialPorIdCasoUsoImpl implements ConsultarEditorialPor
 
     @Override
     public EditorialEntidad ejecutar(final UUID id) {
-        // P6 — Validar que el identificador sea obligatorio
+        // P6 Asegurar que los datos sean válidos a nivel de tipo de dato, formato, longitud y rango
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar editorial.");
         }

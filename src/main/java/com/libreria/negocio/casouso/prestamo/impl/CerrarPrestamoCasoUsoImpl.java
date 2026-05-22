@@ -30,8 +30,7 @@ public class CerrarPrestamoCasoUsoImpl implements CerrarPrestamoCasoUso {
         final PrestamoEntidad prestamo = validarExistencia(id);
         // P10 — El préstamo debe estar en estado activo
         validarEstadoCerrable(prestamo);
-        // Actualizar el estado del préstamo a "finalizado"
-        cerrarPrestamo(prestamo);
+                cerrarPrestamo(prestamo);
     }
 
     // P9 — El préstamo debe estar registrado en el sistema
@@ -53,7 +52,7 @@ public class CerrarPrestamoCasoUsoImpl implements CerrarPrestamoCasoUso {
         }
     }
 
-    // Actualizar el estado del préstamo a "finalizado"
+    
     private void cerrarPrestamo(final PrestamoEntidad prestamo) {
         final List<EstadoPrestamoEntidad> estados = daoFactory.getEstadoPrestamoDAO()
                 .consultarPorFiltro(new EstadoPrestamoEntidad.Builder().nombre("finalizado").build());

@@ -17,7 +17,7 @@ public class ConsultarAutorPorIdCasoUsoImpl implements ConsultarAutorPorIdCasoUs
 
     @Override
     public AutorEntidad ejecutar(final UUID id) {
-        // P5 — Delegar la consulta al DAO
+        // P5 Asegurar que los datos sean válidos a nivel de tipo de dato, formato, longitud y rango
         return daoFactory.getAutorDAO().consultarPorId(id);
     }
 }

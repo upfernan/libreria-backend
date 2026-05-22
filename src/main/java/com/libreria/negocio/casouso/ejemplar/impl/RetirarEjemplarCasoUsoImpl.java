@@ -31,9 +31,9 @@ public class RetirarEjemplarCasoUsoImpl implements RetirarEjemplarCasoUso {
         final EjemplarEntidad ejemplar = validarExistencia(id);
         // P6 — Validar que el ejemplar no tenga préstamos (activos ni históricos)
         validarNoEnUso(id);
-        // P1 — Eliminar el ejemplar del sistema
+        
         daoFactory.getEjemplarDAO().eliminar(id);
-        // Decrementar disponibles del libro si el ejemplar era de tipo físico
+        // p8 Decrementar disponibles del libro si el ejemplar era de tipo físico
         decrementarDisponiblesLibro(ejemplar);
     }
 
@@ -46,7 +46,7 @@ public class RetirarEjemplarCasoUsoImpl implements RetirarEjemplarCasoUso {
         return entidad;
     }
 
-    // Decrementar disponibles del libro asociado (solo para libros físicos, nunca por debajo de cero)
+    // p8 Decrementar disponibles del libro asociado (solo para libros físicos, nunca por debajo de cero)
     private void decrementarDisponiblesLibro(final EjemplarEntidad ejemplar) {
         final LibroEntidad libro = daoFactory.getLibroDAO().consultarPorId(ejemplar.getLibro().getId());
         if (UtilObjeto.esNulo(libro) || UtilObjeto.esNulo(libro.getId())) {

@@ -19,7 +19,7 @@ public class ConsultarReservaPorIdCasoUsoImpl implements ConsultarReservaPorIdCa
 
     @Override
     public ReservaEntidad ejecutar(final UUID id) {
-        // Validar que el identificador sea obligatorio
+        // P9 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar reserva.");
         }

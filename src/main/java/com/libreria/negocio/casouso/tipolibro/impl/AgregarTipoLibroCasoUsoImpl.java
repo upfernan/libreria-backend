@@ -23,11 +23,11 @@ public class AgregarTipoLibroCasoUsoImpl implements AgregarTipoLibroCasoUso {
 
     @Override
     public void ejecutar(final TipoLibroDominio datos) {
-        // P3 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
+        // P3  Validar tipo de dato, obligatoriedad y formato de los datos de entrada
         validarDatosObligatorios(datos);
-        // P2 — Validar que no exista otro tipo de libro con el mismo nombre
+        // P2  Validar que no exista otro tipo de libro con el mismo nombre
         validarNombreUnico(datos.getNombre());
-        // P1 — Registrar el tipo de libro garantizando identificador único
+        // P1 No peude existir un tipo libro con mismo id
         guardarNuevoTipoLibro(datos);
     }
 

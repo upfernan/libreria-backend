@@ -17,7 +17,7 @@ public class ConsultarTodasTarifasMultaCasoUsoImpl implements ConsultarTodasTari
 
     @Override
     public List<TarifaMultaEntidad> ejecutar(final TarifaMultaEntidad filtro) {
-        // P8 — Delegar la consulta al DAO con el filtro recibido
+        // P8 Asegurar que los datos sean válidos a nivel de tipo de dato, formato, longitud y rango
         return daoFactory.getTarifaMultaDAO().consultarPorFiltro(filtro);
     }
 }

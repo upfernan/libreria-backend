@@ -29,7 +29,7 @@ public class ActualizarEditorialCasoUsoImpl implements ActualizarEditorialCasoUs
         validarExistencia(datos.getId());
         // P2 — Validar que no exista otra editorial con el mismo nombre
         validarNombreUnicoExcluyendo(datos.getNombre(), datos.getId());
-        // P1 — Actualizar la editorial en el sistema
+      
         daoFactory.getEditorialDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

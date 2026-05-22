@@ -29,7 +29,7 @@ public class ActualizarEstadoPrestamoCasoUsoImpl implements ActualizarEstadoPres
         validarExistencia(datos.getId());
         // P2 — Validar que no exista otro estado de préstamo con el mismo nombre
         validarNombreUnicoExcluyendo(datos.getNombre(), datos.getId());
-        // P1 — Actualizar el estado de préstamo en el sistema
+        
         daoFactory.getEstadoPrestamoDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

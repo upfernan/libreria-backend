@@ -21,7 +21,7 @@ public class QuitarAutorLibroCasoUsoImpl implements QuitarAutorLibroCasoUso {
     public void ejecutar(final UUID id) {
         // P6 — Validar que la relación autor-libro exista en el sistema
         validarExistencia(id);
-        // P1 — Eliminar la relación autor-libro del sistema
+       
         daoFactory.getAutorLibroDAO().eliminar(id);
     }
 

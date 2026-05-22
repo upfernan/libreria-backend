@@ -27,7 +27,7 @@ public class RetirarTarifaMultaCasoUsoImpl implements RetirarTarifaMultaCasoUso 
         validarNoEsUnica(id);
         // P7 — Si es la vigente, promover la anterior como nueva vigente
         promoverAnteriorSiEsVigente(aEliminar);
-        // P1 — Eliminar la tarifa de multa del sistema
+        
         daoFactory.getTarifaMultaDAO().eliminar(id);
     }
 
@@ -55,7 +55,7 @@ public class RetirarTarifaMultaCasoUsoImpl implements RetirarTarifaMultaCasoUso 
         }
         final List<TarifaMultaEntidad> todas = daoFactory.getTarifaMultaDAO()
                 .consultarPorFiltro(new TarifaMultaEntidad.Builder().build());
-        // Buscar la tarifa con fechaInicioVigencia inmediatamente anterior
+        
         TarifaMultaEntidad anterior = null;
         for (final TarifaMultaEntidad t : todas) {
             if (t.getId().equals(aEliminar.getId())) {

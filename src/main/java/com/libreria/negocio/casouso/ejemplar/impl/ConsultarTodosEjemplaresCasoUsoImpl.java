@@ -17,7 +17,7 @@ public class ConsultarTodosEjemplaresCasoUsoImpl implements ConsultarTodosEjempl
 
     @Override
     public List<EjemplarEntidad> ejecutar(final EjemplarEntidad filtro) {
-        // El filtro puede ser nulo (retorna todos), simplemente se delega al DAO
+        // p7 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
         return daoFactory.getEjemplarDAO().consultarPorFiltro(filtro);
     }
 

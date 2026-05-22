@@ -25,7 +25,7 @@ public class RetirarTipoLibroCasoUsoImpl implements RetirarTipoLibroCasoUso {
         validarExistencia(id);
         // P5 — Validar que el tipo de libro no esté en uso
         validarNoEnUso(id);
-        // P1 — Eliminar el tipo de libro del sistema
+        
         daoFactory.getTipoLibroDAO().eliminar(id);
     }
 

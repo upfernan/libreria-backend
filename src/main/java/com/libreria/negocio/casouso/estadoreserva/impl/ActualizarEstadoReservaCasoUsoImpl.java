@@ -29,7 +29,7 @@ public class ActualizarEstadoReservaCasoUsoImpl implements ActualizarEstadoReser
         validarExistencia(datos.getId());
         // P2 — Validar que no exista otro estado de reserva con el mismo nombre
         validarNombreUnicoExcluyendo(datos.getNombre(), datos.getId());
-        // P1 — Actualizar el estado de reserva en el sistema
+        
         daoFactory.getEstadoReservaDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

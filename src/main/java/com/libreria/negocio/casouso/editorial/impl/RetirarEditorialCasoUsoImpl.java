@@ -25,7 +25,7 @@ public class RetirarEditorialCasoUsoImpl implements RetirarEditorialCasoUso {
         validarExistencia(id);
         // P5 — Validar que la editorial no esté en uso
         validarNoEnUso(id);
-        // P1 — Eliminar la editorial del sistema
+       
         daoFactory.getEditorialDAO().eliminar(id);
     }
 

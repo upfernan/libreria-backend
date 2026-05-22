@@ -17,7 +17,7 @@ public class ConsultarSignaturaPorIdCasoUsoImpl implements ConsultarSignaturaPor
 
     @Override
     public SignaturaEntidad ejecutar(final UUID id) {
-        // P7 — Delegar la consulta al DAO
+        // P7 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
         return daoFactory.getSignaturaDAO().consultarPorId(id);
     }
 }

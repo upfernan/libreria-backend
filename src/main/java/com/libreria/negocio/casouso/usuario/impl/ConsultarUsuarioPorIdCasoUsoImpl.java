@@ -19,7 +19,7 @@ public class ConsultarUsuarioPorIdCasoUsoImpl implements ConsultarUsuarioPorIdCa
 
     @Override
     public UsuarioEntidad ejecutar(final UUID id) {
-        // Validar que el identificador sea obligatorio
+        // p9 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar usuario.");
         }

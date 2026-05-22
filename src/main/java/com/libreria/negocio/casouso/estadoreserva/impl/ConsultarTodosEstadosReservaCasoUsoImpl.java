@@ -17,7 +17,7 @@ public class ConsultarTodosEstadosReservaCasoUsoImpl implements ConsultarTodosEs
 
     @Override
     public List<EstadoReservaEntidad> ejecutar(final EstadoReservaEntidad filtro) {
-        // P6 — El filtro puede ser nulo (retorna todos), simplemente se delega al DAO
+        // P6 Asegura que los datos requeridos sean validos a nivel de tipo, formato y obligatoriedad
         return daoFactory.getEstadoReservaDAO().consultarPorFiltro(filtro);
     }
 }

@@ -29,7 +29,7 @@ public class ActualizarTipoIdentificacionCasoUsoImpl implements ActualizarTipoId
         validarExistencia(datos.getId());
         // P2 — Validar que no exista otro tipo de identificación con el mismo nombre
         validarNombreUnicoExcluyendo(datos.getNombre(), datos.getId());
-        // P1 — Actualizar el tipo de identificación en el sistema
+        
         daoFactory.getTipoIdentificacionDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

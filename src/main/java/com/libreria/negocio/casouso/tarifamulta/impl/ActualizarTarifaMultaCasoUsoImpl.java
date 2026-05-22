@@ -29,7 +29,7 @@ public class ActualizarTarifaMultaCasoUsoImpl implements ActualizarTarifaMultaCa
         validarExistencia(datos.getId());
         // P3 — Validar que el valor diario sea mayor que cero
         validarValorDiario(datos.getValorDiario());
-        // P1 — Actualizar la tarifa de multa en el sistema
+        
         daoFactory.getTarifaMultaDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

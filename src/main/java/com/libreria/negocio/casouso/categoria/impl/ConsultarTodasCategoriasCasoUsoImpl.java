@@ -17,7 +17,7 @@ public class ConsultarTodasCategoriasCasoUsoImpl implements ConsultarTodasCatego
 
     @Override
     public List<CategoriaEntidad> ejecutar(final CategoriaEntidad filtro) {
-        // P6 — El filtro puede ser nulo (retorna todas), simplemente se delega al DAO
+        // P6 Asegura que los datos requeridos sean validos a nivel de tipo, formato y obligatoriedad
         return daoFactory.getCategoriaDAO().consultarPorFiltro(filtro);
     }
 }

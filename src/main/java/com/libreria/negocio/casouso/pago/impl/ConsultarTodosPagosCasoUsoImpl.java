@@ -19,12 +19,11 @@ public class ConsultarTodosPagosCasoUsoImpl implements ConsultarTodosPagosCasoUs
 
     @Override
     public List<PagoEntidad> ejecutar(final PagoEntidad filtro) {
-        // P6 — Asegurar que los datos enviados como filtro sean válidos en tipo de dato, longitud, obligatoriedad, formato y rango
         validarFiltro(filtro);
         return daoFactory.getPagoDAO().consultarPorFiltro(filtro);
     }
 
-    // P6 — Asegurar que los datos enviados como filtro sean válidos en tipo de dato, longitud, obligatoriedad, formato y rango
+    // P6  Asegurar que los datos enviados como filtro sean válidos en tipo de dato, longitud, obligatoriedad, formato y rango
     private void validarFiltro(final PagoEntidad filtro) {
         if (UtilObjeto.esNulo(filtro)) {
             throw GestorLibreriaExcepcion.crear("Los datos de filtro son inválidos para realizar la consulta de pagos.", "filtro nulo en ConsultarTodosPagos.");

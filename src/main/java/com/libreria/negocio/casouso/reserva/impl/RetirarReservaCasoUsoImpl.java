@@ -26,7 +26,7 @@ public class RetirarReservaCasoUsoImpl implements RetirarReservaCasoUso {
         // P11 — La reserva solo puede eliminarse si está en estado cancelada o atendida
         validarEstadoEliminable(reserva);
 
-        // Eliminar la reserva del sistema
+        
         daoFactory.getReservaDAO().eliminar(reserva.getId());
     }
 

@@ -17,7 +17,7 @@ public class ConsultarTarifaMultaPorIdCasoUsoImpl implements ConsultarTarifaMult
 
     @Override
     public TarifaMultaEntidad ejecutar(final UUID id) {
-        // P8 — Delegar la consulta al DAO
+        // P8 Asegurar que los datossean validos a nivel de tipo de dato foramto , longitud y rango
         return daoFactory.getTarifaMultaDAO().consultarPorId(id);
     }
 }

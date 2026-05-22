@@ -24,7 +24,7 @@ public class RetirarLibroCasoUsoImpl implements RetirarLibroCasoUso {
 
     @Override
     public void ejecutar(final UUID id) {
-        // Validar que el identificador sea obligatorio
+        
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador del libro es obligatorio.", "Se recibió un UUID nulo para retirar libro.");
         }
@@ -34,7 +34,7 @@ public class RetirarLibroCasoUsoImpl implements RetirarLibroCasoUso {
         validarNoEnUso(id);
         // P8 — Validar que el libro no tenga reservas activas
         validarSinReservasActivas(id);
-        // P1 — Eliminar el libro del sistema
+    
         daoFactory.getLibroDAO().eliminar(id);
     }
 

@@ -16,6 +16,7 @@ public class ConsultarLibroPorIdCasoUsoImpl implements ConsultarLibroPorIdCasoUs
         super();
         this.daoFactory = daoFactory;
     }
+    // P9 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
 
     @Override
     public LibroEntidad ejecutar(final UUID id) {

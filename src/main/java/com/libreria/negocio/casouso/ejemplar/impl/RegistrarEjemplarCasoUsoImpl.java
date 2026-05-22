@@ -65,7 +65,7 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 		final TipoLibroEntidad tipoLibro = daoFactory.getTipoLibroDAO().consultarPorId(libro.getTipoLibro().getId());
 		if (!UtilObjeto.esNulo(tipoLibro) && "físico".equalsIgnoreCase(tipoLibro.getNombre())) {
 			if (!UtilObjeto.esNulo(signaturaDominio) && UtilUUID.tieneValor(signaturaDominio.getId())) {
-				// Selección por ID: usar la signatura existente directamente
+				
 				final SignaturaEntidad existente = daoFactory.getSignaturaDAO().consultarPorId(signaturaDominio.getId());
 				if (UtilObjeto.esNulo(existente) || UtilObjeto.esNulo(existente.getId())) {
 					throw GestorLibreriaExcepcion.crear("La signatura indicada no existe en el sistema.", "signaturaId: " + signaturaDominio.getId());
@@ -122,7 +122,7 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 		}
 	}
 
-	// Crea y persiste una nueva signatura, retorna la entidad con su id generado
+	
 	private SignaturaEntidad crearNuevaSignatura(final com.libreria.negocio.dominio.SignaturaDominio signaturaDominio) {
 		UUID id = UtilUUID.generar();
 		while (!UtilObjeto.esNulo(daoFactory.getSignaturaDAO().consultarPorId(id))) {
@@ -138,14 +138,14 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 		return nuevaSignatura;
 	}
 
-	// Retorna la signatura semilla usada para libros no físicos (pasillo Z, estante 0, posición 0)
+	// parte de la p3 Retorna la signatura semilla usada para libros no físicos (pasillo Z, estante 0, posición 0) para virtuales o digitales
 	private SignaturaEntidad obtenerSignaturaPorDefecto() {
-		final SignaturaEntidad signatura = daoFactory.getSignaturaDAO()
-				.consultarPorId(UUID.fromString("00000000-0000-0000-0005-000000000001"));
-		if (UtilObjeto.esNulo(signatura) || UtilObjeto.esNulo(signatura.getId())) {
-			throw GestorLibreriaExcepcion.crear("No se encontró la signatura por defecto requerida para libros no físicos.");
-		}
-		return signatura;
+	    final SignaturaEntidad signatura = daoFactory.getSignaturaDAO()
+	            .consultarPorId(UtilUUID.SIGNATURA_POR_DEFECTO);
+	    if (UtilObjeto.esNulo(signatura) || UtilObjeto.esNulo(signatura.getId())) {
+	        throw GestorLibreriaExcepcion.crear("No se encontró la signatura por defecto requerida para libros no físicos.");
+	    }
+	    return signatura;
 	}
 
 	// P1 — Generar un identificador único para el ejemplar garantizando que no exista en la BD
@@ -157,7 +157,7 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 		return id;
 	}
 
-	// P1 — Construir y persistir el nuevo ejemplar con id único garantizado
+	
 	private void guardarNuevoEjemplar(final EjemplarDominio datos, final SignaturaEntidad signatura) {
 		final EjemplarEntidad nuevoEjemplar = new EjemplarEntidad.Builder()
 				.id(generarIdUnico())

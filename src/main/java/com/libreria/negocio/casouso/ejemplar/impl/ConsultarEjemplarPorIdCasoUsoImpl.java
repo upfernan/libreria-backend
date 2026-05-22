@@ -16,6 +16,7 @@ public class ConsultarEjemplarPorIdCasoUsoImpl implements ConsultarEjemplarPorId
         super();
         this.daoFactory = daoFactory;
     }
+    // P7 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
 
     @Override
     public EjemplarEntidad ejecutar(final UUID id) {

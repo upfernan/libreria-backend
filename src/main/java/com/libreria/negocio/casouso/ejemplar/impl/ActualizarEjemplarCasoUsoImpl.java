@@ -31,7 +31,7 @@ public class ActualizarEjemplarCasoUsoImpl implements ActualizarEjemplarCasoUso 
         validarExistenciaLibro(datos.getLibro().getId());
         // Validar que la signatura exista en el sistema
         validarExistenciaSignatura(datos.getSignatura().getId());
-        // P1 — Actualizar el ejemplar en el sistema
+        
         daoFactory.getEjemplarDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

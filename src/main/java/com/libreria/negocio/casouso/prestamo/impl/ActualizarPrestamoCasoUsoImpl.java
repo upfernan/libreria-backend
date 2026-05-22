@@ -34,7 +34,6 @@ public class ActualizarPrestamoCasoUsoImpl implements ActualizarPrestamoCasoUso 
         validarFechaDevolucion(datos, prestamo);
         // P14 — Si el nuevo estado es activo, el ejemplar no puede tener otro préstamo activo y el préstamo no puede tener una devolución registrada
         validarEjemplarDisponibleSiActivo(datos, prestamo);
-        // Actualizar el préstamo en el sistema
         actualizarPrestamo(datos, prestamo);
     }
 
@@ -48,7 +47,7 @@ public class ActualizarPrestamoCasoUsoImpl implements ActualizarPrestamoCasoUso 
         if (!"activo".equalsIgnoreCase(estadosNuevos.get(0).getNombre())) {
             return;
         }
-        // Verificar que el préstamo no tenga ya una devolución registrada
+        // parte de la P12 Verificar que el préstamo no tenga ya una devolución registrada
         final List<com.libreria.entidad.DevolucionEntidad> devoluciones = daoFactory.getDevolucionDAO()
                 .consultarPorFiltro(new com.libreria.entidad.DevolucionEntidad.Builder()
                         .prestamo(new PrestamoEntidad.Builder().id(prestamo.getId()).build())
@@ -58,7 +57,7 @@ public class ActualizarPrestamoCasoUsoImpl implements ActualizarPrestamoCasoUso 
                     "El préstamo no puede volver a estado activo porque ya tiene una devolución registrada.",
                     "prestamoId: " + prestamo.getId());
         }
-        // Verificar que el ejemplar no tenga otro préstamo activo
+        // Verificar que el ejemplar no tenga otro préstamo activo PARTE DE LA P12
         final List<PrestamoEntidad> prestamosActivos = daoFactory.getPrestamoDAO()
                 .consultarPorFiltro(new PrestamoEntidad.Builder()
                         .ejemplar(new EjemplarEntidad.Builder().id(prestamo.getEjemplar().getId()).build())
@@ -73,7 +72,7 @@ public class ActualizarPrestamoCasoUsoImpl implements ActualizarPrestamoCasoUso 
         }
     }
 
-    // P11 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+    // P11  Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
     private void validarDatosObligatorios(final PrestamoDominio datos) {
         if (UtilObjeto.esNulo(datos)) {
             throw GestorLibreriaExcepcion.crear("Los datos del préstamo son obligatorios.", "Se recibió un objeto PrestamoDominio nulo.");
@@ -117,7 +116,7 @@ public class ActualizarPrestamoCasoUsoImpl implements ActualizarPrestamoCasoUso 
         }
     }
 
-    // Actualizar el préstamo en el sistema
+    
     private void actualizarPrestamo(final PrestamoDominio datos, final PrestamoEntidad prestamo) {
         final List<EstadoPrestamoEntidad> estados = daoFactory.getEstadoPrestamoDAO()
                 .consultarPorFiltro(new EstadoPrestamoEntidad.Builder().id(datos.getEstadoPrestamo().getId()).build());

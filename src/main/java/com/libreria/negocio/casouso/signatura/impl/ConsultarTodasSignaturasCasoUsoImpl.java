@@ -17,7 +17,7 @@ public class ConsultarTodasSignaturasCasoUsoImpl implements ConsultarTodasSignat
 
     @Override
     public List<SignaturaEntidad> ejecutar(final SignaturaEntidad filtro) {
-        // P7 — Delegar la consulta al DAO con el filtro recibido
+        // P7 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
         return daoFactory.getSignaturaDAO().consultarPorFiltro(filtro);
     }
 }

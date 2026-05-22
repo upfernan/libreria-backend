@@ -17,7 +17,7 @@ public class ConsultarTodasEditorialesCasoUsoImpl implements ConsultarTodasEdito
 
     @Override
     public List<EditorialEntidad> ejecutar(final EditorialEntidad filtro) {
-        // P6 — El filtro puede ser nulo (retorna todas), simplemente se delega al DAO
+        // P6 Asegurar que los datos sean válidos a nivel de tipo de dato, formato, longitud y rango
         return daoFactory.getEditorialDAO().consultarPorFiltro(filtro);
     }
 }

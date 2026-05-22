@@ -29,7 +29,6 @@ public class ActualizarTipoLibroCasoUsoImpl implements ActualizarTipoLibroCasoUs
         validarExistencia(datos.getId());
         // P2 — Validar que no exista otro tipo de libro con el mismo nombre
         validarNombreUnicoExcluyendo(datos.getNombre(), datos.getId());
-        // P1 — Actualizar el tipo de libro en el sistema
         daoFactory.getTipoLibroDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 
@@ -49,7 +48,7 @@ public class ActualizarTipoLibroCasoUsoImpl implements ActualizarTipoLibroCasoUs
         }
     }
 
-    // P4 — Validar que el tipo de libro exista en el sistema
+    // P4  Validar que el tipo de libro exista en el sistema
     private void validarExistencia(final UUID id) {
         final TipoLibroEntidad entidad = daoFactory.getTipoLibroDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {

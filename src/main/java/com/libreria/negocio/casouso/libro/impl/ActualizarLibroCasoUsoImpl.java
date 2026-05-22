@@ -31,13 +31,11 @@ public class ActualizarLibroCasoUsoImpl implements ActualizarLibroCasoUso {
         validarExistenciaLibro(datos.getId());
         // P2 — Validar que la categoría existe en el sistema
         validarExistenciaCategoria(datos.getCategoria().getId());
-        // P3 — Validar que el tipo de libro existe en el sistema
-        // IMPORTANTE NO MOVER: el tipo de libro determina la signatura al crear ejemplares
-        // cambiar el tipoLibro de un libro existente no modifica las signaturas ya asignadas a sus ejemplares.
+        // P3 — Validar que el tipo de libro existe en el sistema.
         validarExistenciaTipoLibro(datos.getTipoLibro().getId());
         // P4 — Validar que la editorial existe en el sistema
         validarExistenciaEditorial(datos.getEditorial().getId());
-        // P1 — Actualizar el libro en el sistema
+        
         daoFactory.getLibroDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

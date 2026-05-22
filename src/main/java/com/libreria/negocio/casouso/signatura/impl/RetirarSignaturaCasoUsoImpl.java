@@ -25,7 +25,7 @@ public class RetirarSignaturaCasoUsoImpl implements RetirarSignaturaCasoUso {
         validarExistencia(id);
         // P6 — Validar que la signatura no esté en uso por ningún ejemplar
         validarNoEnUso(id);
-        // P1 — Eliminar la signatura del sistema
+        
         daoFactory.getSignaturaDAO().eliminar(id);
     }
 

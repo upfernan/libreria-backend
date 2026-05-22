@@ -25,7 +25,7 @@ public class RetirarEstadoReservaCasoUsoImpl implements RetirarEstadoReservaCaso
         validarExistencia(id);
         // P5 — Validar que el estado de reserva no esté en uso
         validarNoEnUso(id);
-        // P1 — Eliminar el estado de reserva del sistema
+        
         daoFactory.getEstadoReservaDAO().eliminar(id);
     }
 

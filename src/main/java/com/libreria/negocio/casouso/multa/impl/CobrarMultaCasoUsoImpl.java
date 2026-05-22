@@ -27,22 +27,22 @@ public class CobrarMultaCasoUsoImpl implements CobrarMultaCasoUso {
 
     @Override
     public void ejecutar(final MultaDominio datos) {
-        // P5 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+        // P5  Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
         validarDatos(datos);
 
-        // P2 — La devolución debe estar registrada en el sistema
+        // P2 La devolución debe estar registrada en el sistema
         final DevolucionEntidad devolucion = validarDevolucionExiste(datos.getDevolucion().getId());
 
-        // Obtener el préstamo completo para acceder a todos sus datos
+        // Parte de la p6Obtener el préstamo completo para acceder a todos sus datos
         final PrestamoEntidad prestamo = daoFactory.getPrestamoDAO().consultarPorId(devolucion.getPrestamo().getId());
 
-        // P6 — El libro asociado al préstamo debe ser de tipo físico
+        // P6  El libro asociado al préstamo debe ser de tipo físico
         validarLibroFisico(prestamo);
 
-        // P7 — La devolución no puede tener una multa previamente registrada
+        // P7  La devolución no puede tener una multa previamente registrada
         validarSinMultaPrevia(datos.getDevolucion().getId());
 
-        // P3 — El préstamo debe encontrarse en estado vencido al momento de registrar la devolución
+        // P3 El préstamo debe encontrarse en estado vencido al momento de registrar la devolución
         final int diasRetraso = (int) ChronoUnit.DAYS.between(prestamo.getFechaDevolucionEsperada(), devolucion.getFechaDevolucion());
         if (diasRetraso <= 0) {
             throw GestorLibreriaExcepcion.crear("El préstamo no presentó retraso en la devolución y no corresponde generar una multa.", "diasRetraso calculado: " + diasRetraso);
@@ -115,7 +115,7 @@ public class CobrarMultaCasoUsoImpl implements CobrarMultaCasoUso {
         return id;
     }
 
-    // Obtener la tarifa de multa vigente: aquella cuya fechaFinVigencia es FECHA_DEFECTO
+    // Obtener la tarifa de multa vigente actual en el sistema
     private TarifaMultaEntidad obtenerTarifaVigente() {
         final List<TarifaMultaEntidad> todasLasTarifas = daoFactory.getTarifaMultaDAO()
                 .consultarPorFiltro(new TarifaMultaEntidad.Builder().build());

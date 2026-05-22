@@ -19,7 +19,7 @@ public class ConsultarCategoriaPorIdCasoUsoImpl implements ConsultarCategoriaPor
 
     @Override
     public CategoriaEntidad ejecutar(final UUID id) {
-        // P6 — Validar que el identificador sea obligatorio
+        // P6 Asegura que los datos requeridos sean validos a nivel de tipo, formato y obligatoriedad
         if (UtilUUID.esNulo(id)) {
             throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar categoría.");
         }

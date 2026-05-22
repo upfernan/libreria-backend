@@ -30,7 +30,7 @@ public class ActualizarSignaturaCasoUsoImpl implements ActualizarSignaturaCasoUs
         validarExistencia(datos.getId());
         // P2 — Validar que no exista otra signatura con la misma combinación excluyendo la actual
         validarCombinacionUnicaExcluyendo(datos.getPasillo(), datos.getEstante(), datos.getPosicion(), datos.getId());
-        // P1 — Actualizar la signatura en el sistema
+       
         daoFactory.getSignaturaDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

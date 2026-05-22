@@ -26,9 +26,9 @@ public class ActualizarAutorCasoUsoImpl implements ActualizarAutorCasoUso {
     public void ejecutar(final AutorDominio datos) {
         // P2 — Validar tipo de dato, obligatoriedad, longitud y formato de los datos de entrada
         validarDatosObligatorios(datos);
-        // P3 — Validar que el autor exista en el sistema
+        // P3 — Validar que el autor exista en el sistema.
         validarExistencia(datos.getId());
-        // P1 — Actualizar el autor en el sistema
+       
         daoFactory.getAutorDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

@@ -32,9 +32,9 @@ public class RetirarPrestamoCasoUsoImpl implements RetirarPrestamoCasoUso {
         final PrestamoEntidad prestamo = validarExistencia(id);
         // P12 — El préstamo no puede estar en estado activo
         validarNoActivo(prestamo);
-        // Eliminar registros hijos en cascada antes de eliminar el préstamo
+        // Eliminar registros hijos en cascada 
         eliminarCascada(id);
-        // Eliminar el préstamo del sistema
+      
         daoFactory.getPrestamoDAO().eliminar(id);
     }
 

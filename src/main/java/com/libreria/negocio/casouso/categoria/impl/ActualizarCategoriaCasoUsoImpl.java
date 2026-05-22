@@ -29,7 +29,7 @@ public class ActualizarCategoriaCasoUsoImpl implements ActualizarCategoriaCasoUs
         validarExistencia(datos.getId());
         // P2 — Validar que no exista otra categoría con el mismo nombre
         validarNombreUnicoExcluyendo(datos.getNombre(), datos.getId());
-        // P1 — Actualizar la categoría en el sistema
+
         daoFactory.getCategoriaDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

@@ -32,7 +32,7 @@ public class ActualizarUsuarioCasoUsoImpl implements ActualizarUsuarioCasoUso {
         validarExistenciaTipoIdentificacion(datos.getTipoIdentificacion().getId());
         // P2 — Validar que la combinación número + tipo de identificación no esté ya registrada en otro usuario
         validarCombinacionIdentificacionUnicaExcluyendo(datos.getNumeroIdentificacion(), datos.getTipoIdentificacion().getId(), datos.getId());
-        // P1 — Actualizar el usuario en el sistema
+    
         daoFactory.getUsuarioDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 

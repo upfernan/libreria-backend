@@ -5,6 +5,7 @@ import java.util.UUID;
 public final class UtilUUID {
 
     public static final UUID UUID_DEFECTO = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    public static final UUID SIGNATURA_POR_DEFECTO = UUID.fromString("00000000-0000-0000-0005-000000000001");
 
     private UtilUUID() {
         super();

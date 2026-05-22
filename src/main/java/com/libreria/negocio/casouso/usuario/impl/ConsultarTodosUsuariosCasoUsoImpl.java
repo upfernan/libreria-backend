@@ -17,7 +17,7 @@ public class ConsultarTodosUsuariosCasoUsoImpl implements ConsultarTodosUsuarios
 
     @Override
     public List<UsuarioEntidad> ejecutar(final UsuarioEntidad filtro) {
-        // El filtro puede ser nulo (retorna todos), simplemente se delega al DAO
+        // p9 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
         return daoFactory.getUsuarioDAO().consultarPorFiltro(filtro);
     }
 

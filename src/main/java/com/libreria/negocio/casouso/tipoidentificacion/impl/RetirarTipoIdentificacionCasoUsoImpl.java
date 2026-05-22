@@ -25,7 +25,7 @@ public class RetirarTipoIdentificacionCasoUsoImpl implements RetirarTipoIdentifi
         validarExistencia(id);
         // P5 — Validar que el tipo de identificación no esté en uso
         validarNoEnUso(id);
-        // P1 — Eliminar el tipo de identificación del sistema
+        
         daoFactory.getTipoIdentificacionDAO().eliminar(id);
     }
 

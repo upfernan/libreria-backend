@@ -25,7 +25,7 @@ public class RetirarAutorCasoUsoImpl implements RetirarAutorCasoUso {
         validarExistencia(id);
         // P4 — Validar que el autor no esté en uso
         validarNoEnUso(id);
-        // P1 — Eliminar el autor del sistema
+        
         daoFactory.getAutorDAO().eliminar(id);
     }
 

@@ -2,6 +2,7 @@ package com.libreria.negocio.dominio;
 
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class AutorLibroDominio {
 
@@ -39,6 +40,10 @@ public class AutorLibroDominio {
         this.libro = UtilObjeto.obtenerValorDefecto(libro, new LibroDominio.Builder().build());
     }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private AutorDominio autor;

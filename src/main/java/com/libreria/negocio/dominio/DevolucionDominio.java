@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class DevolucionDominio {
 
@@ -41,6 +42,10 @@ public class DevolucionDominio {
         this.prestamo = UtilObjeto.obtenerValorDefecto(prestamo, new PrestamoDominio.Builder().build());
     }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private LocalDate fechaDevolucion;

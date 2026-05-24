@@ -3,6 +3,7 @@ package com.libreria.negocio.dominio;
 import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class TipoIdentificacionDominio {
 
@@ -40,6 +41,10 @@ public class TipoIdentificacionDominio {
         this.descripcion = UtilTexto.aplicarTrim(descripcion);
     }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private String nombre;

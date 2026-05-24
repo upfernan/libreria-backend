@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class PrestamoEntidad {
 
@@ -42,6 +43,10 @@ public class PrestamoEntidad {
     private void setUsuario(final UsuarioEntidad usuario) { this.usuario = UtilObjeto.obtenerValorDefecto(usuario, new UsuarioEntidad.Builder().build()); }
     private void setEjemplar(final EjemplarEntidad ejemplar) { this.ejemplar = UtilObjeto.obtenerValorDefecto(ejemplar, new EjemplarEntidad.Builder().build()); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private LocalDate fechaPrestamo;

@@ -3,6 +3,7 @@ package com.libreria.entidad;
 import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class EjemplarEntidad {
 
@@ -24,6 +25,10 @@ public class EjemplarEntidad {
     private void setLibro(final LibroEntidad libro) { this.libro = UtilObjeto.obtenerValorDefecto(libro, new LibroEntidad.Builder().build()); }
     private void setSignatura(final SignaturaEntidad signatura) { this.signatura = UtilObjeto.obtenerValorDefecto(signatura, new SignaturaEntidad.Builder().build()); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private LibroEntidad libro;

@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilCaracter;
 import com.libreria.transversal.utilitario.UtilNumero;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class SignaturaEntidad {
 
@@ -29,6 +30,10 @@ public class SignaturaEntidad {
     private void setEstante(final Integer estante) { this.estante = UtilNumero.obtenerValorDefecto(estante, 0); }
     private void setPosicion(final Integer posicion) { this.posicion = UtilNumero.obtenerValorDefecto(posicion, 0); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private char pasillo;

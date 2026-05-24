@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilCaracter;
 import com.libreria.transversal.utilitario.UtilNumero;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class SignaturaDominio {
 
@@ -51,6 +52,10 @@ public class SignaturaDominio {
         this.posicion = UtilNumero.obtenerValorDefecto(posicion, 0);
     }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private char pasillo;

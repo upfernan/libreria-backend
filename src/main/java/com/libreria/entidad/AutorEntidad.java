@@ -3,6 +3,7 @@ package com.libreria.entidad;
 import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class AutorEntidad {
 
@@ -32,6 +33,10 @@ public class AutorEntidad {
     private void setPrimerApellido(final String primerApellido) { this.primerApellido = UtilTexto.aplicarTrim(primerApellido); }
     private void setSegundoApellido(final String segundoApellido) { this.segundoApellido = UtilTexto.aplicarTrim(segundoApellido); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private String primerNombre;

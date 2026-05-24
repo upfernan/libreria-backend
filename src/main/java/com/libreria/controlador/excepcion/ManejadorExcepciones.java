@@ -16,13 +16,15 @@ public class ManejadorExcepciones {
 
     @ExceptionHandler(GestorLibreriaExcepcion.class)
     public ResponseEntity<RespuestaError> gestionar(GestorLibreriaExcepcion ex) {
-        logger.error(ex.getMensajeTecnico());
+        logger.error("Error controlado: {}", ex.getMensajeTecnico(), ex.getExcepcionRaiz());
         return new ResponseEntity<>(RespuestaError.crear(ex.getMensajeUsuario()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<RespuestaError> gestionar(Exception ex) {
-        ex.printStackTrace();
-        return new ResponseEntity<>(RespuestaError.crear("Ha ocurrido un error inesperado..."), HttpStatus.INTERNAL_SERVER_ERROR);
+        var mensajeTecnico = "Se ha generado una excepción no controlada en el sistema. Por favor revisar los logs de errores.";
+        var mensajeUsuario = "Ha ocurrido un error inesperado. Por favor inténtelo de nuevo y si el problema persiste contacte a un administrador.";
+        logger.error(mensajeTecnico, ex);
+        return new ResponseEntity<>(RespuestaError.crear(mensajeUsuario), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

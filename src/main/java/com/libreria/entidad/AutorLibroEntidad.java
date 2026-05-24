@@ -3,6 +3,7 @@ package com.libreria.entidad;
 import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class AutorLibroEntidad {
 
@@ -24,6 +25,10 @@ public class AutorLibroEntidad {
     private void setAutor(final AutorEntidad autor) { this.autor = UtilObjeto.obtenerValorDefecto(autor, new AutorEntidad.Builder().build()); }
     private void setLibro(final LibroEntidad libro) { this.libro = UtilObjeto.obtenerValorDefecto(libro, new LibroEntidad.Builder().build()); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private AutorEntidad autor;

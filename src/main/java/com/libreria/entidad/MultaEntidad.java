@@ -7,6 +7,7 @@ import com.libreria.transversal.utilitario.UtilBooleano;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilNumero;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class MultaEntidad {
 
@@ -48,6 +49,10 @@ public class MultaEntidad {
     private void setDevolucion(final DevolucionEntidad devolucion) { this.devolucion = UtilObjeto.obtenerValorDefecto(devolucion, new DevolucionEntidad.Builder().build()); }
     private void setUsuarioAfectado(final UsuarioEntidad usuarioAfectado) { this.usuarioAfectado = UtilObjeto.obtenerValorDefecto(usuarioAfectado, new UsuarioEntidad.Builder().build()); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private Double montoTotal;

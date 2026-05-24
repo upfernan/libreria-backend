@@ -30,4 +30,8 @@ public final class UtilUUID {
     public static boolean tieneValor(final UUID id) {
         return !esNulo(id) && !UUID_DEFECTO.equals(id);
     }
+
+    public static boolean esValorDefecto(final UUID id) {
+        return !tieneValor(id);
+    }
 }

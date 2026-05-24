@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilNumero;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class TarifaMultaEntidad {
 
@@ -30,6 +31,10 @@ public class TarifaMultaEntidad {
     private void setFechaInicioVigencia(final LocalDate fechaInicioVigencia) { this.fechaInicioVigencia = UtilFecha.obtenerValorDefecto(fechaInicioVigencia); }
     private void setFechaFinVigencia(final LocalDate fechaFinVigencia) { this.fechaFinVigencia = UtilFecha.obtenerValorDefecto(fechaFinVigencia); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private Double valorDiario;

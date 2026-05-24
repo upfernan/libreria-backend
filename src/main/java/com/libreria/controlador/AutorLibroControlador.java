@@ -2,6 +2,10 @@ package com.libreria.controlador;
 
 import com.libreria.controlador.respuesta.RespuestaExito;
 import com.libreria.dto.AutorLibroDTO;
+import com.libreria.negocio.fachada.autorlibro.AsociarAutorLibroFachada;
+import com.libreria.negocio.fachada.autorlibro.QuitarAutorLibroFachada;
+import com.libreria.negocio.fachada.autorlibro.ConsultarAutorLibroPorIdFachada;
+import com.libreria.negocio.fachada.autorlibro.ConsultarTodosAutoresLibroFachada;
 import com.libreria.negocio.fachada.autorlibro.impl.AsociarAutorLibroFachadaImpl;
 import com.libreria.negocio.fachada.autorlibro.impl.QuitarAutorLibroFachadaImpl;
 import com.libreria.negocio.fachada.autorlibro.impl.ConsultarAutorLibroPorIdFachadaImpl;
@@ -12,32 +16,48 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/v1/autores-libro")
 public class AutorLibroControlador {
 
+    private static final Logger logger = LoggerFactory.getLogger(AutorLibroControlador.class);
+
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> asociar(@RequestBody AutorLibroDTO datos) {
-        new AsociarAutorLibroFachadaImpl().ejecutar(datos);
+        logger.info("Iniciando asociacion de autor-libro.");
+        AsociarAutorLibroFachada fachada = new AsociarAutorLibroFachadaImpl();
+        fachada.ejecutar(datos);
+        logger.info("El autor se asoció al libro exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El autor se asoció al libro exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> quitar(@PathVariable UUID id) {
-        new QuitarAutorLibroFachadaImpl().ejecutar(id);
+        logger.info("Iniciando quitar autor-libro con id: {}", id);
+        QuitarAutorLibroFachada fachada = new QuitarAutorLibroFachadaImpl();
+        fachada.ejecutar(id);
+        logger.info("El autor fue quitado del libro exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El autor fue quitado del libro exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<AutorLibroDTO>> consultarPorId(@PathVariable UUID id) {
-        var resultado = new ConsultarAutorLibroPorIdFachadaImpl().ejecutar(id);
+        logger.info("Consultando autor-libro por id: {}", id);
+        ConsultarAutorLibroPorIdFachada fachada = new ConsultarAutorLibroPorIdFachadaImpl();
+        var resultado = fachada.ejecutar(id);
+        logger.info("Autor-libro consultado exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Autor-libro consultado exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<AutorLibroDTO>>> consultarTodos() {
-        var resultado = new ConsultarTodosAutoresLibroFachadaImpl().ejecutar(new AutorLibroDTO.Builder().build());
+        logger.info("Consultando todos los autores-libro.");
+        ConsultarTodosAutoresLibroFachada fachada = new ConsultarTodosAutoresLibroFachadaImpl();
+        var resultado = fachada.ejecutar(new AutorLibroDTO.Builder().build());
+        logger.info("Autores-libro consultados exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Autores-libro consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

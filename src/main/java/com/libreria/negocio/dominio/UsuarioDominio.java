@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class UsuarioDominio {
 
@@ -91,6 +92,10 @@ public class UsuarioDominio {
         this.correoElectronico = UtilTexto.aplicarTrim(correoElectronico);
     }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private TipoIdentificacionDominio tipoIdentificacion;

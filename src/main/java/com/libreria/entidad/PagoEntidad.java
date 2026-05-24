@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class PagoEntidad {
 
@@ -26,6 +27,10 @@ public class PagoEntidad {
     private void setFechaPago(final LocalDate fechaPago) { this.fechaPago = UtilFecha.obtenerValorDefecto(fechaPago); }
     private void setMulta(final MultaEntidad multa) { this.multa = UtilObjeto.obtenerValorDefecto(multa, new MultaEntidad.Builder().build()); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private LocalDate fechaPago;

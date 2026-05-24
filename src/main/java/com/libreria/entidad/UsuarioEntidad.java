@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class UsuarioEntidad {
 
@@ -45,6 +46,10 @@ public class UsuarioEntidad {
     private void setSegundoApellido(final String segundoApellido) { this.segundoApellido = UtilTexto.aplicarTrim(segundoApellido); }
     private void setCorreoElectronico(final String correoElectronico) { this.correoElectronico = UtilTexto.aplicarTrim(correoElectronico); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private TipoIdentificacionEntidad tipoIdentificacion;

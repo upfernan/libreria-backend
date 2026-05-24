@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.libreria.transversal.utilitario.UtilNumero;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class LibroEntidad {
 
@@ -38,6 +39,10 @@ public class LibroEntidad {
     private void setEditorial(final EditorialEntidad editorial) { this.editorial = UtilObjeto.obtenerValorDefecto(editorial, new EditorialEntidad.Builder().build()); }
     private void setDisponibles(final Integer disponibles) { this.disponibles = UtilNumero.obtenerValorDefecto(disponibles, 0); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private String titulo;

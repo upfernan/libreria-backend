@@ -3,6 +3,7 @@ package com.libreria.entidad;
 import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class TipoLibroEntidad {
 
@@ -24,6 +25,10 @@ public class TipoLibroEntidad {
     private void setNombre(final String nombre) { this.nombre = UtilTexto.aplicarTrim(nombre); }
     private void setDescripcion(final String descripcion) { this.descripcion = UtilTexto.aplicarTrim(descripcion); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private String nombre;

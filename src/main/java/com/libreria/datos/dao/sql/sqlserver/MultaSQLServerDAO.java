@@ -106,24 +106,33 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 
 	@Override
 	public List<MultaEntidad> consultarPorFiltro(final MultaEntidad filtro) {
+		// Construir la consulta dinámicamente según los parámetros disponibles en el filtro
 		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
 		if (!UtilObjeto.esNulo(filtro)) {
-			if (!UtilObjeto.esNulo(filtro.getUsuarioAfectado()) && UtilUUID.tieneValor(filtro.getUsuarioAfectado().getId())) {
-				sql.append(" AND m.usuarioAfectadoId = ?");
-				parametros.add(filtro.getUsuarioAfectado().getId().toString());
-				sql.append(" AND m.pagada = ?");
-				parametros.add(filtro.getPagada());
-			}
 			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND m.id = ?");
 				parametros.add(filtro.getId().toString());
+			}
+			if (!UtilObjeto.esNulo(filtro.getUsuarioAfectado()) && UtilUUID.tieneValor(filtro.getUsuarioAfectado().getId())) {
+				sql.append(" AND m.usuarioAfectadoId = ?");
+				parametros.add(filtro.getUsuarioAfectado().getId().toString());
 			}
 			if (!UtilObjeto.esNulo(filtro.getDevolucion()) && UtilUUID.tieneValor(filtro.getDevolucion().getId())) {
 				sql.append(" AND m.devolucionId = ?");
 				parametros.add(filtro.getDevolucion().getId().toString());
 			}
+			if (!UtilObjeto.esNulo(filtro.getTarifaMulta()) && UtilUUID.tieneValor(filtro.getTarifaMulta().getId())) {
+				sql.append(" AND m.tarifaMultaId = ?");
+				parametros.add(filtro.getTarifaMulta().getId().toString());
+			}
+			
+			if (!UtilObjeto.esNulo(filtro.getPagada())) {
+				sql.append(" AND m.pagada = ?");
+				parametros.add(filtro.getPagada());
+			}
+			
 		}
 
 		final List<MultaEntidad> resultados = new ArrayList<>();

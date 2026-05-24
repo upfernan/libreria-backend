@@ -6,6 +6,7 @@ import com.libreria.transversal.utilitario.UtilBooleano;
 import com.libreria.transversal.utilitario.UtilFecha;
 import com.libreria.transversal.utilitario.UtilNumero;
 import com.libreria.transversal.utilitario.UtilObjeto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class MultaDominio {
 
@@ -93,6 +94,10 @@ public class MultaDominio {
         this.usuarioAfectado = UtilObjeto.obtenerValorDefecto(usuarioAfectado, new UsuarioDominio.Builder().build());
     }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private Double montoTotal;

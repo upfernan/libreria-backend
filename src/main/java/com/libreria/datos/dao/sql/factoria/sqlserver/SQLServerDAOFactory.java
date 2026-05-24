@@ -3,6 +3,9 @@ package com.libreria.datos.dao.sql.factoria.sqlserver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.libreria.datos.dao.AutorDAO;
 import com.libreria.datos.dao.AutorLibroDAO;
 import com.libreria.datos.dao.CategoriaDAO;
@@ -44,6 +47,8 @@ import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class SQLServerDAOFactory extends DAOFactory {
 
+	private static final Logger logger = LoggerFactory.getLogger(SQLServerDAOFactory.class);
+
 	private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=LibreriaDB;encrypt=false;trustServerCertificate=true";
 	private static final String USUARIO = "sa";
 	private static final String CONTRASENA = "Libreria123!";
@@ -54,9 +59,11 @@ public class SQLServerDAOFactory extends DAOFactory {
 
 	@Override
 	protected void abrirConexion() {
+		logger.debug("Abriendo conexión con la base de datos...");
 		try {
 			conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
 			conexion.setAutoCommit(false);
+			logger.debug("Conexión con la base de datos abierta exitosamente.");
 		} catch (SQLException e) {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible abrir la conexión con la base de datos.");
 		}
@@ -64,10 +71,12 @@ public class SQLServerDAOFactory extends DAOFactory {
 
 	@Override
 	public void cerrarConexion() {
+		logger.debug("Cerrando conexión con la base de datos...");
 		try {
 			if (conexion != null && !conexion.isClosed()) {
 				conexion.close();
 			}
+			logger.debug("Conexión con la base de datos cerrada exitosamente.");
 		} catch (SQLException e) {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible cerrar la conexión con la base de datos.");
 		}
@@ -75,8 +84,10 @@ public class SQLServerDAOFactory extends DAOFactory {
 
 	@Override
 	public void iniciarTransaccion() {
+		logger.debug("Iniciando transacción...");
 		try {
 			conexion.setAutoCommit(false);
+			logger.debug("Transacción iniciada exitosamente.");
 		} catch (SQLException e) {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible iniciar la transacción.");
 		}
@@ -84,8 +95,10 @@ public class SQLServerDAOFactory extends DAOFactory {
 
 	@Override
 	public void confirmarTransaccion() {
+		logger.debug("Confirmando transacción...");
 		try {
 			conexion.commit();
+			logger.debug("Transacción confirmada exitosamente.");
 		} catch (SQLException e) {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible confirmar la transacción.");
 		}
@@ -93,8 +106,10 @@ public class SQLServerDAOFactory extends DAOFactory {
 
 	@Override
 	public void cancelarTransaccion() {
+		logger.debug("Cancelando transacción...");
 		try {
 			conexion.rollback();
+			logger.debug("Transacción cancelada exitosamente.");
 		} catch (SQLException e) {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible cancelar la transacción.");
 		}

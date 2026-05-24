@@ -3,6 +3,7 @@ package com.libreria.entidad;
 import java.util.UUID;
 
 import com.libreria.transversal.utilitario.UtilTexto;
+import com.libreria.transversal.utilitario.UtilUUID;
 
 public class EditorialEntidad {
 
@@ -24,6 +25,10 @@ public class EditorialEntidad {
     private void setNit(final String nit) { this.nit = UtilTexto.aplicarTrim(nit); }
     private void setNombre(final String nombre) { this.nombre = UtilTexto.aplicarTrim(nombre); }
 
+
+    public boolean isIdValorPorDefecto() {
+        return UtilUUID.esValorDefecto(id);
+    }
     public static class Builder {
         private UUID id;
         private String nit;

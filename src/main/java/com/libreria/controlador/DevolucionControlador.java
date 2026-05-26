@@ -25,28 +25,28 @@ public class DevolucionControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> recibir(@RequestBody DevolucionDTO datos) {
-        logger.info("Iniciando recepcion de devolucion.");
+        logger.info("Entre al metodo recibir del controlador...");
         RecibirDevolucionFachada fachada = new RecibirDevolucionFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("La devolución se recibió exitosamente.");
+        logger.info("Sali del metodo recibir del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La devolución se recibió exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<DevolucionDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando devolucion por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarDevolucionPorIdFachada fachada = new ConsultarDevolucionPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Devolución consultada exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Devolución consultada exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<DevolucionDTO>>> consultarTodas() {
-        logger.info("Consultando todas las devoluciones.");
+        logger.info("Entre al metodo consultarTodas del controlador...");
         ConsultarTodasDevolucionesFachada fachada = new ConsultarTodasDevolucionesFachadaImpl();
         var resultado = fachada.ejecutar(new DevolucionDTO.Builder().build());
-        logger.info("Devoluciones consultadas exitosamente.");
+        logger.info("Sali del metodo consultarTodas del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Devoluciones consultadas exitosamente.", resultado), HttpStatus.OK);
     }
 }

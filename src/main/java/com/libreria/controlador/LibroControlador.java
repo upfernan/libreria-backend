@@ -29,16 +29,16 @@ public class LibroControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> registrar(@RequestBody LibroDTO datos) {
-        logger.info("Iniciando registro de libro.");
+        logger.info("Entre al metodo registrar del controlador...");
         RegistrarLibroFachada fachada = new RegistrarLibroFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("El libro se registró exitosamente.");
+        logger.info("Sali del metodo registrar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El libro se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody LibroDTO datos) {
-        logger.info("Iniciando actualizacion de libro con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new LibroDTO.Builder()
                 .id(id)
                 .titulo(datos.getTitulo())
@@ -49,34 +49,34 @@ public class LibroControlador {
                 .build();
         ActualizarLibroFachada fachada = new ActualizarLibroFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("El libro se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El libro se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de libro con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarLibroFachada fachada = new RetirarLibroFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("El libro se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El libro se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<LibroDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando libro por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarLibroPorIdFachada fachada = new ConsultarLibroPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Libro consultado exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Libro consultado exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<LibroDTO>>> consultarTodos() {
-        logger.info("Consultando todos los libros.");
+        logger.info("Entre al metodo consultarTodos del controlador...");
         ConsultarTodosLibrosFachada fachada = new ConsultarTodosLibrosFachadaImpl();
         var resultado = fachada.ejecutar(new LibroDTO.Builder().build());
-        logger.info("Libros consultados exitosamente.");
+        logger.info("Sali del metodo consultarTodos del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Libros consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

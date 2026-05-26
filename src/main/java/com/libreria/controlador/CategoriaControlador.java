@@ -29,16 +29,16 @@ public class CategoriaControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> agregar(@RequestBody CategoriaDTO datos) {
-        logger.info("Iniciando agregar categoria.");
+        logger.info("Entre al metodo agregar del controlador...");
         AgregarCategoriaFachada fachada = new AgregarCategoriaFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("La categoría se registró exitosamente.");
+        logger.info("Sali del metodo agregar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La categoría se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody CategoriaDTO datos) {
-        logger.info("Iniciando actualizacion de categoria con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new CategoriaDTO.Builder()
                 .id(id)
                 .nombre(datos.getNombre())
@@ -46,34 +46,34 @@ public class CategoriaControlador {
                 .build();
         ActualizarCategoriaFachada fachada = new ActualizarCategoriaFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("La categoría se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La categoría se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de categoria con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarCategoriaFachada fachada = new RetirarCategoriaFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("La categoría se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La categoría se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<CategoriaDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando categoria por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarCategoriaPorIdFachada fachada = new ConsultarCategoriaPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Categoría consultada exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Categoría consultada exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<CategoriaDTO>>> consultarTodas() {
-        logger.info("Consultando todas las categorias.");
+        logger.info("Entre al metodo consultarTodas del controlador...");
         ConsultarTodasCategoriasFachada fachada = new ConsultarTodasCategoriasFachadaImpl();
         var resultado = fachada.ejecutar(new CategoriaDTO.Builder().build());
-        logger.info("Categorías consultadas exitosamente.");
+        logger.info("Sali del metodo consultarTodas del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Categorías consultadas exitosamente.", resultado), HttpStatus.OK);
     }
 }

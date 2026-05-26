@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.libreria.datos.dao.PagoDAO;
 import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.DevolucionEntidad;
@@ -20,6 +23,8 @@ import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class PagoSQLServerDAO extends SQLDAO implements PagoDAO {
+
+	private static final Logger logger = LoggerFactory.getLogger(PagoSQLServerDAO.class);
 
 	private static final String SELECT_BASE =
 			"SELECT p.id, p.fechaPago, p.multaId,"
@@ -38,72 +43,81 @@ public class PagoSQLServerDAO extends SQLDAO implements PagoDAO {
 
 	@Override
 	public void crear(final PagoEntidad entidad) {
+		logger.debug("Entre al metodo crear de PagoSQLServerDAO...");
 		final String sql = "INSERT INTO pago (id, fechaPago, multaId) VALUES (?, ?, ?)";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, entidad.getId().toString());
 			ps.setDate(2, java.sql.Date.valueOf(entidad.getFechaPago()));
 			ps.setString(3, entidad.getMulta().getId().toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo crear de PagoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el pago.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el pago.",
+					"Se presento una SQLException al ejecutar INSERT en la tabla pago desde PagoSQLServerDAO.crear.");
 		}
 	}
 
 	@Override
 	public void actualizar(final UUID id, final PagoEntidad entidad) {
+		logger.debug("Entre al metodo actualizar de PagoSQLServerDAO...");
 		final String sql = "UPDATE pago SET fechaPago = ? WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setDate(1, java.sql.Date.valueOf(entidad.getFechaPago()));
 			ps.setString(2, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo actualizar de PagoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el pago.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el pago.",
+					"Se presento una SQLException al ejecutar UPDATE en la tabla pago desde PagoSQLServerDAO.actualizar.");
 		}
 	}
 
 	@Override
 	public void eliminar(final UUID id) {
+		logger.debug("Entre al metodo eliminar de PagoSQLServerDAO...");
 		final String sql = "DELETE FROM pago WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo eliminar de PagoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el pago.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el pago.",
+					"Se presento una SQLException al ejecutar DELETE en la tabla pago desde PagoSQLServerDAO.eliminar.");
 		}
 	}
 
 	@Override
 	public List<PagoEntidad> consultarTodos() {
-		final List<PagoEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
-				ResultSet rs = ps.executeQuery()) {
-			while (rs.next()) {
-				resultados.add(construirPagoEntidad(rs));
-			}
-		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los pagos.");
-		}
-		return resultados;
+		logger.debug("Entre al metodo consultarTodos de PagoSQLServerDAO...");
+		final List<PagoEntidad> resultado = consultarPorFiltro(new PagoEntidad.Builder().build());
+		logger.debug("Sali del metodo consultarTodos de PagoSQLServerDAO exitosamente.");
+		return resultado;
 	}
 
 	@Override
 	public PagoEntidad consultarPorId(final UUID id) {
+		logger.debug("Entre al metodo consultarPorId de PagoSQLServerDAO...");
 		final String sql = SELECT_BASE + " WHERE p.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					return construirPagoEntidad(rs);
+					final PagoEntidad resultado = construirPagoEntidad(rs);
+					logger.debug("Sali del metodo consultarPorId de PagoSQLServerDAO exitosamente.");
+					return resultado;
 				}
 			}
+			logger.debug("Sali del metodo consultarPorId de PagoSQLServerDAO exitosamente (sin resultados).");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el pago por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el pago por identificador.",
+					"Se presento una SQLException al ejecutar SELECT por id en la tabla pago desde PagoSQLServerDAO.consultarPorId.");
 		}
 		return new PagoEntidad.Builder().build();
 	}
 
 	@Override
 	public List<PagoEntidad> consultarPorFiltro(final PagoEntidad filtro) {
+		logger.debug("Entre al metodo consultarPorFiltro de PagoSQLServerDAO...");
 		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
@@ -122,8 +136,10 @@ public class PagoSQLServerDAO extends SQLDAO implements PagoDAO {
 					resultados.add(construirPagoEntidad(rs));
 				}
 			}
+			logger.debug("Sali del metodo consultarPorFiltro de PagoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los pagos por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los pagos por filtro.",
+					"Se presento una SQLException al ejecutar SELECT por filtro en la tabla pago desde PagoSQLServerDAO.consultarPorFiltro.");
 		}
 		return resultados;
 	}

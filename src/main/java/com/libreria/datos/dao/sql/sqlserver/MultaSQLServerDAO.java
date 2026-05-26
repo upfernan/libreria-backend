@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.libreria.datos.dao.MultaDAO;
 import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.DevolucionEntidad;
@@ -19,6 +22,8 @@ import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
+
+	private static final Logger logger = LoggerFactory.getLogger(MultaSQLServerDAO.class);
 
 	private static final String SELECT_BASE =
 			"SELECT m.id, m.montoTotal, m.fechaGeneracion, m.pagada, m.diasRetraso,"
@@ -35,6 +40,7 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 
 	@Override
 	public void crear(final MultaEntidad entidad) {
+		logger.debug("Entre al metodo crear de MultaSQLServerDAO...");
 		final String sql = "INSERT INTO multa (id, montoTotal, fechaGeneracion, pagada, diasRetraso, tarifaMultaId, devolucionId, usuarioAfectadoId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, entidad.getId().toString());
@@ -46,67 +52,74 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 			ps.setString(7, entidad.getDevolucion().getId().toString());
 			ps.setString(8, entidad.getUsuarioAfectado().getId().toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo crear de MultaSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar la multa.",
+					"Se presento una SQLException al ejecutar INSERT en la tabla multa desde MultaSQLServerDAO.crear.");
 		}
 	}
 
 	@Override
 	public void actualizar(final UUID id, final MultaEntidad entidad) {
+		logger.debug("Entre al metodo actualizar de MultaSQLServerDAO...");
 		final String sql = "UPDATE multa SET pagada = ? WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setBoolean(1, entidad.getPagada());
 			ps.setString(2, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo actualizar de MultaSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar la multa.",
+					"Se presento una SQLException al ejecutar UPDATE en la tabla multa desde MultaSQLServerDAO.actualizar.");
 		}
 	}
 
 	@Override
 	public void eliminar(final UUID id) {
+		logger.debug("Entre al metodo eliminar de MultaSQLServerDAO...");
 		final String sql = "DELETE FROM multa WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo eliminar de MultaSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la multa.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar la multa.",
+					"Se presento una SQLException al ejecutar DELETE en la tabla multa desde MultaSQLServerDAO.eliminar.");
 		}
 	}
 
 	@Override
 	public List<MultaEntidad> consultarTodos() {
-		final List<MultaEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
-				ResultSet rs = ps.executeQuery()) {
-			while (rs.next()) {
-				resultados.add(construirMultaEntidad(rs));
-			}
-		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las multas.");
-		}
-		return resultados;
+		logger.debug("Entre al metodo consultarTodos de MultaSQLServerDAO...");
+		final List<MultaEntidad> resultado = consultarPorFiltro(new MultaEntidad.Builder().build());
+		logger.debug("Sali del metodo consultarTodos de MultaSQLServerDAO exitosamente.");
+		return resultado;
 	}
 
 	@Override
 	public MultaEntidad consultarPorId(final UUID id) {
+		logger.debug("Entre al metodo consultarPorId de MultaSQLServerDAO...");
 		final String sql = SELECT_BASE + " WHERE m.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					return construirMultaEntidad(rs);
+					final MultaEntidad resultado = construirMultaEntidad(rs);
+					logger.debug("Sali del metodo consultarPorId de MultaSQLServerDAO exitosamente.");
+					return resultado;
 				}
 			}
+			logger.debug("Sali del metodo consultarPorId de MultaSQLServerDAO exitosamente (sin resultados).");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la multa por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la multa por identificador.",
+					"Se presento una SQLException al ejecutar SELECT por id en la tabla multa desde MultaSQLServerDAO.consultarPorId.");
 		}
 		return new MultaEntidad.Builder().build();
 	}
 
 	@Override
 	public List<MultaEntidad> consultarPorFiltro(final MultaEntidad filtro) {
-		// Construir la consulta dinámicamente según los parámetros disponibles en el filtro
+		logger.debug("Entre al metodo consultarPorFiltro de MultaSQLServerDAO...");
 		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 
@@ -127,12 +140,10 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 				sql.append(" AND m.tarifaMultaId = ?");
 				parametros.add(filtro.getTarifaMulta().getId().toString());
 			}
-			
 			if (!UtilObjeto.esNulo(filtro.getPagada())) {
 				sql.append(" AND m.pagada = ?");
 				parametros.add(filtro.getPagada());
 			}
-			
 		}
 
 		final List<MultaEntidad> resultados = new ArrayList<>();
@@ -145,8 +156,10 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 					resultados.add(construirMultaEntidad(rs));
 				}
 			}
+			logger.debug("Sali del metodo consultarPorFiltro de MultaSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las multas por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las multas por filtro.",
+					"Se presento una SQLException al ejecutar SELECT por filtro en la tabla multa desde MultaSQLServerDAO.consultarPorFiltro.");
 		}
 		return resultados;
 	}

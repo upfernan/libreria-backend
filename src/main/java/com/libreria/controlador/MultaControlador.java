@@ -25,28 +25,28 @@ public class MultaControlador {
 
     @PostMapping("/cobrar")
     public ResponseEntity<RespuestaExito<String>> cobrar(@RequestBody MultaDTO datos) {
-        logger.info("Iniciando cobro de multa.");
+        logger.info("Entre al metodo cobrar del controlador...");
         CobrarMultaFachada fachada = new CobrarMultaFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("La multa se cobró exitosamente.");
+        logger.info("Sali del metodo cobrar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La multa se cobró exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<MultaDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando multa por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarMultaPorIdFachada fachada = new ConsultarMultaPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Multa consultada exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Multa consultada exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<MultaDTO>>> consultarTodas() {
-        logger.info("Consultando todas las multas.");
+        logger.info("Entre al metodo consultarTodas del controlador...");
         ConsultarTodasMultasFachada fachada = new ConsultarTodasMultasFachadaImpl();
         var resultado = fachada.ejecutar(new MultaDTO.Builder().build());
-        logger.info("Multas consultadas exitosamente.");
+        logger.info("Sali del metodo consultarTodas del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Multas consultadas exitosamente.", resultado), HttpStatus.OK);
     }
 }

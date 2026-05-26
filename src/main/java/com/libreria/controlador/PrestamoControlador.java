@@ -31,16 +31,16 @@ public class PrestamoControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> registrar(@RequestBody PrestamoDTO datos) {
-        logger.info("Iniciando registro de prestamo.");
+        logger.info("Entre al metodo registrar del controlador...");
         RegistrarPrestamoFachada fachada = new RegistrarPrestamoFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("El préstamo se registró exitosamente.");
+        logger.info("Sali del metodo registrar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El préstamo se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<PrestamoDTO>> actualizar(@PathVariable UUID id, @RequestBody PrestamoDTO datos) {
-        logger.info("Iniciando actualizacion de prestamo con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new PrestamoDTO.Builder()
                 .id(id)
                 .fechaDevolucionEsperada(datos.getFechaDevolucionEsperada())
@@ -48,43 +48,43 @@ public class PrestamoControlador {
                 .build();
         ActualizarPrestamoFachada fachada = new ActualizarPrestamoFachadaImpl();
         var resultado = fachada.ejecutar(datosConId);
-        logger.info("El préstamo se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El préstamo se actualizó exitosamente.", resultado), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de prestamo con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarPrestamoFachada fachada = new RetirarPrestamoFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("El préstamo se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El préstamo se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/cerrar")
     public ResponseEntity<RespuestaExito<String>> cerrar(@PathVariable UUID id) {
-        logger.info("Iniciando cierre de prestamo con id: {}", id);
+        logger.info("Entre al metodo cerrar del controlador...");
         CerrarPrestamoFachada fachada = new CerrarPrestamoFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("El préstamo se cerró exitosamente.");
+        logger.info("Sali del metodo cerrar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El préstamo se cerró exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<PrestamoDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando prestamo por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarPrestamoPorIdFachada fachada = new ConsultarPrestamoPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Préstamo consultado exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Préstamo consultado exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<PrestamoDTO>>> consultarTodos() {
-        logger.info("Consultando todos los prestamos.");
+        logger.info("Entre al metodo consultarTodos del controlador...");
         ConsultarTodosPrestamosFachada fachada = new ConsultarTodosPrestamosFachadaImpl();
         var resultado = fachada.ejecutar(new PrestamoDTO.Builder().build());
-        logger.info("Préstamos consultados exitosamente.");
+        logger.info("Sali del metodo consultarTodos del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Préstamos consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

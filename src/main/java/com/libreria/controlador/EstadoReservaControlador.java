@@ -27,16 +27,16 @@ public class EstadoReservaControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> agregar(@RequestBody EstadoReservaDTO datos) {
-        logger.info("Iniciando agregar estadoReserva.");
+        logger.info("Entre al metodo agregar del controlador...");
         AgregarEstadoReservaFachada fachada = new AgregarEstadoReservaFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("El estado de reserva se registró exitosamente.");
+        logger.info("Sali del metodo agregar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El estado de reserva se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody EstadoReservaDTO datos) {
-        logger.info("Iniciando actualizacion de estadoReserva con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new EstadoReservaDTO.Builder()
                 .id(id)
                 .nombre(datos.getNombre())
@@ -44,25 +44,25 @@ public class EstadoReservaControlador {
                 .build();
         ActualizarEstadoReservaFachada fachada = new ActualizarEstadoReservaFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("El estado de reserva se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El estado de reserva se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de estadoReserva con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarEstadoReservaFachada fachada = new RetirarEstadoReservaFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("El estado de reserva se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El estado de reserva se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<EstadoReservaDTO>>> consultarTodos() {
-        logger.info("Consultando todos los estadosReserva.");
+        logger.info("Entre al metodo consultarTodos del controlador...");
         ConsultarTodosEstadosReservaFachada fachada = new ConsultarTodosEstadosReservaFachadaImpl();
         var resultado = fachada.ejecutar(new EstadoReservaDTO.Builder().build());
-        logger.info("Estados de reserva consultados exitosamente.");
+        logger.info("Sali del metodo consultarTodos del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Estados de reserva consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

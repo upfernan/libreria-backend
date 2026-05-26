@@ -29,16 +29,16 @@ public class EditorialControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> agregar(@RequestBody EditorialDTO datos) {
-        logger.info("Iniciando agregar editorial.");
+        logger.info("Entre al metodo agregar del controlador...");
         AgregarEditorialFachada fachada = new AgregarEditorialFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("La editorial se registró exitosamente.");
+        logger.info("Sali del metodo agregar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La editorial se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody EditorialDTO datos) {
-        logger.info("Iniciando actualizacion de editorial con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new EditorialDTO.Builder()
                 .id(id)
                 .nit(datos.getNit())
@@ -46,34 +46,34 @@ public class EditorialControlador {
                 .build();
         ActualizarEditorialFachada fachada = new ActualizarEditorialFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("La editorial se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La editorial se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de editorial con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarEditorialFachada fachada = new RetirarEditorialFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("La editorial se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La editorial se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<EditorialDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando editorial por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarEditorialPorIdFachada fachada = new ConsultarEditorialPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Editorial consultada exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Editorial consultada exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<EditorialDTO>>> consultarTodas() {
-        logger.info("Consultando todas las editoriales.");
+        logger.info("Entre al metodo consultarTodas del controlador...");
         ConsultarTodasEditorialesFachada fachada = new ConsultarTodasEditorialesFachadaImpl();
         var resultado = fachada.ejecutar(new EditorialDTO.Builder().build());
-        logger.info("Editoriales consultadas exitosamente.");
+        logger.info("Sali del metodo consultarTodas del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Editoriales consultadas exitosamente.", resultado), HttpStatus.OK);
     }
 }

@@ -29,46 +29,46 @@ public class ReservaControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> registrar(@RequestBody ReservaDTO datos) {
-        logger.info("Iniciando registro de reserva.");
+        logger.info("Entre al metodo registrar del controlador...");
         RegistrarReservaFachada fachada = new RegistrarReservaFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("La reserva se registró exitosamente.");
+        logger.info("Sali del metodo registrar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La reserva se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> eliminar(@PathVariable UUID id) {
-        logger.info("Iniciando eliminacion de reserva con id: {}", id);
+        logger.info("Entre al metodo eliminar del controlador...");
         RetirarReservaFachada fachada = new RetirarReservaFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("La reserva se eliminó exitosamente.");
+        logger.info("Sali del metodo eliminar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La reserva se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<RespuestaExito<String>> cancelar(@PathVariable UUID id) {
-        logger.info("Iniciando cancelacion de reserva con id: {}", id);
+        logger.info("Entre al metodo cancelar del controlador...");
         CancelarReservaFachada fachada = new CancelarReservaFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("La reserva se canceló exitosamente.");
+        logger.info("Sali del metodo cancelar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La reserva se canceló exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<ReservaDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando reserva por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarReservaPorIdFachada fachada = new ConsultarReservaPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Reserva consultada exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Reserva consultada exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<ReservaDTO>>> consultarTodas() {
-        logger.info("Consultando todas las reservas.");
+        logger.info("Entre al metodo consultarTodas del controlador...");
         ConsultarTodasReservasFachada fachada = new ConsultarTodasReservasFachadaImpl();
         var resultado = fachada.ejecutar(new ReservaDTO.Builder().build());
-        logger.info("Reservas consultadas exitosamente.");
+        logger.info("Sali del metodo consultarTodas del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Reservas consultadas exitosamente.", resultado), HttpStatus.OK);
     }
 }

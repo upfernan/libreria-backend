@@ -59,59 +59,69 @@ public class SQLServerDAOFactory extends DAOFactory {
 
 	@Override
 	protected void abrirConexion() {
-		logger.debug("Abriendo conexión con la base de datos...");
+		logger.debug("Entre al metodo abrirConexion de SQLServerDAOFactory...");
 		try {
 			conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
 			conexion.setAutoCommit(false);
-			logger.debug("Conexión con la base de datos abierta exitosamente.");
+			logger.debug("Sali del metodo abrirConexion de SQLServerDAOFactory exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible abrir la conexión con la base de datos.");
+			throw GestorLibreriaExcepcion.crear(e,
+					"No fue posible abrir la conexión con la base de datos.",
+					"Se presento una SQLException al intentar establecer la conexion en SQLServerDAOFactory.abrirConexion.");
 		}
 	}
 
 	@Override
 	public void cerrarConexion() {
-		logger.debug("Cerrando conexión con la base de datos...");
+		logger.debug("Entre al metodo cerrarConexion de SQLServerDAOFactory...");
 		try {
 			if (conexion != null && !conexion.isClosed()) {
 				conexion.close();
 			}
-			logger.debug("Conexión con la base de datos cerrada exitosamente.");
+			logger.debug("Sali del metodo cerrarConexion de SQLServerDAOFactory exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible cerrar la conexión con la base de datos.");
+			throw GestorLibreriaExcepcion.crear(e,
+					"No fue posible cerrar la conexión con la base de datos.",
+					"Se presento una SQLException al intentar cerrar la conexion en SQLServerDAOFactory.cerrarConexion.");
 		}
 	}
 
 	@Override
 	public void iniciarTransaccion() {
-		logger.debug("Iniciando transacción...");
+		logger.debug("Entre al metodo iniciarTransaccion de SQLServerDAOFactory...");
 		try {
 			conexion.setAutoCommit(false);
-			logger.debug("Transacción iniciada exitosamente.");
+			logger.debug("Sali del metodo iniciarTransaccion de SQLServerDAOFactory exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible iniciar la transacción.");
+			throw GestorLibreriaExcepcion.crear(e,
+					"No fue posible iniciar la transacción.",
+					"Se presento una SQLException al ejecutar setAutoCommit(false) en SQLServerDAOFactory.iniciarTransaccion.");
 		}
 	}
 
 	@Override
 	public void confirmarTransaccion() {
-		logger.debug("Confirmando transacción...");
+		logger.debug("Entre al metodo confirmarTransaccion de SQLServerDAOFactory...");
 		try {
 			conexion.commit();
-			logger.debug("Transacción confirmada exitosamente.");
+			logger.debug("Sali del metodo confirmarTransaccion de SQLServerDAOFactory exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible confirmar la transacción.");
+			throw GestorLibreriaExcepcion.crear(e,
+					"No fue posible confirmar la transacción.",
+					"Se presento una SQLException al ejecutar commit en SQLServerDAOFactory.confirmarTransaccion.");
 		}
 	}
 
 	@Override
 	public void cancelarTransaccion() {
-		logger.debug("Cancelando transacción...");
+		logger.debug("Entre al metodo cancelarTransaccion de SQLServerDAOFactory...");
 		try {
 			conexion.rollback();
-			logger.debug("Transacción cancelada exitosamente.");
+			logger.debug("Sali del metodo cancelarTransaccion de SQLServerDAOFactory exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible cancelar la transacción.");
+			throw GestorLibreriaExcepcion.crear(e,
+					"No fue posible cancelar la transacción.",
+					"Se presento una SQLException al ejecutar rollback en SQLServerDAOFactory.cancelarTransaccion.");
 		}
 	}
 

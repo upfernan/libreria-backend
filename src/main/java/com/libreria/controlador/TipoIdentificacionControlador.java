@@ -29,16 +29,16 @@ public class TipoIdentificacionControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> agregar(@RequestBody TipoIdentificacionDTO datos) {
-        logger.info("Iniciando agregar tipoIdentificacion.");
+        logger.info("Entre al metodo agregar del controlador...");
         AgregarTipoIdentificacionFachada fachada = new AgregarTipoIdentificacionFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("El tipo de identificación se registró exitosamente.");
+        logger.info("Sali del metodo agregar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El tipo de identificación se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody TipoIdentificacionDTO datos) {
-        logger.info("Iniciando actualizacion de tipoIdentificacion con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new TipoIdentificacionDTO.Builder()
                 .id(id)
                 .nombre(datos.getNombre())
@@ -46,34 +46,34 @@ public class TipoIdentificacionControlador {
                 .build();
         ActualizarTipoIdentificacionFachada fachada = new ActualizarTipoIdentificacionFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("El tipo de identificación se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El tipo de identificación se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de tipoIdentificacion con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarTipoIdentificacionFachada fachada = new RetirarTipoIdentificacionFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("El tipo de identificación se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El tipo de identificación se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<TipoIdentificacionDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando tipoIdentificacion por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarTipoIdentificacionPorIdFachada fachada = new ConsultarTipoIdentificacionPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Tipo de identificación consultado exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Tipo de identificación consultado exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<TipoIdentificacionDTO>>> consultarTodos() {
-        logger.info("Consultando todos los tiposIdentificacion.");
+        logger.info("Entre al metodo consultarTodos del controlador...");
         ConsultarTodosTiposIdentificacionFachada fachada = new ConsultarTodosTiposIdentificacionFachadaImpl();
         var resultado = fachada.ejecutar(new TipoIdentificacionDTO.Builder().build());
-        logger.info("Tipos de identificación consultados exitosamente.");
+        logger.info("Sali del metodo consultarTodos del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Tipos de identificación consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

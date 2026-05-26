@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.libreria.datos.dao.UsuarioDAO;
 import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.TipoIdentificacionEntidad;
@@ -19,12 +22,15 @@ import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 
+	private static final Logger logger = LoggerFactory.getLogger(UsuarioSQLServerDAO.class);
+
 	public UsuarioSQLServerDAO(final Connection conexion) {
 		super(conexion);
 	}
 
 	@Override
 	public void crear(final UsuarioEntidad entidad) {
+		logger.debug("Entre al metodo crear de UsuarioSQLServerDAO...");
 		final String sql = "INSERT INTO usuario (id, tipoIdentificacionId, numeroIdentificacion, primerNombre, segundoNombre, primerApellido, segundoApellido, correoElectronico) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, entidad.getId().toString());
@@ -36,13 +42,16 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 			ps.setString(7, entidad.getSegundoApellido());
 			ps.setString(8, entidad.getCorreoElectronico());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo crear de UsuarioSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el usuario.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el usuario.",
+					"Se presento una SQLException al ejecutar INSERT en la tabla usuario desde UsuarioSQLServerDAO.crear.");
 		}
 	}
 
 	@Override
 	public void actualizar(final UUID id, final UsuarioEntidad entidad) {
+		logger.debug("Entre al metodo actualizar de UsuarioSQLServerDAO...");
 		final String sql = "UPDATE usuario SET tipoIdentificacionId = ?, numeroIdentificacion = ?, primerNombre = ?, segundoNombre = ?, primerApellido = ?, segundoApellido = ?, correoElectronico = ? WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, entidad.getTipoIdentificacion().getId().toString());
@@ -54,55 +63,59 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 			ps.setString(7, entidad.getCorreoElectronico());
 			ps.setString(8, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo actualizar de UsuarioSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el usuario.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el usuario.",
+					"Se presento una SQLException al ejecutar UPDATE en la tabla usuario desde UsuarioSQLServerDAO.actualizar.");
 		}
 	}
 
 	@Override
 	public void eliminar(final UUID id) {
+		logger.debug("Entre al metodo eliminar de UsuarioSQLServerDAO...");
 		final String sql = "DELETE FROM usuario WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo eliminar de UsuarioSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el usuario.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el usuario.",
+					"Se presento una SQLException al ejecutar DELETE en la tabla usuario desde UsuarioSQLServerDAO.eliminar.");
 		}
 	}
 
 	@Override
 	public List<UsuarioEntidad> consultarTodos() {
-		final String sql = "SELECT id, tipoIdentificacionId, numeroIdentificacion, primerNombre, segundoNombre, primerApellido, segundoApellido, correoElectronico FROM usuario";
-		final List<UsuarioEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(sql);
-				ResultSet rs = ps.executeQuery()) {
-			while (rs.next()) {
-				resultados.add(construirUsuarioEntidad(rs));
-			}
-		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los usuarios.");
-		}
-		return resultados;
+		logger.debug("Entre al metodo consultarTodos de UsuarioSQLServerDAO...");
+		final List<UsuarioEntidad> resultado = consultarPorFiltro(new UsuarioEntidad.Builder().build());
+		logger.debug("Sali del metodo consultarTodos de UsuarioSQLServerDAO exitosamente.");
+		return resultado;
 	}
 
 	@Override
 	public UsuarioEntidad consultarPorId(final UUID id) {
+		logger.debug("Entre al metodo consultarPorId de UsuarioSQLServerDAO...");
 		final String sql = "SELECT id, tipoIdentificacionId, numeroIdentificacion, primerNombre, segundoNombre, primerApellido, segundoApellido, correoElectronico FROM usuario WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					return construirUsuarioEntidad(rs);
+					final UsuarioEntidad resultado = construirUsuarioEntidad(rs);
+					logger.debug("Sali del metodo consultarPorId de UsuarioSQLServerDAO exitosamente.");
+					return resultado;
 				}
 			}
+			logger.debug("Sali del metodo consultarPorId de UsuarioSQLServerDAO exitosamente (sin resultados).");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el usuario por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el usuario por identificador.",
+					"Se presento una SQLException al ejecutar SELECT por id en la tabla usuario desde UsuarioSQLServerDAO.consultarPorId.");
 		}
 		return null;
 	}
 
 	@Override
 	public List<UsuarioEntidad> consultarPorFiltro(final UsuarioEntidad filtro) {
+		logger.debug("Entre al metodo consultarPorFiltro de UsuarioSQLServerDAO...");
 		final StringBuilder sql = new StringBuilder(
 				"SELECT id, tipoIdentificacionId, numeroIdentificacion, primerNombre, segundoNombre, primerApellido, segundoApellido, correoElectronico FROM usuario WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
@@ -132,8 +145,10 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 					resultados.add(construirUsuarioEntidad(rs));
 				}
 			}
+			logger.debug("Sali del metodo consultarPorFiltro de UsuarioSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los usuarios por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los usuarios por filtro.",
+					"Se presento una SQLException al ejecutar SELECT por filtro en la tabla usuario desde UsuarioSQLServerDAO.consultarPorFiltro.");
 		}
 		return resultados;
 	}

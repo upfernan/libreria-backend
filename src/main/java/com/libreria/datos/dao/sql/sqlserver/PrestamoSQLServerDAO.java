@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.libreria.datos.dao.PrestamoDAO;
 import com.libreria.datos.dao.sql.SQLDAO;
 import com.libreria.entidad.CategoriaEntidad;
@@ -29,6 +32,8 @@ import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
 public class PrestamoSQLServerDAO extends SQLDAO implements PrestamoDAO {
+
+	private static final Logger logger = LoggerFactory.getLogger(PrestamoSQLServerDAO.class);
 
 	private static final String SELECT_BASE =
 			"SELECT p.id, p.fechaPrestamo, p.fechaDevolucionEsperada,"
@@ -69,6 +74,7 @@ public class PrestamoSQLServerDAO extends SQLDAO implements PrestamoDAO {
 
 	@Override
 	public void crear(final PrestamoEntidad entidad) {
+		logger.debug("Entre al metodo crear de PrestamoSQLServerDAO...");
 		final String sql = "INSERT INTO prestamo (id, fechaPrestamo, fechaDevolucionEsperada, estadoPrestamoId, reservaId, usuarioId, ejemplarId) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, entidad.getId().toString());
@@ -79,67 +85,75 @@ public class PrestamoSQLServerDAO extends SQLDAO implements PrestamoDAO {
 			ps.setString(6, entidad.getUsuario().getId().toString());
 			ps.setString(7, entidad.getEjemplar().getId().toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo crear de PrestamoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el préstamo.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible registrar el préstamo.",
+					"Se presento una SQLException al ejecutar INSERT en la tabla prestamo desde PrestamoSQLServerDAO.crear.");
 		}
 	}
 
 	@Override
 	public void actualizar(final UUID id, final PrestamoEntidad entidad) {
+		logger.debug("Entre al metodo actualizar de PrestamoSQLServerDAO...");
 		final String sql = "UPDATE prestamo SET estadoPrestamoId = ?, fechaDevolucionEsperada = ? WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, entidad.getEstadoPrestamo().getId().toString());
 			ps.setDate(2, java.sql.Date.valueOf(entidad.getFechaDevolucionEsperada()));
 			ps.setString(3, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo actualizar de PrestamoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el préstamo.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible actualizar el préstamo.",
+					"Se presento una SQLException al ejecutar UPDATE en la tabla prestamo desde PrestamoSQLServerDAO.actualizar.");
 		}
 	}
 
 	@Override
 	public void eliminar(final UUID id) {
+		logger.debug("Entre al metodo eliminar de PrestamoSQLServerDAO...");
 		final String sql = "DELETE FROM prestamo WHERE id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			ps.executeUpdate();
+			logger.debug("Sali del metodo eliminar de PrestamoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el préstamo.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible eliminar el préstamo.",
+					"Se presento una SQLException al ejecutar DELETE en la tabla prestamo desde PrestamoSQLServerDAO.eliminar.");
 		}
 	}
 
 	@Override
 	public List<PrestamoEntidad> consultarTodos() {
-		final List<PrestamoEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(SELECT_BASE);
-				ResultSet rs = ps.executeQuery()) {
-			while (rs.next()) {
-				resultados.add(construirPrestamoEntidad(rs));
-			}
-		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los préstamos.");
-		}
-		return resultados;
+		logger.debug("Entre al metodo consultarTodos de PrestamoSQLServerDAO...");
+		final List<PrestamoEntidad> resultado = consultarPorFiltro(new PrestamoEntidad.Builder().build());
+		logger.debug("Sali del metodo consultarTodos de PrestamoSQLServerDAO exitosamente.");
+		return resultado;
 	}
 
 	@Override
 	public PrestamoEntidad consultarPorId(final UUID id) {
+		logger.debug("Entre al metodo consultarPorId de PrestamoSQLServerDAO...");
 		final String sql = SELECT_BASE + " WHERE p.id = ?";
 		try (PreparedStatement ps = getConexion().prepareStatement(sql)) {
 			ps.setString(1, id.toString());
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					return construirPrestamoEntidad(rs);
+					final PrestamoEntidad resultado = construirPrestamoEntidad(rs);
+					logger.debug("Sali del metodo consultarPorId de PrestamoSQLServerDAO exitosamente.");
+					return resultado;
 				}
 			}
+			logger.debug("Sali del metodo consultarPorId de PrestamoSQLServerDAO exitosamente (sin resultados).");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el préstamo por identificador.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el préstamo por identificador.",
+					"Se presento una SQLException al ejecutar SELECT por id en la tabla prestamo desde PrestamoSQLServerDAO.consultarPorId.");
 		}
 		return null;
 	}
 
 	@Override
 	public List<PrestamoEntidad> consultarPorFiltro(final PrestamoEntidad filtro) {
+		logger.debug("Entre al metodo consultarPorFiltro de PrestamoSQLServerDAO...");
 		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
 		aplicarFiltros(filtro, sql, parametros);
@@ -154,8 +168,10 @@ public class PrestamoSQLServerDAO extends SQLDAO implements PrestamoDAO {
 					resultados.add(construirPrestamoEntidad(rs));
 				}
 			}
+			logger.debug("Sali del metodo consultarPorFiltro de PrestamoSQLServerDAO exitosamente.");
 		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los préstamos por filtro.");
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar los préstamos por filtro.",
+					"Se presento una SQLException al ejecutar SELECT por filtro en la tabla prestamo desde PrestamoSQLServerDAO.consultarPorFiltro.");
 		}
 		return resultados;
 	}

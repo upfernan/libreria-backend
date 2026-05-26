@@ -29,16 +29,16 @@ public class TarifaMultaControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> agregar(@RequestBody TarifaMultaDTO datos) {
-        logger.info("Iniciando agregar tarifaMulta.");
+        logger.info("Entre al metodo agregar del controlador...");
         AgregarTarifaMultaFachada fachada = new AgregarTarifaMultaFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("La tarifa de multa se registró exitosamente.");
+        logger.info("Sali del metodo agregar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La tarifa de multa se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody TarifaMultaDTO datos) {
-        logger.info("Iniciando actualizacion de tarifaMulta con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new TarifaMultaDTO.Builder()
                 .id(id)
                 .valorDiario(datos.getValorDiario())
@@ -47,34 +47,34 @@ public class TarifaMultaControlador {
                 .build();
         ActualizarTarifaMultaFachada fachada = new ActualizarTarifaMultaFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("La tarifa de multa se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La tarifa de multa se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de tarifaMulta con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarTarifaMultaFachada fachada = new RetirarTarifaMultaFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("La tarifa de multa se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("La tarifa de multa se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<TarifaMultaDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando tarifaMulta por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarTarifaMultaPorIdFachada fachada = new ConsultarTarifaMultaPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Tarifa de multa consultada exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Tarifa de multa consultada exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<TarifaMultaDTO>>> consultarTodas() {
-        logger.info("Consultando todas las tarifasMulta.");
+        logger.info("Entre al metodo consultarTodas del controlador...");
         ConsultarTodasTarifasMultaFachada fachada = new ConsultarTodasTarifasMultaFachadaImpl();
         var resultado = fachada.ejecutar(new TarifaMultaDTO.Builder().build());
-        logger.info("Tarifas de multa consultadas exitosamente.");
+        logger.info("Sali del metodo consultarTodas del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Tarifas de multa consultadas exitosamente.", resultado), HttpStatus.OK);
     }
 }

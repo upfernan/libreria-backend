@@ -25,28 +25,28 @@ public class PagoControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> recibir(@RequestBody PagoDTO datos) {
-        logger.info("Iniciando recepcion de pago.");
+        logger.info("Entre al metodo recibir del controlador...");
         RecibirPagoMultaFachada fachada = new RecibirPagoMultaFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("El pago se recibió exitosamente.");
+        logger.info("Sali del metodo recibir del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El pago se recibió exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<PagoDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando pago por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarPagoPorIdFachada fachada = new ConsultarPagoPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Pago consultado exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Pago consultado exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<PagoDTO>>> consultarTodos() {
-        logger.info("Consultando todos los pagos.");
+        logger.info("Entre al metodo consultarTodos del controlador...");
         ConsultarTodosPagosFachada fachada = new ConsultarTodosPagosFachadaImpl();
         var resultado = fachada.ejecutar(new PagoDTO.Builder().build());
-        logger.info("Pagos consultados exitosamente.");
+        logger.info("Sali del metodo consultarTodos del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Pagos consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

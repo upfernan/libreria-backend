@@ -27,16 +27,16 @@ public class EstadoPrestamoControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> agregar(@RequestBody EstadoPrestamoDTO datos) {
-        logger.info("Iniciando agregar estadoPrestamo.");
+        logger.info("Entre al metodo agregar del controlador...");
         AgregarEstadoPrestamoFachada fachada = new AgregarEstadoPrestamoFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("El estado de préstamo se registró exitosamente.");
+        logger.info("Sali del metodo agregar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El estado de préstamo se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody EstadoPrestamoDTO datos) {
-        logger.info("Iniciando actualizacion de estadoPrestamo con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new EstadoPrestamoDTO.Builder()
                 .id(id)
                 .nombre(datos.getNombre())
@@ -44,25 +44,25 @@ public class EstadoPrestamoControlador {
                 .build();
         ActualizarEstadoPrestamoFachada fachada = new ActualizarEstadoPrestamoFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("El estado de préstamo se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El estado de préstamo se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de estadoPrestamo con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarEstadoPrestamoFachada fachada = new RetirarEstadoPrestamoFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("El estado de préstamo se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El estado de préstamo se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<EstadoPrestamoDTO>>> consultarTodos() {
-        logger.info("Consultando todos los estadosPrestamo.");
+        logger.info("Entre al metodo consultarTodos del controlador...");
         ConsultarTodosEstadosPrestamoFachada fachada = new ConsultarTodosEstadosPrestamoFachadaImpl();
         var resultado = fachada.ejecutar(new EstadoPrestamoDTO.Builder().build());
-        logger.info("Estados de préstamo consultados exitosamente.");
+        logger.info("Sali del metodo consultarTodos del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Estados de préstamo consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

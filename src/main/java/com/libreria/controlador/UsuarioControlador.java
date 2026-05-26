@@ -29,16 +29,16 @@ public class UsuarioControlador {
 
     @PostMapping
     public ResponseEntity<RespuestaExito<String>> registrar(@RequestBody UsuarioDTO datos) {
-        logger.info("Iniciando registro de usuario.");
+        logger.info("Entre al metodo registrar del controlador...");
         RegistrarUsuarioFachada fachada = new RegistrarUsuarioFachadaImpl();
         fachada.ejecutar(datos);
-        logger.info("El usuario se registró exitosamente.");
+        logger.info("Sali del metodo registrar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El usuario se registró exitosamente.", ""), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> actualizar(@PathVariable UUID id, @RequestBody UsuarioDTO datos) {
-        logger.info("Iniciando actualizacion de usuario con id: {}", id);
+        logger.info("Entre al metodo actualizar del controlador...");
         var datosConId = new UsuarioDTO.Builder()
                 .id(id)
                 .tipoIdentificacion(datos.getTipoIdentificacion())
@@ -51,34 +51,34 @@ public class UsuarioControlador {
                 .build();
         ActualizarUsuarioFachada fachada = new ActualizarUsuarioFachadaImpl();
         fachada.ejecutar(datosConId);
-        logger.info("El usuario se actualizó exitosamente.");
+        logger.info("Sali del metodo actualizar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El usuario se actualizó exitosamente.", ""), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaExito<String>> retirar(@PathVariable UUID id) {
-        logger.info("Iniciando retiro de usuario con id: {}", id);
+        logger.info("Entre al metodo retirar del controlador...");
         RetirarUsuarioFachada fachada = new RetirarUsuarioFachadaImpl();
         fachada.ejecutar(id);
-        logger.info("El usuario se eliminó exitosamente.");
+        logger.info("Sali del metodo retirar del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("El usuario se eliminó exitosamente.", ""), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaExito<UsuarioDTO>> consultarPorId(@PathVariable UUID id) {
-        logger.info("Consultando usuario por id: {}", id);
+        logger.info("Entre al metodo consultarPorId del controlador...");
         ConsultarUsuarioPorIdFachada fachada = new ConsultarUsuarioPorIdFachadaImpl();
         var resultado = fachada.ejecutar(id);
-        logger.info("Usuario consultado exitosamente.");
+        logger.info("Sali del metodo consultarPorId del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Usuario consultado exitosamente.", resultado), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<RespuestaExito<List<UsuarioDTO>>> consultarTodos() {
-        logger.info("Consultando todos los usuarios.");
+        logger.info("Entre al metodo consultarTodos del controlador...");
         ConsultarTodosUsuariosFachada fachada = new ConsultarTodosUsuariosFachadaImpl();
         var resultado = fachada.ejecutar(new UsuarioDTO.Builder().build());
-        logger.info("Usuarios consultados exitosamente.");
+        logger.info("Sali del metodo consultarTodos del controlador exitosamente.");
         return new ResponseEntity<>(RespuestaExito.crear("Usuarios consultados exitosamente.", resultado), HttpStatus.OK);
     }
 }

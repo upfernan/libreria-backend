@@ -99,7 +99,7 @@ public class TipoIdentificacionSQLServerDAO extends SQLDAO implements TipoIdenti
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el tipo de identificación por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla tipoidentificacion desde TipoIdentificacionSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new TipoIdentificacionEntidad.Builder().build();
 	}
 
 	@Override

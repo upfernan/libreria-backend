@@ -67,7 +67,7 @@ public class AgregarTarifaMultaCasoUsoImpl implements AgregarTarifaMultaCasoUso 
     // P1 — Generar id único, cerrar vigente y persistir la nueva tarifa de multa
     private void guardarNuevaTarifaMulta(final TarifaMultaDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getTarifaMultaDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getTarifaMultaDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
 

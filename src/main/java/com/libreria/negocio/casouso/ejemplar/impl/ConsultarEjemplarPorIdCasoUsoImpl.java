@@ -20,10 +20,14 @@ public class ConsultarEjemplarPorIdCasoUsoImpl implements ConsultarEjemplarPorId
 
     @Override
     public EjemplarEntidad ejecutar(final UUID id) {
-        if (UtilUUID.esNulo(id)) {
-            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar ejemplar.");
+        if (!UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo o inválido para consultar ejemplar en ConsultarEjemplarPorIdCasoUsoImpl.");
         }
-        return daoFactory.getEjemplarDAO().consultarPorId(id);
+        final EjemplarEntidad resultado = daoFactory.getEjemplarDAO().consultarPorId(id);
+        if (!UtilUUID.tieneValor(resultado.getId())) {
+            throw GestorLibreriaExcepcion.crear("No se encontró el ejemplar con el identificador proporcionado.", "No existe registro en la tabla ejemplar para el id: " + id + " en ConsultarEjemplarPorIdCasoUsoImpl.");
+        }
+        return resultado;
     }
 
 }

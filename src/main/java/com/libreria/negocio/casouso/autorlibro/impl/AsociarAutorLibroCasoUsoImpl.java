@@ -24,19 +24,19 @@ public class AsociarAutorLibroCasoUsoImpl implements AsociarAutorLibroCasoUso {
 
     @Override
     public void ejecutar(final AutorLibroDominio datos) {
-        // P5 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
+        // P5 Validar tipo de dato, obligatoriedad y formato de los datos de entrada
         validarDatosObligatorios(datos);
-        // P2 — Validar que el libro exista en el sistema
+        // P2 Validar que el libro exista en el sistema
         validarLibroExiste(datos.getLibro().getId());
-        // P3 — Validar que el autor exista en el sistema
+        // P3 Validar que el autor exista en el sistema
         validarAutorExiste(datos.getAutor().getId());
-        // P4 — Validar que no exista ya una relación entre ese autor y ese libro
+        // P4 Validar que no exista ya una relación entre ese autor y ese libro
         validarCombinacionUnica(datos.getAutor().getId(), datos.getLibro().getId());
-        // P1 — Registrar la relación autor-libro garantizando identificador único
+        // P1 Registrar la relación autor-libro garantizando identificador único
         guardarNuevaRelacion(datos);
     }
 
-    // P5 — Datos requeridos válidos en tipo, obligatoriedad y formato
+    // P5 Datos requeridos válidos en tipo, obligatoriedad y formato
     private void validarDatosObligatorios(final AutorLibroDominio datos) {
         if (UtilObjeto.esNulo(datos)) {
             throw GestorLibreriaExcepcion.crear("Los datos de la relación autor-libro son obligatorios.", "Se recibió un objeto AutorLibroDominio nulo.");
@@ -49,7 +49,7 @@ public class AsociarAutorLibroCasoUsoImpl implements AsociarAutorLibroCasoUso {
         }
     }
 
-    // P2 — El libro debe estar registrado en el sistema
+    // P2 El libro debe estar registrado en el sistema
     private void validarLibroExiste(final UUID libroId) {
         final LibroEntidad entidad = daoFactory.getLibroDAO().consultarPorId(libroId);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -57,7 +57,7 @@ public class AsociarAutorLibroCasoUsoImpl implements AsociarAutorLibroCasoUso {
         }
     }
 
-    // P3 — El autor debe estar registrado en el sistema
+    // P3 El autor debe estar registrado en el sistema
     private void validarAutorExiste(final UUID autorId) {
         final AutorEntidad entidad = daoFactory.getAutorDAO().consultarPorId(autorId);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -80,7 +80,7 @@ public class AsociarAutorLibroCasoUsoImpl implements AsociarAutorLibroCasoUso {
     // P1 — Generar id único y persistir la nueva relación autor-libro
     private void guardarNuevaRelacion(final AutorLibroDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getAutorLibroDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getAutorLibroDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final AutorLibroEntidad nueva = new AutorLibroEntidad.Builder()

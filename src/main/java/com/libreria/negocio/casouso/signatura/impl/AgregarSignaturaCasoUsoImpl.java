@@ -67,7 +67,7 @@ public class AgregarSignaturaCasoUsoImpl implements AgregarSignaturaCasoUso {
     // P1 — Generar id único y persistir la nueva signatura
     private void guardarNuevaSignatura(final SignaturaDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getSignaturaDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getSignaturaDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final SignaturaEntidad nueva = new SignaturaEntidad.Builder()

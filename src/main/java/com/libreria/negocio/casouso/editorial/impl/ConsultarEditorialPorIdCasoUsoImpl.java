@@ -20,9 +20,13 @@ public class ConsultarEditorialPorIdCasoUsoImpl implements ConsultarEditorialPor
     @Override
     public EditorialEntidad ejecutar(final UUID id) {
         // P6 Asegurar que los datos sean válidos a nivel de tipo de dato, formato, longitud y rango
-        if (UtilUUID.esNulo(id)) {
-            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar editorial.");
+        if (!UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo o inválido para consultar editorial en ConsultarEditorialPorIdCasoUsoImpl.");
         }
-        return daoFactory.getEditorialDAO().consultarPorId(id);
+        final EditorialEntidad resultado = daoFactory.getEditorialDAO().consultarPorId(id);
+        if (!UtilUUID.tieneValor(resultado.getId())) {
+            throw GestorLibreriaExcepcion.crear("No se encontró la editorial con el identificador proporcionado.", "No existe registro en la tabla editorial para el id: " + id + " en ConsultarEditorialPorIdCasoUsoImpl.");
+        }
+        return resultado;
     }
 }

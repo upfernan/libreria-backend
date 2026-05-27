@@ -99,7 +99,7 @@ public class EstadoPrestamoSQLServerDAO extends SQLDAO implements EstadoPrestamo
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el estado de préstamo por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla estadoprestamo desde EstadoPrestamoSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new EstadoPrestamoEntidad.Builder().build();
 	}
 
 	@Override

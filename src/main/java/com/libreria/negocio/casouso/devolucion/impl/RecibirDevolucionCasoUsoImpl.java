@@ -154,7 +154,7 @@ public class RecibirDevolucionCasoUsoImpl implements RecibirDevolucionCasoUso {
         UUID multaId;
         do {
             multaId = UUID.randomUUID();
-        } while (!UtilObjeto.esNulo(daoFactory.getMultaDAO().consultarPorId(multaId)));
+        } while (UtilUUID.tieneValor(daoFactory.getMultaDAO().consultarPorId(multaId).getId()));
 
         daoFactory.getMultaDAO().crear(new MultaEntidad.Builder()
                 .id(multaId)

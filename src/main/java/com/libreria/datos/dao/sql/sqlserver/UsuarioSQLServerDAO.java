@@ -110,7 +110,7 @@ public class UsuarioSQLServerDAO extends SQLDAO implements UsuarioDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el usuario por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla usuario desde UsuarioSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new UsuarioEntidad.Builder().build();
 	}
 
 	@Override

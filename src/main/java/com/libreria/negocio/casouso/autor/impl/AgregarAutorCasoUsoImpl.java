@@ -64,7 +64,7 @@ public class AgregarAutorCasoUsoImpl implements AgregarAutorCasoUso {
     // P1 — Generar id único y persistir el nuevo autor
     private void guardarNuevoAutor(final AutorDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getAutorDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getAutorDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final AutorEntidad nuevo = new AutorEntidad.Builder()

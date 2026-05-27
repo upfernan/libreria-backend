@@ -59,7 +59,7 @@ public class AgregarTipoIdentificacionCasoUsoImpl implements AgregarTipoIdentifi
     // P1 — Generar id único y persistir el nuevo tipo de identificación
     private void guardarNuevoTipoIdentificacion(final TipoIdentificacionDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getTipoIdentificacionDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getTipoIdentificacionDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final TipoIdentificacionEntidad nueva = new TipoIdentificacionEntidad.Builder()

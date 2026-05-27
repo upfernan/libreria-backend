@@ -99,7 +99,7 @@ public class CategoriaSQLServerDAO extends SQLDAO implements CategoriaDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la categoría por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla categoria desde CategoriaSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new CategoriaEntidad.Builder().build();
 	}
 
 	@Override

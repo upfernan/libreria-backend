@@ -59,7 +59,7 @@ public class AgregarEstadoPrestamoCasoUsoImpl implements AgregarEstadoPrestamoCa
     // P1 — Generar id único y persistir el nuevo estado de préstamo
     private void guardarNuevoEstadoPrestamo(final EstadoPrestamoDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getEstadoPrestamoDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getEstadoPrestamoDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final EstadoPrestamoEntidad nueva = new EstadoPrestamoEntidad.Builder()

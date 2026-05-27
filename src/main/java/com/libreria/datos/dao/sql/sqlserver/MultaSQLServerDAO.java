@@ -122,7 +122,27 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 		logger.debug("Entre al metodo consultarPorFiltro de MultaSQLServerDAO...");
 		final StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
 		final List<Object> parametros = new ArrayList<>();
+		aplicarFiltros(sql, parametros, filtro);
 
+		final List<MultaEntidad> resultados = new ArrayList<>();
+		try (PreparedStatement ps = getConexion().prepareStatement(sql.toString())) {
+			for (int i = 0; i < parametros.size(); i++) {
+				ps.setObject(i + 1, parametros.get(i));
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					resultados.add(construirMultaEntidad(rs));
+				}
+			}
+			logger.debug("Sali del metodo consultarPorFiltro de MultaSQLServerDAO exitosamente.");
+		} catch (SQLException e) {
+			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las multas por filtro.",
+					"Se presento una SQLException al ejecutar SELECT por filtro en la tabla multa desde MultaSQLServerDAO.consultarPorFiltro.");
+		}
+		return resultados;
+	}
+
+	private void aplicarFiltros(final StringBuilder sql, final List<Object> parametros, final MultaEntidad filtro) {
 		if (!UtilObjeto.esNulo(filtro)) {
 			if (UtilUUID.tieneValor(filtro.getId())) {
 				sql.append(" AND m.id = ?");
@@ -145,23 +165,6 @@ public class MultaSQLServerDAO extends SQLDAO implements MultaDAO {
 				parametros.add(filtro.getPagada());
 			}
 		}
-
-		final List<MultaEntidad> resultados = new ArrayList<>();
-		try (PreparedStatement ps = getConexion().prepareStatement(sql.toString())) {
-			for (int i = 0; i < parametros.size(); i++) {
-				ps.setObject(i + 1, parametros.get(i));
-			}
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					resultados.add(construirMultaEntidad(rs));
-				}
-			}
-			logger.debug("Sali del metodo consultarPorFiltro de MultaSQLServerDAO exitosamente.");
-		} catch (SQLException e) {
-			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar las multas por filtro.",
-					"Se presento una SQLException al ejecutar SELECT por filtro en la tabla multa desde MultaSQLServerDAO.consultarPorFiltro.");
-		}
-		return resultados;
 	}
 
 	private MultaEntidad construirMultaEntidad(final ResultSet rs) throws SQLException {

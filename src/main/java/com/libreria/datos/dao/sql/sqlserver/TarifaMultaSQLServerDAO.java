@@ -100,7 +100,7 @@ public class TarifaMultaSQLServerDAO extends SQLDAO implements TarifaMultaDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la tarifa de multa por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla tarifamulta desde TarifaMultaSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new TarifaMultaEntidad.Builder().build();
 	}
 
 	@Override

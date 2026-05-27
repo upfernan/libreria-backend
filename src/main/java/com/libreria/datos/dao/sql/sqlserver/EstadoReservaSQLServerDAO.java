@@ -99,7 +99,7 @@ public class EstadoReservaSQLServerDAO extends SQLDAO implements EstadoReservaDA
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el estado de reserva por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla estadoreserva desde EstadoReservaSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new EstadoReservaEntidad.Builder().build();
 	}
 
 	@Override

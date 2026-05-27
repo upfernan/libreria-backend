@@ -114,7 +114,7 @@ public class EjemplarSQLServerDAO extends SQLDAO implements EjemplarDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el ejemplar por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla ejemplar desde EjemplarSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new EjemplarEntidad.Builder().build();
 	}
 
 	@Override

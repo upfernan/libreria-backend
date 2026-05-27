@@ -19,11 +19,15 @@ public class ConsultarPrestamoPorIdCasoUsoImpl implements ConsultarPrestamoPorId
 
     @Override
     public PrestamoEntidad ejecutar(final UUID id) {
-        // P11 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
-        if (UtilUUID.esNulo(id)) {
-            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar préstamo.");
+        // P11 Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+        if (!UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo o inválido para consultar préstamo en ConsultarPrestamoPorIdCasoUsoImpl.");
         }
-        return daoFactory.getPrestamoDAO().consultarPorId(id);
+        final PrestamoEntidad resultado = daoFactory.getPrestamoDAO().consultarPorId(id);
+        if (!UtilUUID.tieneValor(resultado.getId())) {
+            throw GestorLibreriaExcepcion.crear("No se encontró el préstamo con el identificador proporcionado.", "No existe registro en la tabla prestamo para el id: " + id + " en ConsultarPrestamoPorIdCasoUsoImpl.");
+        }
+        return resultado;
     }
 
 }

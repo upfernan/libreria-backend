@@ -100,7 +100,7 @@ public class AutorLibroSQLServerDAO extends SQLDAO implements AutorLibroDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el autor-libro por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla autorlibro desde AutorLibroSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new AutorLibroEntidad.Builder().build();
 	}
 
 	@Override

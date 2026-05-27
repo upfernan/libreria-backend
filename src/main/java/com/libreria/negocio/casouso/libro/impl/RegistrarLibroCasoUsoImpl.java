@@ -99,7 +99,7 @@ public class RegistrarLibroCasoUsoImpl implements RegistrarLibroCasoUso {
 	// P1 — Generar un identificador único garantizando que no exista en la BD
 	private UUID generarIdUnico() {
 		UUID id = UtilUUID.generar();
-		while (!UtilObjeto.esNulo(daoFactory.getLibroDAO().consultarPorId(id))) {
+		while (UtilUUID.tieneValor(daoFactory.getLibroDAO().consultarPorId(id).getId())) {
 			id = UtilUUID.generar();
 		}
 		return id;

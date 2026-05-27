@@ -108,7 +108,7 @@ public class RegistrarReservaCasoUsoImpl implements RegistrarReservaCasoUso {
 	// P1 — Generar un identificador único garantizando que no exista en la BD
 	private UUID generarIdUnico() {
 		UUID id = UtilUUID.generar();
-		while (!UtilObjeto.esNulo(daoFactory.getReservaDAO().consultarPorId(id))) {
+		while (UtilUUID.tieneValor(daoFactory.getReservaDAO().consultarPorId(id).getId())) {
 			id = UtilUUID.generar();
 		}
 		return id;

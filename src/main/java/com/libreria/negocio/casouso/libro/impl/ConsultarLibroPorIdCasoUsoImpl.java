@@ -20,10 +20,14 @@ public class ConsultarLibroPorIdCasoUsoImpl implements ConsultarLibroPorIdCasoUs
 
     @Override
     public LibroEntidad ejecutar(final UUID id) {
-        if (UtilUUID.esNulo(id)) {
-            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar libro.");
+        if (!UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo o inválido para consultar libro en ConsultarLibroPorIdCasoUsoImpl.");
         }
-        return daoFactory.getLibroDAO().consultarPorId(id);
+        final LibroEntidad resultado = daoFactory.getLibroDAO().consultarPorId(id);
+        if (!UtilUUID.tieneValor(resultado.getId())) {
+            throw GestorLibreriaExcepcion.crear("No se encontró el libro con el identificador proporcionado.", "No existe registro en la tabla libro para el id: " + id + " en ConsultarLibroPorIdCasoUsoImpl.");
+        }
+        return resultado;
     }
 
 }

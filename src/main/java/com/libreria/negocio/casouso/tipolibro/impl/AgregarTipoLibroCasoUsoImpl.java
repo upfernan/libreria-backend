@@ -56,7 +56,7 @@ public class AgregarTipoLibroCasoUsoImpl implements AgregarTipoLibroCasoUso {
     // P1 — Generar id único y persistir el nuevo tipo de libro
     private void guardarNuevoTipoLibro(final TipoLibroDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getTipoLibroDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getTipoLibroDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final TipoLibroEntidad nueva = new TipoLibroEntidad.Builder()

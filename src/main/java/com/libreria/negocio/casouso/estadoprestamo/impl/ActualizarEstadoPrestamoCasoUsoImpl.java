@@ -23,17 +23,17 @@ public class ActualizarEstadoPrestamoCasoUsoImpl implements ActualizarEstadoPres
 
     @Override
     public void ejecutar(final EstadoPrestamoDominio datos) {
-        // P3 — Validar tipo de dato, obligatoriedad y formato de los datos de entrada
+        // P3 Validar tipo de dato, obligatoriedad y formato de los datos de entrada
         validarDatosObligatorios(datos);
-        // P4 — Validar que el estado de préstamo exista en el sistema
+        // P4 Validar que el estado de préstamo exista en el sistema
         validarExistencia(datos.getId());
-        // P2 — Validar que no exista otro estado de préstamo con el mismo nombre
+        // P2 Validar que no exista otro estado de préstamo con el mismo nombre
         validarNombreUnicoExcluyendo(datos.getNombre(), datos.getId());
         
         daoFactory.getEstadoPrestamoDAO().actualizar(datos.getId(), construirEntidad(datos));
     }
 
-    // P3 — Datos requeridos válidos en tipo, obligatoriedad y formato
+    // P3  Datos requeridos válidos en tipo, obligatoriedad y formato
     private void validarDatosObligatorios(final EstadoPrestamoDominio datos) {
         if (UtilObjeto.esNulo(datos)) {
             throw GestorLibreriaExcepcion.crear("Los datos del estado de préstamo son obligatorios.", "Se recibió un objeto EstadoPrestamoDominio nulo.");
@@ -52,7 +52,7 @@ public class ActualizarEstadoPrestamoCasoUsoImpl implements ActualizarEstadoPres
         }
     }
 
-    // P4 — Validar que el estado de préstamo exista en el sistema
+    // P4  Validar que el estado de préstamo exista en el sistema
     private void validarExistencia(final UUID id) {
         final EstadoPrestamoEntidad entidad = daoFactory.getEstadoPrestamoDAO().consultarPorId(id);
         if (UtilObjeto.esNulo(entidad) || UtilObjeto.esNulo(entidad.getId())) {
@@ -60,7 +60,7 @@ public class ActualizarEstadoPrestamoCasoUsoImpl implements ActualizarEstadoPres
         }
     }
 
-    // P2 — Validar que no exista otro estado de préstamo con el mismo nombre excluyendo el actual
+    // P2  Validar que no exista otro estado de préstamo con el mismo nombre excluyendo el actual
     private void validarNombreUnicoExcluyendo(final String nombre, final UUID id) {
         final EstadoPrestamoEntidad filtro = new EstadoPrestamoEntidad.Builder().nombre(nombre).build();
         final List<EstadoPrestamoEntidad> existentes = daoFactory.getEstadoPrestamoDAO().consultarPorFiltro(filtro);

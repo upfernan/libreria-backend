@@ -20,9 +20,13 @@ public class ConsultarTipoLibroPorIdCasoUsoImpl implements ConsultarTipoLibroPor
     @Override
     public TipoLibroEntidad ejecutar(final UUID id) {
         // P6 Asegura que los datos requeridos sean validos a nivel de tipo, formato y obligatoriedad
-        if (UtilUUID.esNulo(id)) {
-            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar tipo de libro.");
+        if (!UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo o inválido para consultar tipo de libro en ConsultarTipoLibroPorIdCasoUsoImpl.");
         }
-        return daoFactory.getTipoLibroDAO().consultarPorId(id);
+        final TipoLibroEntidad resultado = daoFactory.getTipoLibroDAO().consultarPorId(id);
+        if (!UtilUUID.tieneValor(resultado.getId())) {
+            throw GestorLibreriaExcepcion.crear("No se encontró el tipo de libro con el identificador proporcionado.", "No existe registro en la tabla tipolibro para el id: " + id + " en ConsultarTipoLibroPorIdCasoUsoImpl.");
+        }
+        return resultado;
     }
 }

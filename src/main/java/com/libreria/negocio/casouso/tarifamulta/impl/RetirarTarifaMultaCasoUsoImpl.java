@@ -56,17 +56,17 @@ public class RetirarTarifaMultaCasoUsoImpl implements RetirarTarifaMultaCasoUso 
         final List<TarifaMultaEntidad> todas = daoFactory.getTarifaMultaDAO()
                 .consultarPorFiltro(new TarifaMultaEntidad.Builder().build());
         
-        TarifaMultaEntidad anterior = null;
+        TarifaMultaEntidad anterior = new TarifaMultaEntidad.Builder().build();
         for (final TarifaMultaEntidad t : todas) {
             if (t.getId().equals(aEliminar.getId())) {
                 continue;
             }
             if (t.getFechaInicioVigencia().isBefore(aEliminar.getFechaInicioVigencia())
-                    && (anterior == null || t.getFechaInicioVigencia().isAfter(anterior.getFechaInicioVigencia()))) {
+                    && (UtilObjeto.esNulo(anterior.getId()) || t.getFechaInicioVigencia().isAfter(anterior.getFechaInicioVigencia()))) {
                 anterior = t;
             }
         }
-        if (anterior != null) {
+        if (!UtilObjeto.esNulo(anterior.getId())) {
             daoFactory.getTarifaMultaDAO().actualizar(anterior.getId(), new TarifaMultaEntidad.Builder()
                     .id(anterior.getId())
                     .valorDiario(anterior.getValorDiario())

@@ -13,6 +13,7 @@ import com.libreria.entidad.TarifaMultaEntidad;
 import com.libreria.negocio.casouso.multa.CobrarMultaCasoUso;
 import com.libreria.negocio.dominio.MultaDominio;
 import com.libreria.transversal.utilitario.UtilFecha;
+import com.libreria.transversal.utilitario.UtilUUID;
 import com.libreria.transversal.utilitario.UtilObjeto;
 import com.libreria.transversal.utilitario.excepcion.GestorLibreriaExcepcion;
 
@@ -111,7 +112,7 @@ public class CobrarMultaCasoUsoImpl implements CobrarMultaCasoUso {
         UUID id;
         do {
             id = UUID.randomUUID();
-        } while (!UtilObjeto.esNulo(daoFactory.getMultaDAO().consultarPorId(id)));
+        } while (UtilUUID.tieneValor(daoFactory.getMultaDAO().consultarPorId(id).getId()));
         return id;
     }
 

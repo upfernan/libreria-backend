@@ -99,7 +99,7 @@ public class EditorialSQLServerDAO extends SQLDAO implements EditorialDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la editorial por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla editorial desde EditorialSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new EditorialEntidad.Builder().build();
 	}
 
 	@Override

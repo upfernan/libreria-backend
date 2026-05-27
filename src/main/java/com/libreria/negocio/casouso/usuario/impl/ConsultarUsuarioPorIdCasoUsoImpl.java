@@ -20,10 +20,14 @@ public class ConsultarUsuarioPorIdCasoUsoImpl implements ConsultarUsuarioPorIdCa
     @Override
     public UsuarioEntidad ejecutar(final UUID id) {
         // p9 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
-        if (UtilUUID.esNulo(id)) {
-            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar usuario.");
+        if (!UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo o inválido para consultar usuario en ConsultarUsuarioPorIdCasoUsoImpl.");
         }
-        return daoFactory.getUsuarioDAO().consultarPorId(id);
+        final UsuarioEntidad resultado = daoFactory.getUsuarioDAO().consultarPorId(id);
+        if (!UtilUUID.tieneValor(resultado.getId())) {
+            throw GestorLibreriaExcepcion.crear("No se encontró el usuario con el identificador proporcionado.", "No existe registro en la tabla usuario para el id: " + id + " en ConsultarUsuarioPorIdCasoUsoImpl.");
+        }
+        return resultado;
     }
 
 }

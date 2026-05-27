@@ -114,7 +114,7 @@ public class ReservaSQLServerDAO extends SQLDAO implements ReservaDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar la reserva por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla reserva desde ReservaSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new ReservaEntidad.Builder().build();
 	}
 
 	@Override

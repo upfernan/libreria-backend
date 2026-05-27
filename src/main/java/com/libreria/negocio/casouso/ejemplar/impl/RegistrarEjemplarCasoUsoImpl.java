@@ -125,7 +125,7 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 	
 	private SignaturaEntidad crearNuevaSignatura(final com.libreria.negocio.dominio.SignaturaDominio signaturaDominio) {
 		UUID id = UtilUUID.generar();
-		while (!UtilObjeto.esNulo(daoFactory.getSignaturaDAO().consultarPorId(id))) {
+		while (UtilUUID.tieneValor(daoFactory.getSignaturaDAO().consultarPorId(id).getId())) {
 			id = UtilUUID.generar();
 		}
 		final SignaturaEntidad nuevaSignatura = new SignaturaEntidad.Builder()
@@ -151,7 +151,7 @@ public class RegistrarEjemplarCasoUsoImpl implements RegistrarEjemplarCasoUso {
 	// P1 — Generar un identificador único para el ejemplar garantizando que no exista en la BD
 	private UUID generarIdUnico() {
 		UUID id = UtilUUID.generar();
-		while (!UtilObjeto.esNulo(daoFactory.getEjemplarDAO().consultarPorId(id))) {
+		while (UtilUUID.tieneValor(daoFactory.getEjemplarDAO().consultarPorId(id).getId())) {
 			id = UtilUUID.generar();
 		}
 		return id;

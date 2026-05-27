@@ -99,7 +99,7 @@ public class TipoLibroSQLServerDAO extends SQLDAO implements TipoLibroDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el tipo de libro por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla tipolibro desde TipoLibroSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new TipoLibroEntidad.Builder().build();
 	}
 
 	@Override

@@ -90,7 +90,7 @@ public class RegistrarUsuarioCasoUsoImpl implements RegistrarUsuarioCasoUso {
 	// P1 — Generar un identificador único garantizando que no exista en la BD
 	private UUID generarIdUnico() {
 		UUID id = UtilUUID.generar();
-		while (!UtilObjeto.esNulo(daoFactory.getUsuarioDAO().consultarPorId(id))) {
+		while (UtilUUID.tieneValor(daoFactory.getUsuarioDAO().consultarPorId(id).getId())) {
 			id = UtilUUID.generar();
 		}
 		return id;

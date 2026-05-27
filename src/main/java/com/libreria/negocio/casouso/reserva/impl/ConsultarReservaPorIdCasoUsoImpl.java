@@ -20,10 +20,14 @@ public class ConsultarReservaPorIdCasoUsoImpl implements ConsultarReservaPorIdCa
     @Override
     public ReservaEntidad ejecutar(final UUID id) {
         // P9 Asegurar que los datos que fueron enviados como filtro para llevar a cabo la acción sean válidos a nivel de tipo de dato, longitud, obligatoriedad, formato y rango.
-        if (UtilUUID.esNulo(id)) {
-            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo para consultar reserva.");
+        if (!UtilUUID.tieneValor(id)) {
+            throw GestorLibreriaExcepcion.crear("El identificador es obligatorio.", "Se recibió un UUID nulo o inválido para consultar reserva en ConsultarReservaPorIdCasoUsoImpl.");
         }
-        return daoFactory.getReservaDAO().consultarPorId(id);
+        final ReservaEntidad resultado = daoFactory.getReservaDAO().consultarPorId(id);
+        if (!UtilUUID.tieneValor(resultado.getId())) {
+            throw GestorLibreriaExcepcion.crear("No se encontró la reserva con el identificador proporcionado.", "No existe registro en la tabla reserva para el id: " + id + " en ConsultarReservaPorIdCasoUsoImpl.");
+        }
+        return resultado;
     }
 
 }

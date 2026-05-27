@@ -148,7 +148,7 @@ public class PrestamoSQLServerDAO extends SQLDAO implements PrestamoDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el préstamo por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla prestamo desde PrestamoSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new PrestamoEntidad.Builder().build();
 	}
 
 	@Override
@@ -215,22 +215,27 @@ public class PrestamoSQLServerDAO extends SQLDAO implements PrestamoDAO {
 		final java.sql.Date fechaReservaSql = rs.getDate("fechaReserva");
 		final java.sql.Date fechaExpiracionSql = rs.getDate("fechaExpiracion");
 
-		final EstadoReservaEntidad estadoReserva = UtilObjeto.esNulo(estadoReservaId) ? null
+		final EstadoReservaEntidad estadoReserva = UtilObjeto.esNulo(estadoReservaId)
+				? new EstadoReservaEntidad.Builder().build()
 				: new EstadoReservaEntidad.Builder()
 						.id(UUID.fromString(estadoReservaId))
 						.nombre(rs.getString("estadoReservaNombre"))
 						.build();
 
-		final TipoLibroEntidad tipoLibroReserva = UtilObjeto.esNulo(rlTipoLibroId) ? null
+		final TipoLibroEntidad tipoLibroReserva = UtilObjeto.esNulo(rlTipoLibroId)
+				? new TipoLibroEntidad.Builder().build()
 				: new TipoLibroEntidad.Builder().id(UUID.fromString(rlTipoLibroId)).build();
 
-		final CategoriaEntidad categoriaReserva = UtilObjeto.esNulo(rlCategoriaId) ? null
+		final CategoriaEntidad categoriaReserva = UtilObjeto.esNulo(rlCategoriaId)
+				? new CategoriaEntidad.Builder().build()
 				: new CategoriaEntidad.Builder().id(UUID.fromString(rlCategoriaId)).build();
 
-		final EditorialEntidad editorialReserva = UtilObjeto.esNulo(rlEditorialId) ? null
+		final EditorialEntidad editorialReserva = UtilObjeto.esNulo(rlEditorialId)
+				? new EditorialEntidad.Builder().build()
 				: new EditorialEntidad.Builder().id(UUID.fromString(rlEditorialId)).build();
 
-		final LibroEntidad libroReserva = UtilObjeto.esNulo(reservaLibroId) ? null
+		final LibroEntidad libroReserva = UtilObjeto.esNulo(reservaLibroId)
+				? new LibroEntidad.Builder().build()
 				: new LibroEntidad.Builder()
 						.id(UUID.fromString(reservaLibroId))
 						.tipoLibro(tipoLibroReserva)
@@ -238,20 +243,23 @@ public class PrestamoSQLServerDAO extends SQLDAO implements PrestamoDAO {
 						.editorial(editorialReserva)
 						.build();
 
-		final TipoIdentificacionEntidad tipoIdUsuarioReserva = UtilObjeto.esNulo(ruTipoIdentificacionId) ? null
+		final TipoIdentificacionEntidad tipoIdUsuarioReserva = UtilObjeto.esNulo(ruTipoIdentificacionId)
+				? new TipoIdentificacionEntidad.Builder().build()
 				: new TipoIdentificacionEntidad.Builder().id(UUID.fromString(ruTipoIdentificacionId)).build();
 
-		final UsuarioEntidad usuarioReserva = UtilObjeto.esNulo(reservaUsuarioId) ? null
+		final UsuarioEntidad usuarioReserva = UtilObjeto.esNulo(reservaUsuarioId)
+				? new UsuarioEntidad.Builder().build()
 				: new UsuarioEntidad.Builder()
 						.id(UUID.fromString(reservaUsuarioId))
 						.tipoIdentificacion(tipoIdUsuarioReserva)
 						.build();
 
-		final TipoIdentificacionEntidad tipoIdUsuarioPrestamo = UtilObjeto.esNulo(tipoIdentificacionId) ? null
+		final TipoIdentificacionEntidad tipoIdUsuarioPrestamo = UtilObjeto.esNulo(tipoIdentificacionId)
+				? new TipoIdentificacionEntidad.Builder().build()
 				: new TipoIdentificacionEntidad.Builder().id(UUID.fromString(tipoIdentificacionId)).build();
 
-		final java.time.LocalDate fechaReservaLocal = UtilObjeto.esNulo(fechaReservaSql) ? null : fechaReservaSql.toLocalDate();
-		final java.time.LocalDate fechaExpiracionLocal = UtilObjeto.esNulo(fechaExpiracionSql) ? null : fechaExpiracionSql.toLocalDate();
+		final java.time.LocalDate fechaReservaLocal = UtilObjeto.esNulo(fechaReservaSql) ? UtilFecha.FECHA_DEFECTO : fechaReservaSql.toLocalDate();
+		final java.time.LocalDate fechaExpiracionLocal = UtilObjeto.esNulo(fechaExpiracionSql) ? UtilFecha.FECHA_DEFECTO : fechaExpiracionSql.toLocalDate();
 
 		final char sigPasillo = UtilTexto.tieneContenido(rs.getString("sigPasillo")) ? rs.getString("sigPasillo").charAt(0) : '\0';
 

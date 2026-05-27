@@ -56,7 +56,7 @@ public class AgregarCategoriaCasoUsoImpl implements AgregarCategoriaCasoUso {
     // P1 — Generar id único y persistir la nueva categoría
     private void guardarNuevaCategoria(final CategoriaDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getCategoriaDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getCategoriaDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final CategoriaEntidad nueva = new CategoriaEntidad.Builder()

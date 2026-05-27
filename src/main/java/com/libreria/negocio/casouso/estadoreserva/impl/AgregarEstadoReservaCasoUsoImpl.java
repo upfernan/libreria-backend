@@ -59,7 +59,7 @@ public class AgregarEstadoReservaCasoUsoImpl implements AgregarEstadoReservaCaso
     // P1 — Generar id único y persistir el nuevo estado de reserva
     private void guardarNuevoEstadoReserva(final EstadoReservaDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getEstadoReservaDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getEstadoReservaDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final EstadoReservaEntidad nueva = new EstadoReservaEntidad.Builder()

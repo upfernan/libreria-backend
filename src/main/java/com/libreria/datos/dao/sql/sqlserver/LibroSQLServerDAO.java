@@ -118,7 +118,7 @@ public class LibroSQLServerDAO extends SQLDAO implements LibroDAO {
 			throw GestorLibreriaExcepcion.crear(e, "No fue posible consultar el libro por identificador.",
 					"Se presento una SQLException al ejecutar SELECT por id en la tabla libro desde LibroSQLServerDAO.consultarPorId.");
 		}
-		return null;
+		return new LibroEntidad.Builder().build();
 	}
 
 	@Override

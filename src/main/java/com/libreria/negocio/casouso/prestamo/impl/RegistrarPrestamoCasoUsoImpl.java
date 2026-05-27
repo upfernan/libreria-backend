@@ -31,32 +31,32 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 
 	@Override
 	public void ejecutar(final PrestamoDominio datos) {
-		// P6 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+		// P6 Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
 		validarDatosObligatorios(datos);
 
-		// P2 — El usuario debe estar registrado en el sistema
+		// P2  El usuario debe estar registrado en el sistema
 		validarExistenciaUsuario(datos.getUsuario().getId());
 
-		// P3 — El usuario no puede tener multas pendientes de pago
+		// P3 El usuario no puede tener multas pendientes de pago
 		validarUsuarioSinMultasPendientes(datos.getUsuario().getId());
 
-		// P8 — El usuario no puede superar el límite de préstamos simultáneos permitidos
+		// P8 El usuario no puede superar el límite de préstamos simultáneos permitidos
 		validarLimitePrestamosUsuario(datos.getUsuario().getId());
 
-		// P4 — El ejemplar debe estar registrado en el sistema
+		// P4 El ejemplar debe estar registrado en el sistema
 		final EjemplarEntidad ejemplar = validarExistenciaEjemplar(datos.getEjemplar().getId());
 
-		// P5 — El ejemplar no puede tener un préstamo activo
+		// P5 El ejemplar no puede tener un préstamo activo
 		validarEjemplarDisponible(datos.getEjemplar().getId());
 
 		// Combinación única: no puede existir otro préstamo con el mismo usuario + ejemplar + fechaPréstamo
 		final LocalDate fechaPrestamo = LocalDate.now();
 		validarCombinacionUnica(datos.getUsuario().getId(), datos.getEjemplar().getId(), fechaPrestamo);
 
-		// P7 — Si el ejemplar tiene reservas activas, se debe respetar el orden de la cola para asignarlo
+		// P7 Si el ejemplar tiene reservas activas, se debe respetar el orden de la cola para asignarlo
 		final ReservaEntidad reservaPendiente = validarColaDeReservas(datos.getUsuario().getId(), ejemplar.getLibro().getId());
 
-		// P1 — No puede existir otro préstamo con el mismo identificador
+		// P1 No puede existir otro préstamo con el mismo identificador
 		guardarNuevoPrestamo(datos, reservaPendiente, fechaPrestamo);
 
 		// Parte de la P7 Marcar la reserva como atendida si el préstamo se originó desde una reserva real no "sin reserva" RECORDAR
@@ -65,7 +65,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P6 — Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
+	// P6 Los datos requeridos deben ser válidos en tipo de dato, longitud, obligatoriedad y formato
 	private void validarDatosObligatorios(final PrestamoDominio datos) {
 		if (UtilObjeto.esNulo(datos)) {
 			throw GestorLibreriaExcepcion.crear("Los datos del préstamo son obligatorios.", "Se recibió un objeto PrestamoDominio nulo.");
@@ -84,7 +84,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P8 — El usuario no puede superar el límite de préstamos simultáneos permitidos
+	// P8 El usuario no puede superar el límite de préstamos simultáneos permitidos
 	private void validarLimitePrestamosUsuario(final UUID usuarioId) {
 		final List<PrestamoEntidad> activos = daoFactory.getPrestamoDAO()
 				.consultarPorFiltro(new PrestamoEntidad.Builder()
@@ -105,7 +105,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P2 — El usuario debe estar registrado en el sistema
+	// P2 El usuario debe estar registrado en el sistema
 	private void validarExistenciaUsuario(final UUID usuarioId) {
 		final UsuarioEntidad usuario = daoFactory.getUsuarioDAO().consultarPorId(usuarioId);
 		if (UtilObjeto.esNulo(usuario) || UtilObjeto.esNulo(usuario.getId())) {
@@ -113,7 +113,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P3 — El usuario no puede tener multas pendientes de pago
+	// P3  El usuario no puede tener multas pendientes de pago
 	private void validarUsuarioSinMultasPendientes(final UUID usuarioId) {
 		final MultaEntidad filtroMulta = new MultaEntidad.Builder()
 				.usuarioAfectado(new UsuarioEntidad.Builder().id(usuarioId).build())
@@ -125,7 +125,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P4 — El ejemplar debe estar registrado en el sistema
+	// P4 El ejemplar debe estar registrado en el sistema
 	private EjemplarEntidad validarExistenciaEjemplar(final UUID ejemplarId) {
 		final EjemplarEntidad ejemplar = daoFactory.getEjemplarDAO().consultarPorId(ejemplarId);
 		if (UtilObjeto.esNulo(ejemplar) || UtilObjeto.esNulo(ejemplar.getId())) {
@@ -134,7 +134,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		return ejemplar;
 	}
 
-	// P5 — El ejemplar no puede tener un préstamo activo
+	// P5 El ejemplar no puede tener un préstamo activo
 	private void validarEjemplarDisponible(final UUID ejemplarId) {
 		final PrestamoEntidad filtroPrestamo = new PrestamoEntidad.Builder()
 				.ejemplar(new EjemplarEntidad.Builder().id(ejemplarId).build())
@@ -161,7 +161,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		}
 	}
 
-	// P7 — Si el ejemplar tiene reservas activas, se debe respetar el orden de la cola para asignarlo
+	// P7 Si el ejemplar tiene reservas activas, se debe respetar el orden de la cola para asignarlo
 	private ReservaEntidad validarColaDeReservas(final UUID usuarioId, final UUID libroId) {
 		final ReservaEntidad filtroReserva = new ReservaEntidad.Builder()
 				.libro(new LibroEntidad.Builder().id(libroId).build())
@@ -180,7 +180,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		return primeraReserva;
 	}
 
-	// Determina si la reserva es una reserva real (estado "pendiente") y no el registro "sin reserva"
+	// Parte de La P7 valiar si la reserva obtenida es real o setear el sin reserva 
 	private boolean esReservaReal(final ReservaEntidad reserva) {
 		final ReservaEntidad filtroSinReserva = new ReservaEntidad.Builder()
 				.estadoReserva(new EstadoReservaEntidad.Builder().nombre("sin reserva").build())
@@ -209,10 +209,10 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		daoFactory.getReservaDAO().actualizar(reserva.getId(), reservaAtendida);
 	}
 
-	// P1 — No puede existir otro préstamo con el mismo identificador (generación de id único garantizado)
+	// P1 No puede existir otro préstamo con el mismo identificador (generación de id único garantizado)
 	private UUID generarIdUnico() {
 		UUID id = UtilUUID.generar();
-		while (!UtilObjeto.esNulo(daoFactory.getPrestamoDAO().consultarPorId(id))) {
+		while (UtilUUID.tieneValor(daoFactory.getPrestamoDAO().consultarPorId(id).getId())) {
 			id = UtilUUID.generar();
 		}
 		return id;
@@ -243,7 +243,7 @@ public class RegistrarPrestamoCasoUsoImpl implements RegistrarPrestamoCasoUso {
 		daoFactory.getPrestamoDAO().crear(nuevoPrestamo);
 	}
 
-	// Obtiene el registro de reserva semilla que representa "sin reserva" (dato obligatorio en préstamo)
+	// Obtiene el registri sin reserva para asignar a los prestamos que no se crean desde una reserva
 	private ReservaEntidad obtenerReservaSinReserva() {
 		final ReservaEntidad filtro = new ReservaEntidad.Builder()
 				.estadoReserva(new EstadoReservaEntidad.Builder().nombre("sin reserva").build())

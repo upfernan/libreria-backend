@@ -32,7 +32,9 @@ public class RetirarPrestamoCasoUsoImpl implements RetirarPrestamoCasoUso {
         final PrestamoEntidad prestamo = validarExistencia(id);
         // P12 — El préstamo no puede estar en estado activo
         validarNoActivo(prestamo);
-        // Eliminar registros hijos en cascada 
+        // P13 — El préstamo no puede eliminarse si tiene una multa registrada
+        validarSinMultas(id);
+        
         eliminarCascada(id);
       
         daoFactory.getPrestamoDAO().eliminar(id);
@@ -54,7 +56,29 @@ public class RetirarPrestamoCasoUsoImpl implements RetirarPrestamoCasoUso {
         }
     }
 
-    // Elimina en cascada: pagos → multas → devolucion asociada al préstamo
+    // P13 — El préstamo no puede eliminarse si tiene una multa registrada
+    private void validarSinMultas(final UUID prestamoId) {
+        final List<DevolucionEntidad> devoluciones = daoFactory.getDevolucionDAO()
+                .consultarPorFiltro(new DevolucionEntidad.Builder()
+                        .prestamo(new PrestamoEntidad.Builder().id(prestamoId).build())
+                        .build());
+        if (UtilObjeto.esNulo(devoluciones) || devoluciones.isEmpty()) {
+            return;
+        }
+        for (final DevolucionEntidad devolucion : devoluciones) {
+            final List<MultaEntidad> multas = daoFactory.getMultaDAO()
+                    .consultarPorFiltro(new MultaEntidad.Builder()
+                            .devolucion(new DevolucionEntidad.Builder().id(devolucion.getId()).build())
+                            .build());
+            if (!UtilObjeto.esNulo(multas) && !multas.isEmpty()) {
+                throw GestorLibreriaExcepcion.crear(
+                        "El préstamo no puede eliminarse porque tiene una multa registrada.",
+                        "prestamoId: " + prestamoId + " tiene multa en devolucionId: " + devolucion.getId());
+            }
+        }
+    }
+
+  
     private void eliminarCascada(final UUID prestamoId) {
         final List<DevolucionEntidad> devoluciones = daoFactory.getDevolucionDAO()
                 .consultarPorFiltro(new DevolucionEntidad.Builder()

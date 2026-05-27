@@ -56,7 +56,7 @@ public class AgregarEditorialCasoUsoImpl implements AgregarEditorialCasoUso {
     // P1 — Generar id único y persistir la nueva editorial
     private void guardarNuevaEditorial(final EditorialDominio datos) {
         UUID id = UtilUUID.generar();
-        while (!UtilObjeto.esNulo(daoFactory.getEditorialDAO().consultarPorId(id))) {
+        while (UtilUUID.tieneValor(daoFactory.getEditorialDAO().consultarPorId(id).getId())) {
             id = UtilUUID.generar();
         }
         final EditorialEntidad nueva = new EditorialEntidad.Builder()
